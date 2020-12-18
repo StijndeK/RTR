@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "Audio.h"
+#include "MainEditor.h"
 
 class ofApp : public ofBaseApp {
 
