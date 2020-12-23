@@ -4,6 +4,7 @@
 #include "AudioSystem.h"
 #include "MainEditor.h"
 #include "ofxDatGui.h"
+#include "ofxJSON.h"
 
 class ofApp : public ofBaseApp {
 
