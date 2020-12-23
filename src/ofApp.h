@@ -1,13 +1,15 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Audio.h"
+#include "AudioSystem.h"
 #include "MainEditor.h"
+#include "ofxDatGui.h"
 
 class ofApp : public ofBaseApp {
 
 public:
 	void setup();
+	void onButtonEvent(ofxDatGuiButtonEvent e);
 	void update();
 	void draw();
 
@@ -23,6 +25,8 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
-	Audio audio;
+	AudioSystem audio;
 	ofImage test;
+
+	ofFile myTextFile;
 };
