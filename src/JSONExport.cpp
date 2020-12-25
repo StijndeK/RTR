@@ -30,7 +30,6 @@ void JSONExport::setup()
         {
             ofLogNotice("ofApp::setup") << "example_output_pretty.json written successfully.";
         }
-
     }
     else
     {

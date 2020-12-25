@@ -1,9 +1,8 @@
 #include "ofMain.h"
-#include "ofxDatGui.h"
+#include "BaseUIEditor.h"
 
-class MainUIEditor {
+class TestUIEditor : public BaseUIEditor {
 public:
     void setup();
     void onButtonEvent(ofxDatGuiButtonEvent e);
 };
-

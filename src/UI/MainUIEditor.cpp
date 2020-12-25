@@ -1,12 +1,12 @@
 #include "MainUIEditor.h"
 
 void MainUIEditor::setup() {
-    ofxDatGui* gui = new ofxDatGui(100, 100);
-    gui->addButton("My 1");
-    gui->addButton("My 2");
-    gui->addHeader(":: Drag Me To Reposition ::");
-    gui->addFooter();
-    gui->onButtonEvent(this, &MainUIEditor::onButtonEvent);
+//    ofxDatGui* gui = new ofxDatGui(100, 100);
+//    gui->addButton("My 1");
+//    gui->addButton("My 2");
+//    gui->addHeader(":: Drag Me To Reposition ::");
+//    gui->addFooter();
+//    gui->onButtonEvent(this, &MainUIEditor::onButtonEvent);
 
     //// draw a circle with a radius of 100px
     //// and position it in the middle of the screen //
@@ -22,11 +22,10 @@ void MainUIEditor::setup() {
     //// bind the circle's x & y movement to the sliders //
     //sx->bind(circle->x);
     //sy->bind(circle->y);
-    
 }
 
 void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
 {
-    cout << e.target->getLabel() << endl; // prints "My Button"
+    // cout << e.target->getLabel() << endl; // prints "My Button"
 }
 
