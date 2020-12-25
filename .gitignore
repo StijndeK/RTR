@@ -43,3 +43,4 @@ obj
 *.ilk
 *.pdb
 *.make
+.DS_Store
