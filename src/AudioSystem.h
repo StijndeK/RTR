@@ -17,7 +17,6 @@ public:
 	const char* getAudioPath(string filename);
 	static void getDriverInfo();
 
-
 	FMOD_SOUND* sound;
 	FMOD_CHANNEL* channel;
 };
