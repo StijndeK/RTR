@@ -38,5 +38,6 @@ void JsonSystem::setValue(std::string type, float value)
 
 float JsonSystem::getValue(std::string type)
 {
+    ofLogError("JsonSystem") << "value: "<< result[type].asFloat() << endl;
     return result[type].asFloat();
 }

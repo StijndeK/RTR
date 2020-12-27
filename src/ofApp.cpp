@@ -9,7 +9,6 @@
 //--------------------------------------------------------------
 void ofApp::setup() {
 	test.load("shoplifters.jpg");
-	audio.initFMODSystem();
     
     mainUIEdit.setup();
 }
@@ -21,7 +20,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	audio.update();
+	// audio.update();
 }
 
 //--------------------------------------------------------------
@@ -32,8 +31,7 @@ void ofApp::draw() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-	std::cout << "key pressed" << std::endl;
-	audio.playAudio();
+	mainUIEdit.keyPressed(key);
 }
 
 //--------------------------------------------------------------

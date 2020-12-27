@@ -57,7 +57,8 @@ void AudioSystem::initFMODSystem() {
 
 //--------------------------------------------------------------
 void AudioSystem::update() {
-	// FMOD_System_Update(sys);
+	FMOD_System_Update(sys);
+	// gain = json file gain // TODO: remove to change listener
 }
 
 //--------------------------------------------------------------
@@ -78,6 +79,11 @@ void AudioSystem::loadAudio() {
 void AudioSystem::playAudio() {
 	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, sound, false, &channel);
 	// FMOD_Channel_SetPaused(channel, false);
+}
+
+void AudioSystem::setGain(float gain)
+{
+	FMOD_ChannelGroup_SetVolume(channelgroup, gain);
 }
 
 // -------------------------

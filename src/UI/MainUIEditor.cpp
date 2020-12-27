@@ -9,11 +9,15 @@ MainUIEditor::~MainUIEditor()
 }
 
 void MainUIEditor::setup() {
+    audio.initFMODSystem();
     testUI.setup();
     jsonSys.setup();
 
     // general gui
     ofxDatGui* gui = new ofxDatGui(100, 100);
+    gui->onSliderEvent(this, &MainUIEditor::onSliderEvent);
+    gui->onButtonEvent(this, &MainUIEditor::onButtonEvent);
+
     gui->addHeader(":: Drag Me To Reposition ::");
     gui->addFooter();
 
@@ -22,7 +26,9 @@ void MainUIEditor::setup() {
     gainSlider->bind(tGain);
     gainSlider->setValue(jsonSys.getValue("gain")); // init with saved value
 
-    gui->onSliderEvent(this, &MainUIEditor::onSliderEvent);
+    // set button
+    gui->addButton("Set");
+
 }
 
 void MainUIEditor::draw() {
@@ -41,7 +47,17 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 
 void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
 {
-    testUI.onButtonEvent(e);
-    // cout << e.target->getLabel() << endl; // prints "My Button"
+    setAudioValues();
+    // testUI.onButtonEvent(e);
+    cout << e.target->getLabel() << endl; // prints "My Button"
+}
+
+void MainUIEditor::setAudioValues()
+{
+    audio.setGain(jsonSys.getValue("gain"));
+}
+
+void MainUIEditor::keyPressed(int key) {
+    audio.playAudio();
 }
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "AudioSystem.h"
 #include "UI/MainUIEditor.h"
 
 class ofApp : public ofBaseApp {
@@ -24,7 +23,6 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
-	AudioSystem audio;
     MainUIEditor mainUIEdit;
     
 	ofImage test;

@@ -1,5 +1,6 @@
 #include "ofMain.h"
 #include "JSON/JsonSystem.h"
+#include "AudioSystem.h"
 #include "TestUIEditor.h"
 
 class MainUIEditor {
@@ -11,8 +12,13 @@ public:
     void draw();
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void onButtonEvent(ofxDatGuiButtonEvent e);
+
+    void setAudioValues();
+
+    void keyPressed(int key);
     
     TestUIEditor testUI;
+    AudioSystem audio;
 
     float tGain;
 

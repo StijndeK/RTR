@@ -10,6 +10,7 @@ public:
 	void update();
 	void loadAudio();
 	void playAudio();
+	void setGain(float gain);
 
 	// specific functions to the engine or framework
 	// TOD: create sperate class for these functions
