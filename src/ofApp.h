@@ -2,8 +2,8 @@
 
 #include "ofMain.h"
 #include "AudioSystem.h"
-#include "JSONExport.h"
-#include "MainUIEditor.h"
+#include "JSON/JSONExport.h"
+#include "UI/MainUIEditor.h"
 
 class ofApp : public ofBaseApp {
 
