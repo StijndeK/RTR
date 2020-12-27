@@ -2,7 +2,6 @@
 
 #include "ofMain.h"
 #include "AudioSystem.h"
-#include "JSON/JSONExport.h"
 #include "UI/MainUIEditor.h"
 
 class ofApp : public ofBaseApp {
@@ -26,7 +25,6 @@ public:
 	void gotMessage(ofMessage msg);
 
 	AudioSystem audio;
-    JSONExport jsonExp;
     MainUIEditor mainUIEdit;
     
 	ofImage test;

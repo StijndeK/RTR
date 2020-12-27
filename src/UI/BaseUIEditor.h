@@ -5,5 +5,4 @@ class BaseUIEditor {
 public:
     void setup();
     void draw();
-
 };

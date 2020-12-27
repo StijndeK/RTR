@@ -11,7 +11,6 @@ void ofApp::setup() {
 	test.load("shoplifters.jpg");
 	audio.initFMODSystem();
     
-    jsonExp.setup();
     mainUIEdit.setup();
 }
 
@@ -28,7 +27,7 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 	test.draw(0, 0);
-    jsonExp.draw();
+	mainUIEdit.draw();
 }
 
 //--------------------------------------------------------------
@@ -81,6 +80,7 @@ void ofApp::windowResized(int w, int h) {
 void ofApp::gotMessage(ofMessage msg) {
 
 }
+
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {

@@ -1,21 +1,19 @@
-#include "JSONExport.h"
+#include "JsonSystem.h"
 
-void JSONExport::setup()
+void JsonSystem::setup()
 {
     /* TODO: 
     * get the path to the engine version from input field
     * have a json file that checks if engine is connected, if true then go to engines json. if not then use local. when switching this bool copy the json over
     set a check for if there is an engine connected or there needs to be a standalone
     */
-    std::string file = "C:\\Users\\sdkst\\Documents\\Unreal Projects\\MyProject3\\Plugins\\myPlugin\\Content\\example.json";
 
     // check if file is available and open
     bool parsingSuccessful = result.open(file);
 
     if (parsingSuccessful)
     {
-        result["gain"] = 0.8;
-        result.save(file, true);
+
     }
     else
     {
@@ -24,15 +22,21 @@ void JSONExport::setup()
 }
 
 
-void JSONExport::draw()
+void JsonSystem::draw()
 {
-    ofBackground(0);
-
-    ofSetHexColor(0x00FF00);
-
+    // draw output
     std::stringstream ss;
-
     ss << "gain = " << result["gain"].asDouble() << endl;
-
     ofDrawBitmapString(ss.str(), 10, 14);
+}
+
+void JsonSystem::setValue(std::string type, float value)
+{
+    result[type] = value;
+    result.save(file, true);
+}
+
+float JsonSystem::getValue(std::string type)
+{
+    return result[type].asFloat();
 }
