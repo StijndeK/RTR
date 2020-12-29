@@ -16,6 +16,15 @@ static bool systemInitialised = false;
 static const char* pathName;
 
 //--------------------------------------------------------------
+AudioSystem::AudioSystem()
+{
+}
+
+AudioSystem::~AudioSystem()
+{
+}
+
+//--------------------------------------------------------------
 void AudioSystem::initFMODSystem() {
 	if (systemInitialised == false) {
 		// init
@@ -58,7 +67,6 @@ void AudioSystem::initFMODSystem() {
 //--------------------------------------------------------------
 void AudioSystem::update() {
 	FMOD_System_Update(sys);
-	// gain = json file gain // TODO: remove to change listener
 }
 
 //--------------------------------------------------------------
@@ -81,11 +89,17 @@ void AudioSystem::playAudio() {
 	// FMOD_Channel_SetPaused(channel, false);
 }
 
+//--------------------------------------------------------------
 void AudioSystem::setGain(float gain)
 {
 	FMOD_ChannelGroup_SetVolume(channelgroup, gain);
 }
 
+void AudioSystem::setPan(float p) {
+	p = ofClamp(p, -1, 1);
+	FMOD_Channel_SetPan(channel, p);
+	FMOD_System_Update(sys);
+}
 // -------------------------
 // Engine specific functions
 // -------------------------

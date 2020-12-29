@@ -7,15 +7,24 @@
 */
 
 //--------------------------------------------------------------
-void ofApp::setup() {
-	test.load("shoplifters.jpg");
-    
-    mainUIEdit.setup();
+ofApp::ofApp() {
+	mainUIEdit = new MainUIEditor(this);
 }
 
+ofApp::~ofApp() {
+	delete mainUIEdit;
+}
+
+//--------------------------------------------------------------
 void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 {
-    mainUIEdit.onButtonEvent(e);
+	mainUIEdit->onButtonEvent(e);
+}
+
+//--------------------------------------------------------------
+void ofApp::setup() {    
+	mainUIEdit->setup();
+	jsonSys.setup();
 }
 
 //--------------------------------------------------------------
@@ -25,13 +34,12 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	test.draw(0, 0);
-	mainUIEdit.draw();
+	mainUIEdit->draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-	mainUIEdit.keyPressed(key);
+	mainUIEdit->keyPressed(key);
 }
 
 //--------------------------------------------------------------

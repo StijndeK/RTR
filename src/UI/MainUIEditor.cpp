@@ -1,7 +1,9 @@
 #include "MainUIEditor.h"
+#include "ofApp.h"
 
-MainUIEditor::MainUIEditor()
+MainUIEditor::MainUIEditor(ofApp* appReference)
 {
+    _ofApp = appReference;
 }
 
 MainUIEditor::~MainUIEditor()
@@ -9,9 +11,8 @@ MainUIEditor::~MainUIEditor()
 }
 
 void MainUIEditor::setup() {
-    audio.initFMODSystem();
+    _ofApp->audio.initFMODSystem();
     testUI.setup();
-    jsonSys.setup();
 
     // general gui
     ofxDatGui* gui = new ofxDatGui(100, 100);
@@ -24,25 +25,27 @@ void MainUIEditor::setup() {
     // gain slider
     ofxDatGuiSlider* gainSlider = gui->addSlider("gain", 0, 1);
     gainSlider->bind(tGain);
-    gainSlider->setValue(jsonSys.getValue("gain")); // init with saved value
+    gainSlider->setValue(_ofApp->jsonSys.getValue("gain")); // init with saved value
+
+    // pan slider
+    ofxDatGuiSlider* panSlider = gui->addSlider("pan", -1, 1);
+    gainSlider->bind(tPan);
+    gainSlider->setValue(_ofApp->jsonSys.getValue("pan")); // init with saved value
 
     // set button
     gui->addButton("Set");
-
 }
 
 void MainUIEditor::draw() {
     ofBackground(0);
     ofSetHexColor(0x00FF00);
-
-    jsonSys.draw();
+    _ofApp->jsonSys.draw();
 }
 
 void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 {
-    cout << e.target->getLabel() << endl; // prints "My Button"
-    cout << e.target->getValue() << endl; // prints "My Button"
-    jsonSys.setValue(e.target->getLabel(), e.target->getValue());
+    _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
+    setAudioValues();
 }
 
 void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
@@ -54,10 +57,11 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
 
 void MainUIEditor::setAudioValues()
 {
-    audio.setGain(jsonSys.getValue("gain"));
+    _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
+    _ofApp->audio.setPan(_ofApp->jsonSys.getValue("pan"));
 }
 
 void MainUIEditor::keyPressed(int key) {
-    audio.playAudio();
+    _ofApp->audio.playAudio();
 }
 

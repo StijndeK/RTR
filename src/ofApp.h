@@ -1,11 +1,14 @@
 #pragma once
-
 #include "ofMain.h"
 #include "UI/MainUIEditor.h"
+#include "AudioSystem.h"
 
 class ofApp : public ofBaseApp {
 
 public:
+	ofApp();
+	~ofApp();
+
 	void setup();
 	void onButtonEvent(ofxDatGuiButtonEvent e);
 	void update();
@@ -23,9 +26,7 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
-    MainUIEditor mainUIEdit;
-    
-	ofImage test;
-
-	ofFile myTextFile;
+    MainUIEditor* mainUIEdit;
+	JsonSystem jsonSys;
+	AudioSystem audio;
 };

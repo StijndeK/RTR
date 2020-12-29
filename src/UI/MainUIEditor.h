@@ -1,29 +1,29 @@
+#pragma once
 #include "ofMain.h"
-#include "JSON/JsonSystem.h"
-#include "AudioSystem.h"
-#include "TestUIEditor.h"
+ #include "JSON/JsonSystem.h"
+ #include "TestUIEditor.h"
+#include "ofxDatGui.h"
+class ofApp;
 
 class MainUIEditor {
 public:
-    MainUIEditor();
+    MainUIEditor(ofApp* appReference);
     ~MainUIEditor();
 
     void setup();
     void draw();
+    void keyPressed(int key);
+
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void onButtonEvent(ofxDatGuiButtonEvent e);
 
     void setAudioValues();
-
-    void keyPressed(int key);
     
     TestUIEditor testUI;
-    AudioSystem audio;
 
     float tGain;
+    float tPan;
 
-    JsonSystem jsonSys; // TODO: this should be stored in the JSON and read from JSON by audio system (make a convertion function in JSONExport that takes the type and its value)
-
-    // link to the json system of ofapp so that i can call the set function
+    ofApp* _ofApp;
 };
 

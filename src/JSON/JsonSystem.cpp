@@ -1,5 +1,13 @@
 #include "JsonSystem.h"
 
+JsonSystem::JsonSystem()
+{
+}
+
+JsonSystem::~JsonSystem()
+{
+}
+
 void JsonSystem::setup()
 {
     /* TODO: 

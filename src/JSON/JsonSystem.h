@@ -1,8 +1,12 @@
+#pragma once
 #include "ofMain.h"
 #include "ofxJSON.h"
 
 class JsonSystem{
 public:
+    JsonSystem();
+    ~JsonSystem();
+
     void setup();
     void draw();
     
