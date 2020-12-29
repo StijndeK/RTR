@@ -15,7 +15,6 @@ static bool systemInitialised = false;
 
 static const char* pathName;
 
-//--------------------------------------------------------------
 AudioSystem::AudioSystem()
 {
 }
@@ -24,7 +23,6 @@ AudioSystem::~AudioSystem()
 {
 }
 
-//--------------------------------------------------------------
 void AudioSystem::initFMODSystem() {
 	if (systemInitialised == false) {
 		// init
@@ -64,12 +62,10 @@ void AudioSystem::initFMODSystem() {
 	loadAudio();
 }
 
-//--------------------------------------------------------------
 void AudioSystem::update() {
 	FMOD_System_Update(sys);
 }
 
-//--------------------------------------------------------------
 void AudioSystem::loadAudio() {
 	if (audioLoaded == false) {
 
@@ -83,13 +79,11 @@ void AudioSystem::loadAudio() {
 	}
 }
 
-//--------------------------------------------------------------
 void AudioSystem::playAudio() {
 	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, sound, false, &channel);
 	// FMOD_Channel_SetPaused(channel, false);
 }
 
-//--------------------------------------------------------------
 void AudioSystem::setGain(float gain)
 {
 	FMOD_ChannelGroup_SetVolume(channelgroup, gain);

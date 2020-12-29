@@ -41,7 +41,7 @@ void JsonSystem::draw()
 void JsonSystem::setValue(std::string type, float value)
 {
     result[type] = value;
-    result.save(file, true);
+     result.save(file, true);
 }
 
 float JsonSystem::getValue(std::string type)

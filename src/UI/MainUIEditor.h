@@ -17,7 +17,7 @@ public:
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void onButtonEvent(ofxDatGuiButtonEvent e);
 
-    void setAudioValues();
+    void setAudioValue();
     
     TestUIEditor testUI;
 
