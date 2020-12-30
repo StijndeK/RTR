@@ -22,6 +22,7 @@ AudioSystem::AudioSystem()
 AudioSystem::~AudioSystem()
 {
 	sounds.clear();
+	// FMOD_Sound_Release(sounds[0]); // TODO: release all sounds
 }
 
 void AudioSystem::initFMODSystem() {
@@ -79,7 +80,7 @@ void AudioSystem::loadAudio() {
 
 			FMOD_SOUND* tempSound;
 			sounds.push_back(tempSound);
-			static FMOD_RESULT result = FMOD_System_CreateSound(sys, ofToDataPath(dir.getPath(i)).c_str(), FMOD_DEFAULT, 0, &sounds[i]);
+			static FMOD_RESULT result = FMOD_System_CreateSound(sys, ofToDataPath(dir.getPath(i)).c_str(), FMOD_LOOP_NORMAL, 0, &sounds[i]);
 
 			if (result != FMOD_OK) {
 				debugMessage("Error: sound not loaded correctly: " + ofToDataPath(dir.getPath(i)));
@@ -88,11 +89,19 @@ void AudioSystem::loadAudio() {
 
 		audioLoaded = true;
 	}
+	
+	// start all audio and pause
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, sounds[0], false, &channel);
+	FMOD_ChannelGroup_SetPaused(channelgroup, true);
 }
 
 void AudioSystem::playAudio() {
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, sounds[0], false, &channel);
+	FMOD_ChannelGroup_SetPaused(channelgroup, false);
 	// FMOD_Channel_SetPaused(channel, false);
+}
+
+void AudioSystem::stopAudio() {
+	FMOD_ChannelGroup_SetPaused(channelgroup, true);
 }
 
 void AudioSystem::setGain(float gain)

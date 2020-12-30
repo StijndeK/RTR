@@ -59,8 +59,15 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 
 void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
 {
-    // testUI.onButtonEvent(e);
-    cout << e.target->getLabel() << endl; // prints "My Button"
+    if (e.target->getLabel() == "Play") {
+        _ofApp->audio.playAudio();
+    }
+    else if (e.target->getLabel() == "Stop") {
+        _ofApp->audio.stopAudio();
+    }
+    else {
+        ofLogError("MainUIEditor::onButtonEvent") << "unknown label type: " << e.target->getLabel() << endl;
+    }
 }
 
 void MainUIEditor::setAudioValue()

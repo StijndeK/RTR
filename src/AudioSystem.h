@@ -12,6 +12,7 @@ public:
 	void update();
 	void loadAudio();
 	void playAudio();
+	void stopAudio();
 	void setGain(float gain);
 	void setPan(float p);
 
