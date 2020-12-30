@@ -21,9 +21,6 @@ public:
     
     TestUIEditor testUI;
 
-    float tGain;
-    float tPan;
-
     ofApp* _ofApp;
 };
 

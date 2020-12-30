@@ -21,6 +21,7 @@ AudioSystem::AudioSystem()
 
 AudioSystem::~AudioSystem()
 {
+	sounds.clear();
 }
 
 void AudioSystem::initFMODSystem() {
@@ -68,25 +69,36 @@ void AudioSystem::update() {
 
 void AudioSystem::loadAudio() {
 	if (audioLoaded == false) {
+		ofDirectory dir("");
+		dir.allowExt("wav");
+		dir.listDir(); 	//populate the directory object
 
-		string filename = "TestSound.wav";
-		static FMOD_RESULT result = FMOD_System_CreateSound(sys, ofToDataPath(filename).c_str(), FMOD_DEFAULT, 0, &sound);
+		//go through and print out all the paths
+		for (int i = 0; i < dir.size(); i++) {
+			ofLogNotice(dir.getPath(i));
 
-		if (result != FMOD_OK) {
-			debugMessage("Error: sound not loaded correctly");
+			FMOD_SOUND* tempSound;
+			sounds.push_back(tempSound);
+			static FMOD_RESULT result = FMOD_System_CreateSound(sys, ofToDataPath(dir.getPath(i)).c_str(), FMOD_DEFAULT, 0, &sounds[i]);
+
+			if (result != FMOD_OK) {
+				debugMessage("Error: sound not loaded correctly: " + ofToDataPath(dir.getPath(i)));
+			}
 		}
+
 		audioLoaded = true;
 	}
 }
 
 void AudioSystem::playAudio() {
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, sound, false, &channel);
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, sounds[0], false, &channel);
 	// FMOD_Channel_SetPaused(channel, false);
 }
 
 void AudioSystem::setGain(float gain)
 {
 	FMOD_ChannelGroup_SetVolume(channelgroup, gain);
+	// FMOD_ChannelGroup_SetPitch(channelgroup, 4);
 }
 
 void AudioSystem::setPan(float p) {
@@ -94,6 +106,7 @@ void AudioSystem::setPan(float p) {
 	FMOD_Channel_SetPan(channel, p);
 	FMOD_System_Update(sys);
 }
+
 // -------------------------
 // Engine specific functions
 // -------------------------

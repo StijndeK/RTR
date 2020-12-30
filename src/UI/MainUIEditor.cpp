@@ -18,14 +18,13 @@ void MainUIEditor::setup() {
 
     // general gui
     ofxDatGui* guGeneral = new ofxDatGui(0 + offset, 0 + offset);
+    guGeneral->setWidth(250);
     guGeneral->onSliderEvent(this, &MainUIEditor::onSliderEvent);
     guGeneral->onButtonEvent(this, &MainUIEditor::onButtonEvent);
-    guGeneral->setWidth(250);
     guGeneral->addHeader(":: General Editor ::", false);
 
-    ofxDatGuiSlider* gainSlider = guGeneral->addSlider("gain", 0, 1);
-    gainSlider->bind(tGain);
-    gainSlider->setValue(_ofApp->jsonSys.getValue("gain")); // init with saved value
+    ofxDatGuiSlider* gainSlider = guGeneral->addSlider("gain", 0, 1); // init with saved value
+    gainSlider->setValue(_ofApp->jsonSys.getValue("gain")); 
 
     // mock gui
     ofxDatGui* guiMock = new ofxDatGui(300 + offset, 0 + offset);
@@ -53,6 +52,7 @@ void MainUIEditor::draw() {
 
 void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 {
+    cout << e.target->getLabel() << endl; // prints "My Button"
     _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
     setAudioValue();
 }

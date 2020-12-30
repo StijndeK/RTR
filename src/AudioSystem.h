@@ -21,6 +21,6 @@ public:
 	const char* getAudioPath(string filename);
 	static void getDriverInfo();
 
-	FMOD_SOUND* sound;
+	std::vector<FMOD_SOUND*> sounds;
 	FMOD_CHANNEL* channel;
 };

@@ -23,8 +23,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
 //--------------------------------------------------------------
 void ofApp::setup() {    
-	mainUIEdit->setup();
 	jsonSys.setup();
+	mainUIEdit->setup();
 }
 
 //--------------------------------------------------------------
