@@ -1,6 +1,7 @@
 #pragma once
 #include "ofMain.h"
 #include "fmod.h"
+#include "Layer.h"
 
 class AudioSystem {
 
@@ -11,6 +12,7 @@ public:
 	void initFMODSystem();
 	void update();
 	void loadAudio();
+	FMOD_SOUND* initSound(FMOD_MODE mode, ofDirectory& directory, int& numb);
 	void playAudio();
 	void stopAudio();
 	void setGain(float gain);
@@ -24,4 +26,9 @@ public:
 
 	std::vector<FMOD_SOUND*> sounds;
 	FMOD_CHANNEL* channel;
+
+	// vector of layers
+	std::vector<Layer*> layerImpacts;
+	Layer* layerSub;
+	Layer* layerTest;
 };

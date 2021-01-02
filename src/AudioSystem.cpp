@@ -22,6 +22,11 @@ AudioSystem::AudioSystem()
 AudioSystem::~AudioSystem()
 {
 	sounds.clear();
+	for (auto p : layerImpacts)
+	{
+		delete p;
+	}
+	layerImpacts.clear();
 	// FMOD_Sound_Release(sounds[0]); // TODO: release all sounds
 }
 
@@ -76,32 +81,66 @@ void AudioSystem::loadAudio() {
 
 		//go through and print out all the paths
 		for (int i = 0; i < dir.size(); i++) {
-			ofLogNotice(dir.getPath(i));
 
+			// get path and name
+			string tempName = dir.getName(i);
+			tempName = tempName.at(0);
+			debugMessage(tempName);
+
+			// create sound
+			// TODO: custom mode for different types (using initsound)
 			FMOD_SOUND* tempSound;
 			sounds.push_back(tempSound);
-			static FMOD_RESULT result = FMOD_System_CreateSound(sys, ofToDataPath(dir.getPath(i)).c_str(), FMOD_LOOP_NORMAL, 0, &sounds[i]);
+			static FMOD_RESULT result = FMOD_System_CreateSound(sys, ofToDataPath(dir.getPath(i)).c_str(), FMOD_DEFAULT, 0, &tempSound);
 
 			if (result != FMOD_OK) {
 				debugMessage("Error: sound not loaded correctly: " + ofToDataPath(dir.getPath(i)));
 			}
+
+			// initialise layers with their names and FMOD_SOUNDS
+			if (tempName == "I") {
+				layerImpacts.push_back(new Layer(tempSound, "Impact"));
+			}
+			//else if (tempName == "S") {
+			//	layerSub = new Layer(initSound(FMOD_DEFAULT, dir, i), "Sub");
+			//}
+			//else {
+			//	layerTest = new Layer(initSound(FMOD_LOOP_NORMAL, dir, i), "Impact");
+			//}
 		}
 
 		audioLoaded = true;
 	}
-	
-	// start all audio and pause
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, sounds[0], false, &channel);
-	FMOD_ChannelGroup_SetPaused(channelgroup, true);
+}
+
+FMOD_SOUND* AudioSystem::initSound(FMOD_MODE mode, ofDirectory& directory, int& numb) {
+	// create sound
+	FMOD_SOUND* tempSound;
+	sounds.push_back(tempSound);
+	static FMOD_RESULT result = FMOD_System_CreateSound(sys, ofToDataPath(directory.getPath(numb)).c_str(), mode, 0, &tempSound);
+
+	if (result != FMOD_OK) {
+		debugMessage("Error: sound not loaded correctly: " + ofToDataPath(directory.getPath(numb)));
+	}
+
+	return tempSound;
 }
 
 void AudioSystem::playAudio() {
-	FMOD_ChannelGroup_SetPaused(channelgroup, false);
-	// FMOD_Channel_SetPaused(channel, false);
+
+	// random select sounds
+	// FMOD_SOUND impactSound;
+	// FMOD_SOUND subSound;
+
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerImpacts[0]->_sound, false, &channel);
+	//FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, sounds[0], false, &channel);
+	debugMessage(layerImpacts[0]->_label);
+
 }
 
 void AudioSystem::stopAudio() {
-	FMOD_ChannelGroup_SetPaused(channelgroup, true);
+	// FMOD_ChannelGroup_SetPaused(channelgroup, true);
+	FMOD_ChannelGroup_Stop(channelgroup);
 }
 
 void AudioSystem::setGain(float gain)
