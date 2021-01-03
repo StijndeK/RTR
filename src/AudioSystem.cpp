@@ -15,8 +15,6 @@ static std::vector<std::string> ofxFmodDeviceNames;
 static bool audioLoaded = false;
 static bool systemInitialised = false;
 
-static const char* pathName;
-
 AudioSystem::AudioSystem()
 {
 }
@@ -45,7 +43,7 @@ void AudioSystem::initFMODSystem() {
 		if (listCreated == false) {
 			FMOD_System_GetNumDrivers(sys, &ofxFmodNumDevices);
 
-			getDriverInfo();
+			getDriverInfo(ofxFmodNumDevices, sys, ofxFmodDeviceNames);
 
 			listCreated = true;
 		}
@@ -135,29 +133,4 @@ void AudioSystem::setPan(float p) {
 	p = ofClamp(p, -1, 1);
 	FMOD_Channel_SetPan(channel, p);
 	FMOD_System_Update(sys);
-}
-
-// -------------------------
-// Engine specific functions
-// -------------------------
-
-void AudioSystem::debugMessage(string message)
-{
-	std::cout << message << std::endl;
-}
-
-const char* AudioSystem::getAudioPath(string filename)
-{
-	pathName = ofToDataPath(filename).c_str();
-	return pathName;
-}
-
-void AudioSystem::getDriverInfo()
-{
-	for (int i = 0; i < ofxFmodNumDevices; i++)
-	{
-		char name[256];
-		FMOD_System_GetDriverInfo(sys, i, name, 256, 0);
-		ofxFmodDeviceNames.push_back(name);
-	}
 }

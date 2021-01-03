@@ -2,8 +2,9 @@
 #include "ofMain.h"
 #include "fmod.h"
 #include "Layer.h"
+#include "AudioBase.h"
 
-class AudioSystem {
+class AudioSystem : public AudioBase {
 
 public:
 	AudioSystem();
@@ -16,12 +17,6 @@ public:
 	void stopAudio();
 	void setGain(float gain);
 	void setPan(float p);
-
-	// specific functions to the engine or framework
-	// TOD: create sperate class for these functions
-	static void debugMessage(string message);
-	const char* getAudioPath(string filename);
-	static void getDriverInfo();
 
 private:
 	std::vector<FMOD_SOUND*> sounds;
