@@ -1,7 +1,7 @@
 #pragma once
 #include "ofMain.h"
- #include "JSON/JsonSystem.h"
- #include "TestUIEditor.h"
+#include "JSON/JsonSystem.h"
+#include "TestUIEditor.h"
 #include "ofxDatGui.h"
 class ofApp;
 
@@ -19,8 +19,7 @@ public:
 
     void setAudioValue();
     
-    TestUIEditor testUI;
-
     ofApp* _ofApp;
+    TestUIEditor testUI;
 };
 

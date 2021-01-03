@@ -12,7 +12,6 @@ public:
 	void initFMODSystem();
 	void update();
 	void loadAudio();
-	FMOD_SOUND* initSound(FMOD_MODE mode, ofDirectory& directory, int& numb);
 	void playAudio();
 	void stopAudio();
 	void setGain(float gain);
@@ -24,6 +23,7 @@ public:
 	const char* getAudioPath(string filename);
 	static void getDriverInfo();
 
+private:
 	std::vector<FMOD_SOUND*> sounds;
 	FMOD_CHANNEL* channel;
 

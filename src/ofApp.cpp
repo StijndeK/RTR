@@ -1,11 +1,5 @@
 #include "ofApp.h"
 
-/* TODO:
-* - seperate class for audio handling
-* - function for initialise, play, stop, set volume
-* - try without the plugin in Unreal
-*/
-
 //--------------------------------------------------------------
 ofApp::ofApp() {
 	mainUIEdit = new MainUIEditor(this);
@@ -86,7 +80,6 @@ void ofApp::windowResized(int w, int h) {
 void ofApp::gotMessage(ofMessage msg) {
 
 }
-
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {

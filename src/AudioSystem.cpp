@@ -1,5 +1,7 @@
 #include "AudioSystem.h"
 
+// General FMOD variables
+// TODO: move these variables
 static FMOD_CHANNELGROUP* channelgroup;
 static FMOD_SYSTEM* sys;
 
@@ -22,11 +24,13 @@ AudioSystem::AudioSystem()
 AudioSystem::~AudioSystem()
 {
 	sounds.clear();
-	for (auto p : layerImpacts)
-	{
+
+	for (auto p : layerImpacts) {
+		FMOD_Sound_Release(p->_sound);
 		delete p;
 	}
 	layerImpacts.clear();
+
 	// FMOD_Sound_Release(sounds[0]); // TODO: release all sounds
 }
 
@@ -88,7 +92,6 @@ void AudioSystem::loadAudio() {
 			debugMessage(tempName);
 
 			// create sound
-			// TODO: custom mode for different types (using initsound)
 			FMOD_SOUND* tempSound;
 			sounds.push_back(tempSound);
 			static FMOD_RESULT result = FMOD_System_CreateSound(sys, ofToDataPath(dir.getPath(i)).c_str(), FMOD_DEFAULT, 0, &tempSound);
@@ -113,40 +116,19 @@ void AudioSystem::loadAudio() {
 	}
 }
 
-FMOD_SOUND* AudioSystem::initSound(FMOD_MODE mode, ofDirectory& directory, int& numb) {
-	// create sound
-	FMOD_SOUND* tempSound;
-	sounds.push_back(tempSound);
-	static FMOD_RESULT result = FMOD_System_CreateSound(sys, ofToDataPath(directory.getPath(numb)).c_str(), mode, 0, &tempSound);
-
-	if (result != FMOD_OK) {
-		debugMessage("Error: sound not loaded correctly: " + ofToDataPath(directory.getPath(numb)));
-	}
-
-	return tempSound;
-}
-
 void AudioSystem::playAudio() {
-
-	// random select sounds
-	// FMOD_SOUND impactSound;
-	// FMOD_SOUND subSound;
-
 	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerImpacts[0]->_sound, false, &channel);
-	//FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, sounds[0], false, &channel);
 	debugMessage(layerImpacts[0]->_label);
 
 }
 
 void AudioSystem::stopAudio() {
-	// FMOD_ChannelGroup_SetPaused(channelgroup, true);
 	FMOD_ChannelGroup_Stop(channelgroup);
 }
 
 void AudioSystem::setGain(float gain)
 {
 	FMOD_ChannelGroup_SetVolume(channelgroup, gain);
-	// FMOD_ChannelGroup_SetPitch(channelgroup, 4);
 }
 
 void AudioSystem::setPan(float p) {
