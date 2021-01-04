@@ -26,14 +26,14 @@ public:
 	bool trigger = 0; // triggers envelopes
 
 private:
-	std::vector<FMOD_SOUND*> sounds;
 	FMOD_CHANNEL* channel;
 
 	// vector of layers
 	std::vector<Layer*> layerImpacts;
 	std::vector<Layer*> layerSubs;
-	std::vector<Layer*> layerTests;
+	std::vector<Layer*> layerPads;
 
 	float testFq = 0.0;
-	Envelopes testEnv;
+	Envelopes ampEnv;
+	float testValue = 1;
 };

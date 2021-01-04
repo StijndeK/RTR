@@ -17,14 +17,16 @@ void MainUIEditor::setup() {
     int offset = 25;
 
     // general gui
-    ofxDatGui* guGeneral = new ofxDatGui(0 + offset, 0 + offset);
-    guGeneral->setWidth(250);
-    guGeneral->onSliderEvent(this, &MainUIEditor::onSliderEvent);
-    guGeneral->onButtonEvent(this, &MainUIEditor::onButtonEvent);
-    guGeneral->addHeader(":: General Editor ::", false);
+    ofxDatGui* guiGeneral = new ofxDatGui(0 + offset, 0 + offset);
+    guiGeneral->setWidth(250);
+    guiGeneral->onSliderEvent(this, &MainUIEditor::onSliderEvent);
+    guiGeneral->onButtonEvent(this, &MainUIEditor::onButtonEvent);
+    guiGeneral->addHeader(":: General Editor ::", false);
 
-    ofxDatGuiSlider* gainSlider = guGeneral->addSlider("gain", 0, 1);
+    ofxDatGuiSlider* gainSlider = guiGeneral->addSlider("gain", 0, 1);
     gainSlider->setValue(_ofApp->jsonSys.getValue("gain"));  // init with saved value
+
+    guiGeneral->addToggle("Fullscreen", false);
 
     // mock gui
     ofxDatGui* guiMock = new ofxDatGui(300 + offset, 0 + offset);
@@ -71,6 +73,9 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
     }
     else if (e.target->getLabel() == "Stop") {
         _ofApp->audio.stopAudio();
+    }
+    else if (e.target->getLabel() == "Fullscreen") {
+        ofToggleFullscreen();
     }
     else {
         ofLogError("MainUIEditor::onButtonEvent") << "unknown label type: " << e.target->getLabel() << endl;

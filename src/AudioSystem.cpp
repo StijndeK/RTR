@@ -17,14 +17,19 @@ static bool systemInitialised = false;
 
 AudioSystem::AudioSystem()
 {
-	// testEnv.setARLinear(5000, 5000);
 }
 
 AudioSystem::~AudioSystem()
 {
-	sounds.clear();
-
 	for (auto p : layerImpacts) {
+		FMOD_Sound_Release(p->_sound);
+		delete p;
+	}
+	for (auto p : layerSubs) {
+		FMOD_Sound_Release(p->_sound);
+		delete p;
+	}
+	for (auto p : layerPads) {
 		FMOD_Sound_Release(p->_sound);
 		delete p;
 	}
@@ -72,14 +77,11 @@ void AudioSystem::initFMODSystem() {
 	loadAudio();
 }
 
-float testValue = 1;
-
 void AudioSystem::update() {
 	FMOD_System_Update(sys);
 
-	float value = testEnv.arLin(testValue, trigger);
-	std::cout << value << std::endl;
-	setGain(value);
+	float value = ampEnv.arLin(testValue, trigger);
+	// setGain(value);
 }
 
 void AudioSystem::loadAudio() {
@@ -92,25 +94,27 @@ void AudioSystem::loadAudio() {
 		for (int i = 0; i < dir.size(); i++) {
 
 			// get path and name
-			string tempName = dir.getName(i);
-			tempName = tempName.at(0);
-			debugMessage(tempName);
+			string tempName = dir.getName(i).substr(0, 3);
 
 			// create sound
-			 FMOD_SOUND* tempSound;
-			 // sounds.push_back(tempSound);
+			FMOD_SOUND* tempSound;
 
 			FMOD_System_CreateSound(sys, ofToDataPath(dir.getPath(i)).c_str(), FMOD_DEFAULT, 0, &tempSound);
 
 			// initialise layers with their names and FMOD_SOUNDS
-			if (tempName == "I") {
+			if (tempName[0] == 'I') { // Impact
 				layerImpacts.push_back(new Layer(tempSound, "Impact"));
 			}
-			else if (tempName == "S") {
+			else if (tempName[0] == 'S') { // Sub
 				layerSubs.push_back(new Layer(tempSound, "Sub"));
 			}
+			else if (tempName[0] == 'L') { // Loop
+				if (tempName[2] == 'P') { // Loop: Pad
+					FMOD_Sound_SetMode(tempSound, FMOD_LOOP_NORMAL); // TODO: set mode at initialisation
+					layerPads.push_back(new Layer(tempSound, "Loop: Pad"));
+				}
+			}
 			else {
-				layerTests.push_back(new Layer(tempSound, "Test"));
 			}
 		}
 
@@ -126,14 +130,15 @@ void AudioSystem::playAudio() {
 	int subNumb = rand() % 3;
 
 	// print names
+	debugMessage("Now Playing: ");
 	debugMessage(getAudioName(layerImpacts[impactNumb]->_sound));
 	debugMessage(getAudioName(layerSubs[subNumb]->_sound));
-	debugMessage(getAudioName(layerTests[0]->_sound));
+	debugMessage(getAudioName(layerPads[0]->_sound));
 
 	// play sound
 	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerImpacts[impactNumb]->_sound, false, &channel);
 	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerSubs[subNumb]->_sound, false, &channel);
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerTests[0]->_sound, false, &channel);
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerPads[0]->_sound, false, &channel);
 }
 
 void AudioSystem::stopAudio() {
@@ -158,5 +163,5 @@ void AudioSystem::setPan(float p) {
 }
 
 void AudioSystem::setEnvelope(float attack) {
-	testEnv.setARLinear(attack, 500); // use default release value, to be replaced with new release slider input
+	ampEnv.setARLinear(attack, 500); // use default release value, to be replaced with new release slider input
 }
