@@ -16,9 +16,14 @@ public:
 	void loadAudio();
 	void playAudio();
 	void stopAudio();
+
 	string getAudioName(FMOD_SOUND* sound);
+
 	void setGain(float gain);
 	void setPan(float p);
+	void setEnvelope(float attack);
+
+	bool trigger = 0; // triggers envelopes
 
 private:
 	std::vector<FMOD_SOUND*> sounds;
@@ -30,4 +35,5 @@ private:
 	std::vector<Layer*> layerTests;
 
 	float testFq = 0.0;
+	Envelopes testEnv;
 };

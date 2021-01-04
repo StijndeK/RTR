@@ -17,6 +17,7 @@ static bool systemInitialised = false;
 
 AudioSystem::AudioSystem()
 {
+	// testEnv.setARLinear(5000, 5000);
 }
 
 AudioSystem::~AudioSystem()
@@ -71,13 +72,14 @@ void AudioSystem::initFMODSystem() {
 	loadAudio();
 }
 
+float testValue = 1;
+
 void AudioSystem::update() {
 	FMOD_System_Update(sys);
-	//float* volume = new float;
-	//FMOD_ChannelGroup_GetVolume(channelgroup, volume);
-	//setGain(*volume - 0.01);
-	//std::cout << *volume << std::endl;
-	//delete volume;
+
+	float value = testEnv.arLin(testValue, trigger);
+	std::cout << value << std::endl;
+	setGain(value);
 }
 
 void AudioSystem::loadAudio() {
@@ -153,4 +155,8 @@ void AudioSystem::setPan(float p) {
 	p = ofClamp(p, -1, 1);
 	FMOD_Channel_SetPan(channel, p);
 	FMOD_System_Update(sys);
+}
+
+void AudioSystem::setEnvelope(float attack) {
+	testEnv.setARLinear(attack, 500); // use default release value, to be replaced with new release slider input
 }

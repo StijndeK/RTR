@@ -18,13 +18,14 @@ public:
 
 	// initial state
 	ArLinState currentEnvState = STOP;
+
 private:
 	double output;
 	double amplitude = 0.001;
 	double amplitudeExp, amplitudeLin;
 	double amplitudeStartValue = 0.001;
 
-	double samplerate = 48000.0; // TODO: get samplerate
+	double updateRate = 60.0; // oF update() rate
 
 	float attack = 0;
 	float release = 0;

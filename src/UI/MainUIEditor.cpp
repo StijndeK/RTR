@@ -55,7 +55,12 @@ void MainUIEditor::draw() {
 
 void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 {
-    _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
+    if (e.target->getLabel() == "gain") {
+        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
+    }
+    else if (e.target->getLabel() == "range in ms") {
+        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
+    }
     setAudioValue();
 }
 
@@ -75,9 +80,5 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
 void MainUIEditor::setAudioValue()
 {
     _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
+    _ofApp->audio.setEnvelope(_ofApp->jsonSys.getValue("range in ms"));
 }
-
-void MainUIEditor::keyPressed(int key) {
-    _ofApp->audio.playAudio();
-}
-

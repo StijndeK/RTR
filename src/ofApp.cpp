@@ -33,12 +33,12 @@ void ofApp::draw() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-	mainUIEdit->keyPressed(key);
+	audio.trigger = 1;
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
-
+	audio.trigger = 0;
 }
 
 //--------------------------------------------------------------
