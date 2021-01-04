@@ -18,7 +18,7 @@ const char* AudioBase::getAudioPath(string filename)
 	return ofToDataPath(filename).c_str();;
 }
 
-void AudioBase::getDriverInfo(int ofxFmodNumDevices, FMOD_SYSTEM* system, std::vector<std::string> deviceNames)
+void AudioBase::getDriverInfo(int& ofxFmodNumDevices, FMOD_SYSTEM* system, std::vector<std::string>& deviceNames)
 {
 	for (int i = 0; i < ofxFmodNumDevices; i++)
 	{

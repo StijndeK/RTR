@@ -90,24 +90,21 @@ void AudioSystem::loadAudio() {
 			debugMessage(tempName);
 
 			// create sound
-			FMOD_SOUND* tempSound;
-			sounds.push_back(tempSound);
-			static FMOD_RESULT result = FMOD_System_CreateSound(sys, ofToDataPath(dir.getPath(i)).c_str(), FMOD_DEFAULT, 0, &tempSound);
+			 FMOD_SOUND* tempSound;
+			 // sounds.push_back(tempSound);
 
-			if (result != FMOD_OK) {
-				debugMessage("Error: sound not loaded correctly: " + ofToDataPath(dir.getPath(i)));
-			}
+			FMOD_System_CreateSound(sys, ofToDataPath(dir.getPath(i)).c_str(), FMOD_DEFAULT, 0, &tempSound);
 
 			// initialise layers with their names and FMOD_SOUNDS
 			if (tempName == "I") {
 				layerImpacts.push_back(new Layer(tempSound, "Impact"));
 			}
-			//else if (tempName == "S") {
-			//	layerSub = new Layer(initSound(FMOD_DEFAULT, dir, i), "Sub");
-			//}
-			//else {
-			//	layerTest = new Layer(initSound(FMOD_LOOP_NORMAL, dir, i), "Impact");
-			//}
+			else if (tempName == "S") {
+				layerSubs.push_back(new Layer(tempSound, "Sub"));
+			}
+			else {
+				layerTests.push_back(new Layer(tempSound, "Test"));
+			}
 		}
 
 		audioLoaded = true;
@@ -115,9 +112,20 @@ void AudioSystem::loadAudio() {
 }
 
 void AudioSystem::playAudio() {
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerImpacts[0]->_sound, false, &channel);
-	debugMessage(layerImpacts[0]->_label);
+	stopAudio();
 
+	// randomise sub and impact selection
+	int impactNumb = rand() % 3;
+	int subNumb = rand() % 3;
+
+	// print names
+	//char* tempName = new char; char name[256];
+	//debugMessage(to_string(FMOD_Sound_GetName(layerImpacts[tesst]->_sound, tempName, 256)));
+
+	// play sound
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerImpacts[impactNumb]->_sound, false, &channel);
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerSubs[subNumb]->_sound, false, &channel);
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerTests[0]->_sound, false, &channel);
 }
 
 void AudioSystem::stopAudio() {

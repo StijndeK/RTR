@@ -8,9 +8,9 @@ public:
 	AudioBase();
 	~AudioBase();
 
-	void debugMessage(string message);
-	const char* getAudioPath(string filename);
-	void getDriverInfo(int ofxFmodNumDevices, FMOD_SYSTEM* system, std::vector<std::string> deviceNames);
+	static void debugMessage(string message);
+	static const char* getAudioPath(string filename);
+	static void getDriverInfo(int& ofxFmodNumDevices, FMOD_SYSTEM* system, std::vector<std::string>& deviceNames);
 
 private:
 

@@ -12,7 +12,6 @@ MainUIEditor::~MainUIEditor()
 
 void MainUIEditor::setup() {
     _ofApp->audio.initFMODSystem();
-    testUI.setup();
 
     // GUI
     int offset = 25;

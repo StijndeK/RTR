@@ -24,6 +24,6 @@ private:
 
 	// vector of layers
 	std::vector<Layer*> layerImpacts;
-	Layer* layerSub;
-	Layer* layerTest;
+	std::vector<Layer*> layerSubs;
+	std::vector<Layer*> layerTests;
 };
