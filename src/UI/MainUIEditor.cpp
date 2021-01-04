@@ -23,8 +23,8 @@ void MainUIEditor::setup() {
     guGeneral->onButtonEvent(this, &MainUIEditor::onButtonEvent);
     guGeneral->addHeader(":: General Editor ::", false);
 
-    ofxDatGuiSlider* gainSlider = guGeneral->addSlider("gain", 0, 1); // init with saved value
-    gainSlider->setValue(_ofApp->jsonSys.getValue("gain")); 
+    ofxDatGuiSlider* gainSlider = guGeneral->addSlider("gain", 0, 1);
+    gainSlider->setValue(_ofApp->jsonSys.getValue("gain"));  // init with saved value
 
     // mock gui
     ofxDatGui* guiMock = new ofxDatGui(300 + offset, 0 + offset);
@@ -35,6 +35,8 @@ void MainUIEditor::setup() {
 
     guiMock->addButton("Play");
     guiMock->addButton("Stop");
+    ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 500, 20000);
+    rangeSlider->setValue(_ofApp->jsonSys.getValue("range in ms"));  // init with saved value
 
     // sound gui
     ofxDatGui* guiSound = new ofxDatGui(600 + offset, 0 + offset);
