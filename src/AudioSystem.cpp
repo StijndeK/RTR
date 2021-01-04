@@ -119,8 +119,9 @@ void AudioSystem::playAudio() {
 	int subNumb = rand() % 3;
 
 	// print names
-	//char* tempName = new char; char name[256];
-	//debugMessage(to_string(FMOD_Sound_GetName(layerImpacts[tesst]->_sound, tempName, 256)));
+	debugMessage(getAudioName(layerImpacts[impactNumb]->_sound));
+	debugMessage(getAudioName(layerSubs[subNumb]->_sound));
+	debugMessage(getAudioName(layerTests[0]->_sound));
 
 	// play sound
 	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerImpacts[impactNumb]->_sound, false, &channel);
@@ -130,6 +131,12 @@ void AudioSystem::playAudio() {
 
 void AudioSystem::stopAudio() {
 	FMOD_ChannelGroup_Stop(channelgroup);
+}
+
+string AudioSystem::getAudioName(FMOD_SOUND* sound) {
+	char name[256];
+	FMOD_Sound_GetName(sound, name, 256);
+	return name;
 }
 
 void AudioSystem::setGain(float gain)

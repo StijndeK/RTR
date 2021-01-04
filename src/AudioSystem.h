@@ -15,6 +15,7 @@ public:
 	void loadAudio();
 	void playAudio();
 	void stopAudio();
+	string getAudioName(FMOD_SOUND* sound);
 	void setGain(float gain);
 	void setPan(float p);
 
