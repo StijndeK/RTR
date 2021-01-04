@@ -3,6 +3,7 @@
 #include "fmod.h"
 #include "Layer.h"
 #include "AudioBase.h"
+#include "Envelopes.h"
 
 class AudioSystem : public AudioBase {
 
@@ -27,4 +28,6 @@ private:
 	std::vector<Layer*> layerImpacts;
 	std::vector<Layer*> layerSubs;
 	std::vector<Layer*> layerTests;
+
+	float testFq = 0.0;
 };

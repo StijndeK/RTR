@@ -73,6 +73,11 @@ void AudioSystem::initFMODSystem() {
 
 void AudioSystem::update() {
 	FMOD_System_Update(sys);
+	//float* volume = new float;
+	//FMOD_ChannelGroup_GetVolume(channelgroup, volume);
+	//setGain(*volume - 0.01);
+	//std::cout << *volume << std::endl;
+	//delete volume;
 }
 
 void AudioSystem::loadAudio() {

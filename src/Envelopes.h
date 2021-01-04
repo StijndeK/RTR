@@ -1,0 +1,32 @@
+#pragma once
+
+class Envelopes
+{
+public:
+	Envelopes();
+	~Envelopes();
+
+	double arLin(double input, int trigger);
+	double arExp(double input, int trigger);
+
+	void setARLinear(double attackMs, double releaseMs);
+
+	void setARExp(double attackMs, double releaseMs);
+
+	// arlin envelope states
+	enum ArLinState { ATTACK, HOLD, RELEASE, STOP };
+
+	// initial state
+	ArLinState currentEnvState = STOP;
+private:
+	double output;
+	double amplitude = 0.001;
+	double amplitudeExp, amplitudeLin;
+	double amplitudeStartValue = 0.001;
+
+	double samplerate = 48000.0; // TODO: get samplerate
+
+	float attack = 0;
+	float release = 0;
+};
+
