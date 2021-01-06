@@ -98,9 +98,13 @@ void AudioSystem::update() {
 
 	// amplitude modulation
 	float attackedGain = attackEnv.arAttackExp(_gain, trigger);	// initial attack envelope
-	debugMessage(to_string(attackedGain));
+	// debugMessage(to_string(attackedGain));
 	float envelopeGain = rangeEnv.arLin(attackedGain, trigger); 	// amplitude modulation
-	debugMessage(to_string(envelopeGain));
+	if (rangeEnv.currentEnvState == 1) {
+		debugMessage("impact");
+		playAudioImpacts();
+	}
+	// debugMessage(to_string(envelopeGain));
 	FMOD_ChannelGroup_SetVolume(channelgroup, envelopeGain);
 	
 	// pitch modulation
@@ -166,17 +170,11 @@ void AudioSystem::loadAudio() {
 	}
 }
 
-void AudioSystem::playAudio() {
+void AudioSystem::playAudioLoops() {
 	stopAudio();
-
-	// randomise sub and impact selection
-	int impactNumb = rand() % 3;
-	int subNumb = rand() % 3;
 
 	// print names
 	debugMessage("Now Playing: ");
-	debugMessage(getAudioName(layerImpacts[impactNumb]->_sound));
-	debugMessage(getAudioName(layerSubs[subNumb]->_sound));
 	debugMessage(getAudioName(layerStartPads[0]->_sound));
 	debugMessage(getAudioName(layerEndPads[0]->_sound));
 	debugMessage(getAudioName(layerFx[0]->_sound));
@@ -190,13 +188,26 @@ void AudioSystem::playAudio() {
 	trigger = 1;
 
 	// play sound
-	// FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerImpacts[impactNumb]->_sound, false, &channel);
-	// FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerSubs[subNumb]->_sound, false, &channel);
 	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerStartPads[0]->_sound, false, &channel);
 	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerEndPads[0]->_sound, false, &channel);
 	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerFx[0]->_sound, false, &channel);
 	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerNoises[1]->_sound, false, &channel);
 	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerShepards[0]->_sound, false, &channel);
+}
+
+void AudioSystem::playAudioImpacts() {
+	// randomise sub and impact selection
+	int impactNumb = rand() % 3;
+	int subNumb = rand() % 3;
+
+	// print names
+	debugMessage("Now Playing: ");
+	debugMessage(getAudioName(layerImpacts[impactNumb]->_sound));
+	debugMessage(getAudioName(layerSubs[subNumb]->_sound));
+
+	// play sound
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerImpacts[impactNumb]->_sound, false, &channel);
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerSubs[subNumb]->_sound, false, &channel);
 }
 
 void AudioSystem::stopAudio() {
@@ -213,7 +224,6 @@ string AudioSystem::getAudioName(FMOD_SOUND* sound) {
 void AudioSystem::setGain(float gain)
 {
 	_gain = pow(10, gain / 20);
-	// FMOD_ChannelGroup_SetVolume(channelgroup, gain);
 }
 
 void AudioSystem::setPan(float p) {
@@ -224,11 +234,11 @@ void AudioSystem::setPan(float p) {
 
 void AudioSystem::setEnvelope(float attack) {
 	debugMessage("env: " + to_string(attack));
-	rangeEnv.setARLinear(attack, 500); // use default release value, to be replaced with new release slider input
+	rangeEnv.setARLinear(attack, 2000); // use default release value, to be replaced with new release slider input
 }
 
 void AudioSystem::setAttack(float attack)
 {
 	debugMessage("att: " + to_string(attack));
-	attackEnv.setARExp(attack, 500);
+	attackEnv.setARExp(attack, 0);
 }

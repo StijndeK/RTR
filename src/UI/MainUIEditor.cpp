@@ -37,7 +37,7 @@ void MainUIEditor::setup() {
 
     guiMock->addButton("Play");
     guiMock->addButton("Stop");
-    ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 500, 20000, _ofApp->jsonSys.getValue("range in ms"));  // init with saved value
+    ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 5000, 20000, _ofApp->jsonSys.getValue("range in ms"));  // init with saved value
     rangeSlider->setPrecision(0);
 
     // sound gui
@@ -73,7 +73,7 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
 {
     if (e.target->getLabel() == "Play") {
-        _ofApp->audio.playAudio();
+        _ofApp->audio.playAudioLoops();
     }
     else if (e.target->getLabel() == "Stop") {
         _ofApp->audio.stopAudio();

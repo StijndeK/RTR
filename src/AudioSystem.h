@@ -14,7 +14,8 @@ public:
 	void initFMODSystem();
 	void update();
 	void loadAudio();
-	void playAudio();
+	void playAudioLoops();
+	void playAudioImpacts();
 	void stopAudio();
 
 	string getAudioName(FMOD_SOUND* sound);

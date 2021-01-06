@@ -8,11 +8,10 @@ public:
 
 	double arLin(double input, int trigger);
 	double arExp(double input, int trigger);
-
 	double arAttackExp(double input, int trigger);
+	int dImpact(int trigger);
 
 	void setARLinear(double attackMs, double releaseMs);
-
 	void setARExp(double attackMs, double releaseMs);
 
 	// arlin envelope states
