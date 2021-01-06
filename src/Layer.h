@@ -12,7 +12,7 @@ public:
 	vector<FMOD_SOUND*> _sounds;
 	string _label;
 	int _currentSoundIdentifier = 0;
-	bool _onOff = 1;
+	bool _onOff = 0;
 private:
 
 };

@@ -47,8 +47,8 @@ void MainUIEditor::setup() {
     guiSound->addHeader(":: Sound Editor ::", false);
     guiSound->addToggle("Pad: Start");
     guiSound->addToggle("Pad: End");
-    guiSound->addToggle("Noise");
     guiSound->addToggle("Fx");
+    guiSound->addToggle("Noise");
     guiSound->addToggle("Shepards");
 
     // initialise audio values
@@ -90,12 +90,12 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
     else if (label == "Select destination") {
         _ofApp->jsonSys.getPath();
     }
-    else if (label == "Pad: Start") {
-        
+    else { // set layer on or off TODO: create seperate function
+        _ofApp->audio.getLayerByName(label)->_onOff = !_ofApp->audio.getLayerByName(label)->_onOff;
     }
-    else {
-        ofLogError("MainUIEditor::onButtonEvent") << "unknown label type: " << e.target->getLabel() << endl;
-    }
+    //else {
+    //    ofLogError("MainUIEditor::onButtonEvent") << "unknown label type: " << e.target->getLabel() << endl;
+    //}
 }
 
 void MainUIEditor::setAudioValue()

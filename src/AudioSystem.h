@@ -26,21 +26,24 @@ public:
 	void setAttack(float attack);
 	void setOffset(float offset);
 
+	Layer* getLayerByName(string name);
+
 	bool trigger = 0; // triggers envelopes
 
 	float _gain = 1;
 	float gainSnapshot = 1;
 
 	vector<Layer*> layerSelection;
+
+	// vector of layers
+	vector<Layer*> layerImpacts;
+	vector<Layer*> layerLoops;
 private:
 	// FMOD_CHANNEL* channel;
 	FMOD_CHANNEL* channelImpacts;
 	FMOD_CHANNEL* channelLoops;
 	FMOD_SOUNDGROUP* soundGroup;
 
-	// vector of layers
-	vector<Layer*> layerImpacts;
-	vector<Layer*> layerLoops;
 	//vector<Layer*> layerImpacts;
 	//vector<Layer*> layerSubs;
 	//vector<Layer*> layerStartPads;
