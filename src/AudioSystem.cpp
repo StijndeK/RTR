@@ -94,7 +94,6 @@ void AudioSystem::update() {
 	}
 	// debugMessage(to_string(envelopeGain));
 	// FMOD_ChannelGroup_SetVolume(channelgroupLoops, envelopeGain);
-	FMOD_Channel_SetVolume(channelLoops, 0);
 
 	// pitch modulation
 
@@ -191,7 +190,7 @@ void AudioSystem::playAudioLoops() {
 	for (auto layer : layerLoops) {
 		// check if layer is on
 		if (layer->_onOff) {
-			FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layer->_sounds[layer->_currentSoundIdentifier], false, &channelLoops);
+			FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layer->_sounds[layer->_currentSoundIdentifier], false, 0);
 			debugMessage("	" + layer->_label + ":");
 			debugMessage("		" + getAudioName(layer->_sounds[layer->_currentSoundIdentifier]));
 		}
@@ -199,13 +198,10 @@ void AudioSystem::playAudioLoops() {
 }
 
 void AudioSystem::playAudioImpacts() {
-	//int impactNumb = rand() % 3;
-	//int subNumb = rand() % 3;
-
 	debugMessage("Now Playing: ");
 	for (auto layer : layerImpacts) {
 		int randValue = rand() % 3; 	// randomise sub and impact selection
-		FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layer->_sounds[randValue], false, &channelLoops);
+		FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layer->_sounds[randValue], false, 0);
 		debugMessage(getAudioName(layer->_sounds[randValue]));
 	}
 }

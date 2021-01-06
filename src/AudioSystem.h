@@ -39,18 +39,7 @@ public:
 	vector<Layer*> layerImpacts;
 	vector<Layer*> layerLoops;
 private:
-	// FMOD_CHANNEL* channel;
-	FMOD_CHANNEL* channelImpacts;
-	FMOD_CHANNEL* channelLoops;
 	FMOD_SOUNDGROUP* soundGroup;
-
-	//vector<Layer*> layerImpacts;
-	//vector<Layer*> layerSubs;
-	//vector<Layer*> layerStartPads;
-	//vector<Layer*> layerEndPads;
-	//vector<Layer*> layerFx;
-	//vector<Layer*> layerNoises;
-	//vector<Layer*> layerShepards;
 
 	Envelopes rangeEnv;
 	Envelopes attackEnv;
