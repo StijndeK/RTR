@@ -30,6 +30,8 @@ public:
 
 	float _gain = 1;
 	float gainSnapshot = 1;
+
+	vector<Layer*> layerSelection;
 private:
 	// FMOD_CHANNEL* channel;
 	FMOD_CHANNEL* channelImpacts;
@@ -37,17 +39,16 @@ private:
 	FMOD_SOUNDGROUP* soundGroup;
 
 	// vector of layers
-	vector<vector<Layer*>> layerOneshots;
 	vector<Layer*> layerImpacts;
-	vector<Layer*> layerSubs;
-	vector<vector<Layer*>> layerLoops;
-	vector<Layer*> layerStartPads;
-	vector<Layer*> layerEndPads;
-	vector<Layer*> layerFx;
-	vector<Layer*> layerNoises;
-	vector<Layer*> layerShepards;
+	vector<Layer*> layerLoops;
+	//vector<Layer*> layerImpacts;
+	//vector<Layer*> layerSubs;
+	//vector<Layer*> layerStartPads;
+	//vector<Layer*> layerEndPads;
+	//vector<Layer*> layerFx;
+	//vector<Layer*> layerNoises;
+	//vector<Layer*> layerShepards;
 
-	float testFq = 0.0;
 	Envelopes rangeEnv;
 	Envelopes attackEnv;
 };

@@ -17,41 +17,27 @@ static bool systemInitialised = false;
 
 AudioSystem::AudioSystem()
 {
+
+
+	// initFMODSystem();
 }
 
 AudioSystem::~AudioSystem()
 {
-	for (auto p : layerImpacts) {
-		FMOD_Sound_Release(p->_sound);
-		delete p;
+	for (auto layer : layerLoops) {
+		for (auto s : layer->_sounds) {
+			FMOD_Sound_Release(s);
+		}
+		delete layer;
 	}
-	for (auto p : layerSubs) {
-		FMOD_Sound_Release(p->_sound);
-		delete p;
-	}
-	for (auto p : layerStartPads) {
-		FMOD_Sound_Release(p->_sound);
-		delete p;
-	}
-	for (auto p : layerEndPads) {
-		FMOD_Sound_Release(p->_sound);
-		delete p;
-	}
-	for (auto p : layerFx) {
-		FMOD_Sound_Release(p->_sound);
-		delete p;
-	}
-	for (auto p : layerNoises) {
-		FMOD_Sound_Release(p->_sound);
-		delete p;
-	}
-	for (auto p : layerShepards) {
-		FMOD_Sound_Release(p->_sound);
-		delete p;
+	layerLoops.clear();
+	for (auto layer : layerImpacts) {
+		for (auto s : layer->_sounds) {
+			FMOD_Sound_Release(s);
+		}
+		delete layer;
 	}
 	layerImpacts.clear();
-
-	// FMOD_Sound_Release(sounds[0]); // TODO: release all sounds
 }
 
 void AudioSystem::initFMODSystem() {
@@ -94,6 +80,7 @@ void AudioSystem::initFMODSystem() {
 		// FMOD_Channel_SetChannelGroup(channelLoops, channelgroupLoops);
 		// FMOD_Channel_SetChannelGroup(channelImpacts, channelgroupImpacts);
 	}
+
 	loadAudio();
 }
 
@@ -123,6 +110,18 @@ void AudioSystem::update() {
 
 void AudioSystem::loadAudio() {
 	if (audioLoaded == false) {
+		// initialise layers
+		int amountofLoopLayers = 5;
+		string loopLayerNames[] = { "Pads: Start", "Pads: End", "Fx", "Noise", "Shepards" }; // TODO: use this voor UI as well
+		for (int i = 0; i < amountofLoopLayers; i++) {
+			layerLoops.push_back(new Layer(loopLayerNames[i]));
+		}
+		int amountOfImpactLayers = 2;
+		string impactLayerNames[] = { "Hit", "Sub" }; // TODO: use this voor UI as well
+		for (int i = 0; i < amountOfImpactLayers; i++) {
+			layerImpacts.push_back(new Layer(impactLayerNames[i]));
+		}
+
 		ofDirectory dir("");
 		dir.allowExt("wav");
 		dir.listDir(); 	//populate the directory object
@@ -140,34 +139,35 @@ void AudioSystem::loadAudio() {
 
 			// initialise layers with their names and FMOD_SOUNDS
 			if (tempName[0] == 'I') {			// Impact
-				layerImpacts.push_back(new Layer(tempSound, "Impact"));
+				layerImpacts[0]->_sounds.push_back(tempSound);
 			}
 			else if (tempName[0] == 'S') {		// Sub
-				layerSubs.push_back(new Layer(tempSound, "Sub"));
+				layerImpacts[1]->_sounds.push_back(tempSound);
 			}
 			else if (tempName[0] == 'L') {		// Loop
 				FMOD_Sound_SetMode(tempSound, FMOD_LOOP_NORMAL); // TODO: set mode at initialisation
 
 				if (tempName[2] == 'P') {		// Loop: Start Pad
-					layerStartPads.push_back(new Layer(tempSound, "Loop: Start Pad"));
+					layerLoops[0]->_sounds.push_back(tempSound);
 				}
 				else if (tempName[2] == 'E') {		// Loop: End Pad
-					layerEndPads.push_back(new Layer(tempSound, "Loop: End Pad"));
+					layerLoops[1]->_sounds.push_back(tempSound);
 				}
 				else if (tempName[2] == 'F') {	// Loop: Fx
-					layerFx.push_back(new Layer(tempSound, "Loop: Fx"));
+					layerLoops[2]->_sounds.push_back(tempSound);
 				}
 				else if (tempName[2] == 'N') {	// Loop: Noise
-					layerNoises.push_back(new Layer(tempSound, "Loop: Noise"));
+					layerLoops[3]->_sounds.push_back(tempSound);
 				}
 				else if (tempName[2] == 'S') {	// Loop: Shepard
-					layerShepards.push_back(new Layer(tempSound, "Loop: Shepard"));
+					layerLoops[4]->_sounds.push_back(tempSound);
 				}
 				else {
-
+					debugMessage("Error: Loopname not found");
 				}
 			}
 			else {
+				debugMessage("Error: Name not found");
 			}
 		}
 
@@ -178,41 +178,30 @@ void AudioSystem::loadAudio() {
 void AudioSystem::playAudioLoops() {
 	stopAudio();
 
-	// print names
-	debugMessage("Now Playing: ");
-	debugMessage(getAudioName(layerStartPads[0]->_sound));
-	debugMessage(getAudioName(layerEndPads[0]->_sound));
-	debugMessage(getAudioName(layerFx[0]->_sound));
-	debugMessage(getAudioName(layerNoises[0]->_sound));
-	debugMessage(getAudioName(layerShepards[0]->_sound));
-
 	// set envelopes
 	// create snapshot of gain for envelopes
 	gainSnapshot = _gain;
 	// trigger envelopes
 	trigger = 1;
 
-	// play sound
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerStartPads[0]->_sound, false, &channelLoops);
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerEndPads[0]->_sound, false, &channelLoops);
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerFx[0]->_sound, false, &channelLoops);
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerNoises[1]->_sound, false, &channelLoops);
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerShepards[0]->_sound, false, &channelLoops);
+	debugMessage("Now Playing: ");
+	for (auto layer : layerLoops) {
+		FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layer->_sounds[layer->_currentSoundIdentifier], false, &channelLoops);
+		debugMessage("	" + layer->_label + ":");
+		debugMessage("		" + getAudioName(layer->_sounds[layer->_currentSoundIdentifier]));
+	}
 }
 
 void AudioSystem::playAudioImpacts() {
-	// randomise sub and impact selection
-	int impactNumb = rand() % 3;
-	int subNumb = rand() % 3;
+	//int impactNumb = rand() % 3;
+	//int subNumb = rand() % 3;
 
-	// print names
 	debugMessage("Now Playing: ");
-	debugMessage(getAudioName(layerImpacts[impactNumb]->_sound));
-	debugMessage(getAudioName(layerSubs[subNumb]->_sound));
-
-	// play sound
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerImpacts[impactNumb]->_sound, false, &channelImpacts);
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerSubs[subNumb]->_sound, false, &channelImpacts);
+	for (auto layer : layerImpacts) {
+		int randValue = rand() % 3; 	// randomise sub and impact selection
+		FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layer->_sounds[randValue], false, &channelLoops);
+		debugMessage(getAudioName(layer->_sounds[randValue]));
+	}
 }
 
 void AudioSystem::stopAudio() {

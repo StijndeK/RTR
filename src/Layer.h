@@ -6,11 +6,13 @@
 class Layer
 {
 public:
-	Layer(FMOD_SOUND* sound, std::string label);
+	Layer(string label);
 	~Layer();
 
-	FMOD_SOUND* _sound;
-	std::string _label;
+	vector<FMOD_SOUND*> _sounds;
+	string _label;
+	int _currentSoundIdentifier = 0;
+	bool _onOff = 1;
 private:
 
 };

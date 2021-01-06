@@ -45,14 +45,18 @@ void MainUIEditor::setup() {
     ofxDatGui* guiSound = new ofxDatGui(510 + offset, 0 + offset);
     initGui(guiSound);
     guiSound->addHeader(":: Sound Editor ::", false);
-    guiSound->addToggle("Pad");
+    guiSound->addToggle("Pad: Start");
+    guiSound->addToggle("Pad: End");
+    guiSound->addToggle("Noise");
+    guiSound->addToggle("Fx");
+    guiSound->addToggle("Shepards");
 
     // initialise audio values
-    setAudioValue(); 
+    setAudioValue();
 }
 
 void MainUIEditor::draw() {
-    ofBackground(90, 90, 93);
+    ofBackground(ofColor(0, 0, 0));
     ofSetHexColor(0x00FF00);
 
     _ofApp->jsonSys.draw();
@@ -73,17 +77,21 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 
 void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
 {
-    if (e.target->getLabel() == "Play") {
+    string label = e.target->getLabel();
+    if (label == "Play") {
         _ofApp->audio.playAudioLoops();
     }
-    else if (e.target->getLabel() == "Stop") {
+    else if (label == "Stop") {
         _ofApp->audio.stopAudio();
     }
-    else if (e.target->getLabel() == "Fullscreen") {
+    else if (label == "Fullscreen") {
         ofToggleFullscreen();
     }
-    else if (e.target->getLabel() == "Select destination") {
+    else if (label == "Select destination") {
         _ofApp->jsonSys.getPath();
+    }
+    else if (label == "Pad: Start") {
+        
     }
     else {
         ofLogError("MainUIEditor::onButtonEvent") << "unknown label type: " << e.target->getLabel() << endl;
