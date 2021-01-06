@@ -13,47 +13,41 @@ MainUIEditor::~MainUIEditor()
 void MainUIEditor::setup() {
     _ofApp->audio.initFMODSystem();
 
+    // TODO: skew factors for sliders
+
     // GUI
     int offset = 5;
 
     // general gui
     ofxDatGui* guiGeneral = new ofxDatGui(0 + offset, 0 + offset);
-    guiGeneral->setTheme(new ofxDatGuiThemeSmoke());
-    guiGeneral->setWidth(250);
-    guiGeneral->onSliderEvent(this, &MainUIEditor::onSliderEvent);
-    guiGeneral->onButtonEvent(this, &MainUIEditor::onButtonEvent);
+    initGui(guiGeneral);
     guiGeneral->addHeader(":: General Editor ::", false);
 
-    // TODO: skew factor
     ofxDatGuiSlider* gainSlider = guiGeneral->addSlider("gain", -90, 0, _ofApp->jsonSys.getValue("gain")); // init with saved value
-
+    // gainSlider->bind(_ofApp->audio._gain);
     ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 1, _ofApp->jsonSys.getValue("offset")); // init with saved value
-
-    ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 0, 1, _ofApp->jsonSys.getValue("attack")); // init with saved value
-
+    ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 200, 5000, _ofApp->jsonSys.getValue("attack")); // init with saved value
+    attackSlider->setPrecision(0);
     guiGeneral->addToggle("Fullscreen", false);
 
     // mock gui
     ofxDatGui* guiMock = new ofxDatGui(255 + offset, 0 + offset);
-    guiMock->setTheme(new ofxDatGuiThemeSmoke());
-    guiMock->setWidth(250);
-    guiMock->onSliderEvent(this, &MainUIEditor::onSliderEvent);
-    guiMock->onButtonEvent(this, &MainUIEditor::onButtonEvent);
+    initGui(guiMock);
     guiMock->addHeader(":: Mock Editor ::", false);
 
     guiMock->addButton("Play");
     guiMock->addButton("Stop");
-
     ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 500, 20000, _ofApp->jsonSys.getValue("range in ms"));  // init with saved value
     rangeSlider->setPrecision(0);
 
     // sound gui
     ofxDatGui* guiSound = new ofxDatGui(510 + offset, 0 + offset);
-    guiSound->setTheme(new ofxDatGuiThemeSmoke());
-    guiSound->setWidth(250);
-    guiSound->onSliderEvent(this, &MainUIEditor::onSliderEvent);
-    guiSound->onButtonEvent(this, &MainUIEditor::onButtonEvent);
+    initGui(guiSound);
     guiSound->addHeader(":: Sound Editor ::", false);
+    guiSound->addToggle("Pad");
+
+    // initialise audio values
+    setAudioValue(); 
 }
 
 void MainUIEditor::draw() {
@@ -63,16 +57,16 @@ void MainUIEditor::draw() {
     _ofApp->jsonSys.draw();
 }
 
+void MainUIEditor::initGui(ofxDatGui* gui) {
+    gui->setTheme(new ofxDatGuiThemeSmoke());
+    gui->setWidth(250);
+    gui->onSliderEvent(this, &MainUIEditor::onSliderEvent);
+    gui->onButtonEvent(this, &MainUIEditor::onButtonEvent);
+}
+
 void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 {
-    // check for gain because needs to be calculated to decimal number
-    if (e.target->getLabel() == "gain") {
-        float dBiNFloat = pow(10, e.target->getValue() / 20);
-        _ofApp->jsonSys.setValue(e.target->getLabel(), dBiNFloat);
-    }
-    else {
-        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
-    }
+    _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
     setAudioValue();
 }
 
@@ -96,4 +90,5 @@ void MainUIEditor::setAudioValue()
 {
     _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
     _ofApp->audio.setEnvelope(_ofApp->jsonSys.getValue("range in ms"));
+    _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
 }

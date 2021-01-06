@@ -44,3 +44,4 @@ obj
 *.pdb
 *.make
 .DS_Store
+bin/data/L_Shepards_Falling2_NT.wav

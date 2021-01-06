@@ -34,6 +34,7 @@ void JsonSystem::draw()
 
 void JsonSystem::setValue(std::string type, float value)
 {
+    ofLogNotice("set value: " + type + to_string(value));
     result[type] = value;
     result.save(file, true);
 }

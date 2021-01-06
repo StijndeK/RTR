@@ -22,18 +22,27 @@ public:
 	void setGain(float gain);
 	void setPan(float p);
 	void setEnvelope(float attack);
+	void setAttack(float attack);
 
 	bool trigger = 0; // triggers envelopes
 
+	float _gain = 1;
+	float gainSnapshot = 1;
 private:
 	FMOD_CHANNEL* channel;
 
 	// vector of layers
-	std::vector<Layer*> layerImpacts;
-	std::vector<Layer*> layerSubs;
-	std::vector<Layer*> layerPads;
+	vector<vector<Layer*>> layerOneshots;
+	vector<Layer*> layerImpacts;
+	vector<Layer*> layerSubs;
+	vector<vector<Layer*>> layerLoops;
+	vector<Layer*> layerStartPads;
+	vector<Layer*> layerEndPads;
+	vector<Layer*> layerFx;
+	vector<Layer*> layerNoises;
+	vector<Layer*> layerShepards;
 
 	float testFq = 0.0;
-	Envelopes ampEnv;
-	float testValue = 1;
+	Envelopes rangeEnv;
+	Envelopes attackEnv;
 };

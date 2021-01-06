@@ -80,6 +80,30 @@ double Envelopes::arExp(double input, int trigger)
     return output;
 }
 
+double Envelopes::arAttackExp(double input, int trigger)
+{
+    switch (currentEnvState) {
+    case ATTACK:
+        amplitude *= attack;
+        if (amplitude >= 1) {
+            amplitude = 1;
+            currentEnvState = STOP;
+        }
+        break;
+    // value is 1 after attack
+    case STOP:
+        amplitude = 1.0;
+        if (trigger == 1) {
+            amplitude = amplitudeStartValue;
+            currentEnvState = ATTACK;
+        }
+        break;
+    }
+
+    output = input * amplitude;
+    return output;
+}
+
 void Envelopes::setARLinear(double attackMs, double releaseMs) 
 {
     attack = (1.0 / updateRate) * (1 / (attackMs / 1000.0));

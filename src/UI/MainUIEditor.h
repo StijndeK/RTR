@@ -12,9 +12,9 @@ public:
     void setup();
     void draw();
 
+    void initGui(ofxDatGui* gui);
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void onButtonEvent(ofxDatGuiButtonEvent e);
-
     void setAudioValue();
     
     ofApp* _ofApp;

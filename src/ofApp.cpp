@@ -34,6 +34,7 @@ void ofApp::draw() {
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
 	audio.trigger = 1;
+	audio._gain = 1; // make snapshot of gain to modulate over
 }
 
 //--------------------------------------------------------------
