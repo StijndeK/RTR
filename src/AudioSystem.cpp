@@ -89,6 +89,10 @@ void AudioSystem::initFMODSystem() {
 		FMOD_System_GetMasterChannelGroup(sys, &channelgroup);
 		FMOD_System_Update(sys);
 		systemInitialised = true;
+
+		// set channel groups
+		// FMOD_Channel_SetChannelGroup(channelLoops, channelgroupLoops);
+		// FMOD_Channel_SetChannelGroup(channelImpacts, channelgroupImpacts);
 	}
 	loadAudio();
 }
@@ -105,8 +109,9 @@ void AudioSystem::update() {
 		playAudioImpacts();
 	}
 	// debugMessage(to_string(envelopeGain));
-	FMOD_ChannelGroup_SetVolume(channelgroup, envelopeGain);
-	
+	// FMOD_ChannelGroup_SetVolume(channelgroupLoops, envelopeGain);
+	FMOD_Channel_SetVolume(channelLoops, 0);
+
 	// pitch modulation
 
 	// reset trigger
@@ -188,11 +193,11 @@ void AudioSystem::playAudioLoops() {
 	trigger = 1;
 
 	// play sound
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerStartPads[0]->_sound, false, &channel);
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerEndPads[0]->_sound, false, &channel);
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerFx[0]->_sound, false, &channel);
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerNoises[1]->_sound, false, &channel);
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerShepards[0]->_sound, false, &channel);
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerStartPads[0]->_sound, false, &channelLoops);
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerEndPads[0]->_sound, false, &channelLoops);
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerFx[0]->_sound, false, &channelLoops);
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerNoises[1]->_sound, false, &channelLoops);
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerShepards[0]->_sound, false, &channelLoops);
 }
 
 void AudioSystem::playAudioImpacts() {
@@ -206,8 +211,8 @@ void AudioSystem::playAudioImpacts() {
 	debugMessage(getAudioName(layerSubs[subNumb]->_sound));
 
 	// play sound
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerImpacts[impactNumb]->_sound, false, &channel);
-	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerSubs[subNumb]->_sound, false, &channel);
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerImpacts[impactNumb]->_sound, false, &channelImpacts);
+	FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layerSubs[subNumb]->_sound, false, &channelImpacts);
 }
 
 void AudioSystem::stopAudio() {
@@ -227,9 +232,9 @@ void AudioSystem::setGain(float gain)
 }
 
 void AudioSystem::setPan(float p) {
-	p = ofClamp(p, -1, 1);
-	FMOD_Channel_SetPan(channel, p);
-	FMOD_System_Update(sys);
+	//p = ofClamp(p, -1, 1);
+	//FMOD_Channel_SetPan(channel, p);
+	//FMOD_System_Update(sys);
 }
 
 void AudioSystem::setEnvelope(float attack) {
@@ -241,4 +246,11 @@ void AudioSystem::setAttack(float attack)
 {
 	debugMessage("att: " + to_string(attack));
 	attackEnv.setARExp(attack, 0);
+}
+
+void AudioSystem::setOffset(float offset)
+{
+	// check if offset is necessary
+	// check if max offset is necessary (maybe only needs half of the time, as the sound does need to get more intense)
+	// set values for offset to happen and sound to modulate to its conclusion
 }

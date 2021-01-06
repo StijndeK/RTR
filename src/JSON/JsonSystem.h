@@ -10,6 +10,8 @@ public:
     void setup();
     void draw();
 
+    void parseJson();
+    void getPath();
     void setValue(std::string type, float value); // TODO: struct so that value can be multiple types of values
     float getValue(std::string type);
     

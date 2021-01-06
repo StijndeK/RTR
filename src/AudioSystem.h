@@ -24,13 +24,17 @@ public:
 	void setPan(float p);
 	void setEnvelope(float attack);
 	void setAttack(float attack);
+	void setOffset(float offset);
 
 	bool trigger = 0; // triggers envelopes
 
 	float _gain = 1;
 	float gainSnapshot = 1;
 private:
-	FMOD_CHANNEL* channel;
+	// FMOD_CHANNEL* channel;
+	FMOD_CHANNEL* channelImpacts;
+	FMOD_CHANNEL* channelLoops;
+	FMOD_SOUNDGROUP* soundGroup;
 
 	// vector of layers
 	vector<vector<Layer*>> layerOneshots;

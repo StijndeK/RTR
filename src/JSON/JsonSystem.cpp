@@ -15,6 +15,19 @@ JsonSystem::~JsonSystem()
 
 void JsonSystem::setup()
 {
+    parseJson();
+}
+
+void JsonSystem::draw()
+{
+    // draw output
+    std::stringstream ss;
+    ss << "gain = " << result["gain"].asDouble() << endl;
+    ofDrawBitmapString(ss.str(), 10, 14);
+}
+
+void JsonSystem::parseJson()
+{
     // check if file is available and open
     bool parsingSuccessful = result.open(file);
 
@@ -24,12 +37,14 @@ void JsonSystem::setup()
     }
 }
 
-void JsonSystem::draw()
+void JsonSystem::getPath()
 {
-    // draw output
-    std::stringstream ss;
-    ss << "gain = " << result["gain"].asDouble() << endl;
-    ofDrawBitmapString(ss.str(), 10, 14);
+    ofFileDialogResult result = ofSystemLoadDialog("Load file");
+    if (result.bSuccess) {
+        file = result.getPath();;
+    }
+
+    parseJson();
 }
 
 void JsonSystem::setValue(std::string type, float value)

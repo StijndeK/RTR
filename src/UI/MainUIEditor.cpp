@@ -25,10 +25,11 @@ void MainUIEditor::setup() {
 
     ofxDatGuiSlider* gainSlider = guiGeneral->addSlider("gain", -90, 0, _ofApp->jsonSys.getValue("gain")); // init with saved value
     // gainSlider->bind(_ofApp->audio._gain);
-    ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 1, _ofApp->jsonSys.getValue("offset")); // init with saved value
+    ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 2000, _ofApp->jsonSys.getValue("offset")); // init with saved value
     ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 200, 5000, _ofApp->jsonSys.getValue("attack")); // init with saved value
     attackSlider->setPrecision(0);
     guiGeneral->addToggle("Fullscreen", false);
+    guiGeneral->addButton("Select destination");
 
     // mock gui
     ofxDatGui* guiMock = new ofxDatGui(255 + offset, 0 + offset);
@@ -81,6 +82,9 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
     else if (e.target->getLabel() == "Fullscreen") {
         ofToggleFullscreen();
     }
+    else if (e.target->getLabel() == "Select destination") {
+        _ofApp->jsonSys.getPath();
+    }
     else {
         ofLogError("MainUIEditor::onButtonEvent") << "unknown label type: " << e.target->getLabel() << endl;
     }
@@ -91,4 +95,5 @@ void MainUIEditor::setAudioValue()
     _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
     _ofApp->audio.setEnvelope(_ofApp->jsonSys.getValue("range in ms"));
     _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
+    _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
 }
