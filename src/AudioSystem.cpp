@@ -72,11 +72,9 @@ void AudioSystem::initFMODSystem() {
 		FMOD_System_GetMasterChannelGroup(sys, &channelgroup);
 		FMOD_System_Update(sys);
 		systemInitialised = true;
-
-		// set channel groups
-		// FMOD_Channel_SetChannelGroup(channelLoops, channelgroupLoops);
-		// FMOD_Channel_SetChannelGroup(channelImpacts, channelgroupImpacts);
 	}
+
+//	FMOD_ChannelGroup_AddGroup(channelgroup, channelgroupTest);
 
 	loadAudio();
 }
@@ -85,15 +83,15 @@ void AudioSystem::update() {
 	FMOD_System_Update(sys);
 
 	// amplitude modulation
-	float attackedGain = attackEnv.arAttackExp(_gain, trigger);	// initial attack envelope
-	// debugMessage(to_string(attackedGain));
-	float envelopeGain = rangeEnv.arLin(attackedGain, trigger); 	// amplitude modulation
-	if (rangeEnv.currentEnvState == 1) {
+	float attackedGain = attackEnv.arAttackExp(_gain, trigger);		// initial attack envelope
+	float envelopeGain = rangeEnv.arExp(attackedGain, trigger); 	// amplitude modulation
+	// FMOD_ChannelGroup_SetVolume(channelgroup, envelopeGain);
+
+	// play impact at the peak
+	if (rangeEnv.currentEnvState == 1) { 
 		debugMessage("impact");
 		playAudioImpacts();
 	}
-	// debugMessage(to_string(envelopeGain));
-	// FMOD_ChannelGroup_SetVolume(channelgroupLoops, envelopeGain);
 
 	// pitch modulation
 
@@ -101,7 +99,6 @@ void AudioSystem::update() {
 	if (trigger == 1) {
 		trigger = 0;
 	}
-
 }
 
 void AudioSystem::loadAudio() {
@@ -190,18 +187,20 @@ void AudioSystem::playAudioLoops() {
 	for (auto layer : layerLoops) {
 		// check if layer is on
 		if (layer->_onOff) {
-			FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layer->_sounds[layer->_currentSoundIdentifier], false, 0);
+			FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layer->_sounds[layer->_currentSoundIdentifier], false, &layer->_channel);
 			debugMessage("	" + layer->_label + ":");
 			debugMessage("		" + getAudioName(layer->_sounds[layer->_currentSoundIdentifier]));
 		}
 	}
+
+	FMOD_Channel_SetVolume(getLayerByName("Noise")->_channel, 0.2);
 }
 
 void AudioSystem::playAudioImpacts() {
 	debugMessage("Now Playing: ");
 	for (auto layer : layerImpacts) {
 		int randValue = rand() % 3; 	// randomise sub and impact selection
-		FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layer->_sounds[randValue], false, 0);
+		FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layer->_sounds[randValue], false, &layer->_channel);
 		debugMessage(getAudioName(layer->_sounds[randValue]));
 	}
 }
@@ -217,37 +216,32 @@ string AudioSystem::getAudioName(FMOD_SOUND* sound) {
 	return name;
 }
 
-void AudioSystem::setGain(float gain)
-{
+void AudioSystem::setGain(float gain) {
 	_gain = pow(10, gain / 20);
 }
 
-void AudioSystem::setPan(float p) {
+void AudioSystem::setPan(float p) 
+{
 	//p = ofClamp(p, -1, 1);
 	//FMOD_Channel_SetPan(channel, p);
 	//FMOD_System_Update(sys);
 }
 
 void AudioSystem::setEnvelope(float attack) {
-	debugMessage("env: " + to_string(attack));
-	rangeEnv.setARLinear(attack, 2000); // use default release value, to be replaced with new release slider input
+	rangeEnv.setARExp(attack, 2000); // use default release value, to be replaced with new release slider input
 }
 
-void AudioSystem::setAttack(float attack)
-{
-	debugMessage("att: " + to_string(attack));
+void AudioSystem::setAttack(float attack) {
 	attackEnv.setARExp(attack, 0);
 }
 
-void AudioSystem::setOffset(float offset)
-{
+void AudioSystem::setOffset(float offset) {
 	// check if offset is necessary
 	// check if max offset is necessary (maybe only needs half of the time, as the sound does need to get more intense)
 	// set values for offset to happen and sound to modulate to its conclusion
 }
 
-Layer* AudioSystem::getLayerByName(string name)
-{
+Layer* AudioSystem::getLayerByName(string name) {
 	for (auto l : layerLoops) {
 		if (l->_label == name) {
 			return l;

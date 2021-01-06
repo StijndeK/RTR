@@ -10,6 +10,7 @@ public:
 	~Layer();
 
 	vector<FMOD_SOUND*> _sounds;
+	FMOD_CHANNEL* _channel;
 	string _label;
 	int _currentSoundIdentifier = 0;
 	bool _onOff = 0;

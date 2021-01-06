@@ -39,7 +39,6 @@ public:
 	vector<Layer*> layerImpacts;
 	vector<Layer*> layerLoops;
 private:
-	FMOD_SOUNDGROUP* soundGroup;
 
 	Envelopes rangeEnv;
 	Envelopes attackEnv;
