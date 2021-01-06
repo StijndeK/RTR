@@ -85,7 +85,7 @@ void AudioSystem::update() {
 	// amplitude modulation
 	float attackedGain = attackEnv.arAttackExp(_gain, trigger);		// initial attack envelope
 	float envelopeGain = rangeEnv.arExp(attackedGain, trigger); 	// amplitude modulation
-	// FMOD_ChannelGroup_SetVolume(channelgroup, envelopeGain);
+	FMOD_ChannelGroup_SetVolume(channelgroup, envelopeGain);
 
 	// play impact at the peak
 	if (rangeEnv.currentEnvState == 1) { 
@@ -176,7 +176,7 @@ void AudioSystem::loadAudio() {
 }
 
 void AudioSystem::playAudioLoops() {
-	stopAudio();
+	stopAudio(layerLoops);
 
 	// create snapshot of gain for envelopes
 	gainSnapshot = _gain;
@@ -205,9 +205,12 @@ void AudioSystem::playAudioImpacts() {
 	}
 }
 
-void AudioSystem::stopAudio() {
+void AudioSystem::stopAudio(vector<Layer*> layersToStop) {
 	trigger = 1;
-	FMOD_ChannelGroup_Stop(channelgroup);
+	for (auto layer : layersToStop) {
+		FMOD_Channel_Stop(layer->_channel);
+	}
+	//FMOD_ChannelGroup_Stop(channelgroup);
 }
 
 string AudioSystem::getAudioName(FMOD_SOUND* sound) {

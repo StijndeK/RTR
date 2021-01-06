@@ -82,7 +82,7 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
         _ofApp->audio.playAudioLoops();
     }
     else if (label == "Stop") {
-        _ofApp->audio.stopAudio();
+        _ofApp->audio.stopAudio(_ofApp->audio.layerLoops);
     }
     else if (label == "Fullscreen") {
         ofToggleFullscreen();

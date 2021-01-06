@@ -16,7 +16,7 @@ public:
 	void loadAudio();
 	void playAudioLoops();
 	void playAudioImpacts();
-	void stopAudio();
+	void stopAudio(vector<Layer*> layersToStop);
 
 	string getAudioName(FMOD_SOUND* sound);
 
@@ -33,11 +33,10 @@ public:
 	float _gain = 1;
 	float gainSnapshot = 1;
 
-	vector<Layer*> layerSelection;
-
 	// vector of layers
 	vector<Layer*> layerImpacts;
 	vector<Layer*> layerLoops;
+
 private:
 
 	Envelopes rangeEnv;
