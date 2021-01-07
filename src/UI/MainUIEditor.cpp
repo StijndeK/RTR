@@ -43,7 +43,6 @@ void MainUIEditor::setup() {
     ofxDatGuiSlider* ampModSlider = guiMock->addSlider("amplitude modulation", 2000, 10000, _ofApp->jsonSys.getValue("amplitude modulation"));  // init with saved value
     ampModSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
     ampModSlider->setPrecision(0);
-    ofxDatGuiSlider* ampModSlider = guiMock->addSlider("amplitude modulation", 2000, 10000, _ofApp->jsonSys.getValue("amplitude modulation"));  // init with saved value
     // TODO: reverse this slider
 
     // sound gui

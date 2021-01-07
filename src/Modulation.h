@@ -15,6 +15,9 @@ public:
 	float upStep;
 	float downStep;
 	float updateRate = 60.f;
+	double amplitudeStartValue = 0.001;
+
+	bool modType = true; // false = exponential, true = linear
 private:
 
 };
