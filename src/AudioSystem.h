@@ -4,6 +4,7 @@
 #include "Layer.h"
 #include "AudioBase.h"
 #include "Envelopes.h"
+#include "ModulationData.h"
 
 class AudioSystem : public AudioBase {
 
@@ -39,8 +40,11 @@ public:
 	vector<Layer*> layerLoops;
 	vector<Layer*> pitchModLayers;
 
+	ModulationData modData;
+
 private:
 	Envelopes attackEnv;
+
 
 	float frequencyStandard = 44100;
 };

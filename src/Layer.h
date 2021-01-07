@@ -3,6 +3,7 @@
 #include "fmod.h"
 #include <string>
 #include "Envelopes.h"
+#include "Modulation.h"
 
 class Layer
 {
@@ -19,5 +20,7 @@ public:
 	Envelopes pitchEnv;
 	float ampModulationRange;
 	float pitchModulationRange;
+	Modulation gainMod;
+	Modulation pitchMod;
 };
 

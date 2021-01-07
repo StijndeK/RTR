@@ -17,6 +17,7 @@ static bool systemInitialised = false;
 
 AudioSystem::AudioSystem()
 {
+	modData.MockData();
 }
 
 AudioSystem::~AudioSystem()
@@ -80,8 +81,15 @@ void AudioSystem::initFMODSystem() {
 void AudioSystem::update() {
 	FMOD_System_Update(sys);
 
+	// get value to get to from distance in float to value between 0 and 1
+	// TODO: get this value per layer
+	float decimalValue = modData.ConvertToDecimalData();
+
 	// modulate audio
-	playEnvelopes();
+	for (auto layer : layerLoops) {
+		FMOD_Channel_SetVolume(layer->_channel, layer->gainMod.CalculateModulation(decimalValue));
+	}
+	//playEnvelopes();
 
 	// reset trigger
 	if (trigger == 1) {
@@ -252,8 +260,8 @@ void AudioSystem::setEnvelopes(modulationType type, float attack, float range, f
 {
 	if (type == Amp) {
 		for (auto layer : layerLoops) {
-			debugMessage("setamp");
 			layer->gainEnv.setARExp(attack, 500); // use default release value, to be replaced with new release slider input
+			layer->gainMod.CalculateStepSize(attack, attack * 1.5);
 		}
 		layerImpacts[0]->gainEnv.setARExp(attack, 500);
 	}
@@ -264,7 +272,6 @@ void AudioSystem::setEnvelopes(modulationType type, float attack, float range, f
 			// TODO amp start value based on curve
 		}
 	}
-
 }
 
 void AudioSystem::setAttack(float attack) {
