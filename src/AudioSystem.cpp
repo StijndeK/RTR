@@ -74,8 +74,6 @@ void AudioSystem::initFMODSystem() {
 		systemInitialised = true;
 	}
 
-//	FMOD_ChannelGroup_AddGroup(channelgroup, channelgroupTest);
-
 	loadAudio();
 }
 
@@ -87,6 +85,7 @@ void AudioSystem::update() {
 
 	// reset trigger
 	if (trigger == 1) {
+		debugMessage("trigger");
 		trigger = 0;
 	}
 }
@@ -204,21 +203,23 @@ void AudioSystem::playEnvelopes()
 {
 	// attack
 	float attackedGain = attackEnv.arAttackExp(_gain, trigger);
+	//debugMessage("attackedGain: " + to_string(attackedGain));
+
+	// amplitude modulation
+	for (auto layer : layerLoops) {
+		if (layer->_onOff) {
+			float envelopeGain = layer->gainEnv.arExp(_gain, trigger);
+			FMOD_Channel_SetVolume(layer->_channel, envelopeGain);
+			//debugMessage("gain: " + to_string(envelopeGain));
+		}
+	}
 
 	// pitch modulation
 	for (auto layer : pitchModLayers) {
 		if (layer->_onOff) {
 			float envelopePitch = layer->pitchEnv.arLin(1.5 * frequencyStandard, trigger);
-			envelopePitch = envelopePitch + 0.5;  // start at half pitch and end at double
 			FMOD_Channel_SetFrequency(layer->_channel, envelopePitch);
-		}
-	}
-
-	// amplitude modulation
-	for (auto layer : layerLoops) {
-		if (layer->_onOff) {
-			float envelopeGain = layer->gainEnv.arExp(attackedGain, trigger);
-			FMOD_Channel_SetVolume(layer->_channel, envelopeGain);
+			//debugMessage("pitch: " + to_string(envelopePitch));
 		}
 	}
 
@@ -231,7 +232,6 @@ void AudioSystem::playEnvelopes()
 }
 
 void AudioSystem::stopAudio(vector<Layer*> layersToStop) {
-	trigger = 1;
 	for (auto layer : layersToStop) {
 		FMOD_Channel_Stop(layer->_channel);
 	}

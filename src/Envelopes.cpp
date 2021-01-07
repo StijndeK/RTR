@@ -61,7 +61,7 @@ double Envelopes::arExp(double input, int trigger)
         }
         break;
     case RELEASE:
-        amplitude *= (2 - release); // releasevalue is calculated as attackvalue in setADSRValue, to convert to release subtract the value of 2
+        amplitude *= release;
         if (amplitude <= amplitudeStartValue) {
             amplitude = 0;
             currentEnvState = STOP;
