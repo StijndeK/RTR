@@ -82,31 +82,8 @@ void AudioSystem::initFMODSystem() {
 void AudioSystem::update() {
 	FMOD_System_Update(sys);
 
-	// attack
-	float attackedGain = attackEnv.arAttackExp(_gain, trigger);		
-
-	// amplitude modulation
-	for (auto layer : layerLoops) {
-		if (layer->_onOff) {
-			float envelopeGain = layer->gainEnv.arExp(attackedGain, trigger);
-			FMOD_Channel_SetVolume(layer->_channel, envelopeGain);
-		}
-	}
-
-	// play impact at the peak
-	if (layerLoops[0]->gainEnv.currentEnvState == 1) { 
-		debugMessage("impact");
-		playAudioImpacts();
-	}
-
-	// pitch modulation
-	for (auto layer : pitchModLayers) {
-		if (layer->_onOff) {
-			float envelopePitch = layer->pitchEnv.arLin(1.5 * frequencyStandard, trigger);
-			envelopePitch = envelopePitch + 0.5;  // start at half pitch and end at double
-			FMOD_Channel_SetFrequency(layer->_channel, envelopePitch);
-		}
-	}
+	// modulate audio
+	playEnvelopes();
 
 	// reset trigger
 	if (trigger == 1) {
@@ -223,6 +200,36 @@ void AudioSystem::playAudioImpacts() {
 	}
 }
 
+void AudioSystem::playEnvelopes()
+{
+	// attack
+	float attackedGain = attackEnv.arAttackExp(_gain, trigger);
+
+	// pitch modulation
+	for (auto layer : pitchModLayers) {
+		if (layer->_onOff) {
+			float envelopePitch = layer->pitchEnv.arLin(1.5 * frequencyStandard, trigger);
+			envelopePitch = envelopePitch + 0.5;  // start at half pitch and end at double
+			FMOD_Channel_SetFrequency(layer->_channel, envelopePitch);
+		}
+	}
+
+	// amplitude modulation
+	for (auto layer : layerLoops) {
+		if (layer->_onOff) {
+			float envelopeGain = layer->gainEnv.arExp(attackedGain, trigger);
+			FMOD_Channel_SetVolume(layer->_channel, envelopeGain);
+		}
+	}
+
+	// play impact at the peak
+	float impactTrigger = layerImpacts[0]->gainEnv.arExp(1, trigger);
+	if (layerImpacts[0]->gainEnv.currentEnvState == 1) {
+		debugMessage("impact");
+		playAudioImpacts();
+	}
+}
+
 void AudioSystem::stopAudio(vector<Layer*> layersToStop) {
 	trigger = 1;
 	for (auto layer : layersToStop) {
@@ -248,6 +255,7 @@ void AudioSystem::setEnvelopes(modulationType type, float attack, float range, f
 			debugMessage("setamp");
 			layer->gainEnv.setARExp(attack, 500); // use default release value, to be replaced with new release slider input
 		}
+		layerImpacts[0]->gainEnv.setARExp(attack, 500);
 	}
 	else if (type == Pitch) {
 		for (auto layer : pitchModLayers) {
