@@ -11,7 +11,7 @@ public:
 	double arAttackExp(double input, int trigger);
 	int dImpact(int trigger);
 
-	void setARLinear(double attackMs, double releaseMs);
+	void setARLin(double attackMs, double releaseMs);
 	void setARExp(double attackMs, double releaseMs);
 
 	// arlin envelope states

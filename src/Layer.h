@@ -2,6 +2,7 @@
 #include "ofMain.h"
 #include "fmod.h"
 #include <string>
+#include "Envelopes.h"
 
 class Layer
 {
@@ -14,7 +15,9 @@ public:
 	string _label;
 	int _currentSoundIdentifier = 0;
 	bool _onOff = 0;
-private:
-
+	Envelopes gainEnv;
+	Envelopes pitchEnv;
+	float ampModulationRange;
+	float pitchModulationRange;
 };
 

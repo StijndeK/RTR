@@ -104,7 +104,7 @@ double Envelopes::arAttackExp(double input, int trigger)
     return output;
 }
 
-void Envelopes::setARLinear(double attackMs, double releaseMs) 
+void Envelopes::setARLin(double attackMs, double releaseMs) 
 {
     attack = (1.0 / updateRate) * (1 / (attackMs / 1000.0));
     release = (1.0 / updateRate) * (1 / (releaseMs / 1000.0));

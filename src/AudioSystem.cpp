@@ -82,18 +82,31 @@ void AudioSystem::initFMODSystem() {
 void AudioSystem::update() {
 	FMOD_System_Update(sys);
 
+	// attack
+	float attackedGain = attackEnv.arAttackExp(_gain, trigger);		
+
 	// amplitude modulation
-	float attackedGain = attackEnv.arAttackExp(_gain, trigger);		// initial attack envelope
-	float envelopeGain = rangeEnv.arExp(attackedGain, trigger); 	// amplitude modulation
-	FMOD_ChannelGroup_SetVolume(channelgroup, envelopeGain);
+	for (auto layer : layerLoops) {
+		if (layer->_onOff) {
+			float envelopeGain = layer->gainEnv.arExp(attackedGain, trigger);
+			FMOD_Channel_SetVolume(layer->_channel, envelopeGain);
+		}
+	}
 
 	// play impact at the peak
-	if (rangeEnv.currentEnvState == 1) { 
+	if (layerLoops[0]->gainEnv.currentEnvState == 1) { 
 		debugMessage("impact");
 		playAudioImpacts();
 	}
 
 	// pitch modulation
+	for (auto layer : pitchModLayers) {
+		if (layer->_onOff) {
+			float envelopePitch = layer->pitchEnv.arLin(1.5 * frequencyStandard, trigger);
+			envelopePitch = envelopePitch + 0.5;  // start at half pitch and end at double
+			FMOD_Channel_SetFrequency(layer->_channel, envelopePitch);
+		}
+	}
 
 	// reset trigger
 	if (trigger == 1) {
@@ -171,6 +184,11 @@ void AudioSystem::loadAudio() {
 			}
 		}
 
+		// all layerLoops are modulated in amp
+		// set vector of loops that need to be pitch modulated
+		pitchModLayers.push_back(layerLoops[0]);
+		pitchModLayers.push_back(layerLoops[1]);
+
 		audioLoaded = true;
 	}
 }
@@ -210,13 +228,6 @@ void AudioSystem::stopAudio(vector<Layer*> layersToStop) {
 	for (auto layer : layersToStop) {
 		FMOD_Channel_Stop(layer->_channel);
 	}
-	//FMOD_ChannelGroup_Stop(channelgroup);
-}
-
-string AudioSystem::getAudioName(FMOD_SOUND* sound) {
-	char name[256];
-	FMOD_Sound_GetName(sound, name, 256);
-	return name;
 }
 
 void AudioSystem::setGain(float gain) {
@@ -230,8 +241,22 @@ void AudioSystem::setPan(float p)
 	//FMOD_System_Update(sys);
 }
 
-void AudioSystem::setEnvelope(float attack) {
-	rangeEnv.setARExp(attack, 2000); // use default release value, to be replaced with new release slider input
+void AudioSystem::setEnvelopes(modulationType type, float attack, float range, float curve)
+{
+	if (type == Amp) {
+		for (auto layer : layerLoops) {
+			debugMessage("setamp");
+			layer->gainEnv.setARExp(attack, 500); // use default release value, to be replaced with new release slider input
+		}
+	}
+	else if (type == Pitch) {
+		for (auto layer : pitchModLayers) {
+			layer->pitchEnv.setARLin(attack, 500);
+			layer->pitchModulationRange = range;
+			// TODO amp start value based on curve
+		}
+	}
+
 }
 
 void AudioSystem::setAttack(float attack) {
@@ -242,6 +267,12 @@ void AudioSystem::setOffset(float offset) {
 	// check if offset is necessary
 	// check if max offset is necessary (maybe only needs half of the time, as the sound does need to get more intense)
 	// set values for offset to happen and sound to modulate to its conclusion
+}
+
+string AudioSystem::getAudioName(FMOD_SOUND* sound) {
+	char name[256];
+	FMOD_Sound_GetName(sound, name, 256);
+	return name;
 }
 
 Layer* AudioSystem::getLayerByName(string name) {

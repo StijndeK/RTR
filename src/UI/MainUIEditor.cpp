@@ -101,7 +101,8 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
 void MainUIEditor::setAudioValue()
 {
     _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
-    _ofApp->audio.setEnvelope(_ofApp->jsonSys.getValue("range in ms"));
+    _ofApp->audio.setEnvelopes(_ofApp->audio.Amp, _ofApp->jsonSys.getValue("range in ms"), 1, 0);
+    _ofApp->audio.setEnvelopes(_ofApp->audio.Pitch, _ofApp->jsonSys.getValue("range in ms"), 1, 0);
     _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
     _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
 }
