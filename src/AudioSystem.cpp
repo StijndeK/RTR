@@ -86,10 +86,21 @@ void AudioSystem::update() {
 	// in mock no need to convert, use the currentPositionSlider value (which is already between 0 and 1)
 	float decimalValue = modData.currentDistanceToGetTo;
 
-	// modulate audio
+	// attack envelope
+	//float attackedGain = attackEnv.arAttackExp(_gain, trigger);
+
+	// modulate gain audio
 	for (auto layer : layerLoops) {
-		FMOD_Channel_SetVolume(layer->_channel, layer->gainMod.CalculateModulation(decimalValue, trigger));
+		float outputGain = layer->gainMod.CalculateModulation(decimalValue, trigger);
+		FMOD_Channel_SetVolume(layer->_channel, outputGain);
 	}
+
+	// modulate pitch
+	for (auto layer : pitchModLayers) {
+		float outputPitch = layer->pitchMod.CalculateModulation(decimalValue, 1) * (1.5 * frequencyStandard);
+		FMOD_Channel_SetFrequency(layer->_channel, outputPitch);
+	}
+	
 	//playEnvelopes();
 
 	// reset trigger
@@ -272,6 +283,7 @@ void AudioSystem::setEnvelopes(modulationType type, float attack, float range, f
 		for (auto layer : pitchModLayers) {
 			layer->pitchEnv.setARLin(attack, 500);
 			layer->pitchModulationRange = range;
+			layer->pitchMod.CalculateStepSize(attack, attack * 1.5, 2000);
 			// TODO amp start value based on curve
 		}
 	}
