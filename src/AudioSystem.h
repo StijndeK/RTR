@@ -6,6 +6,7 @@
 #include "Envelopes.h"
 #include "Modulation.h"
 #include "ModulationData.h"
+#include "Timer.h"
 
 class AudioSystem : public AudioBase, public ModulationTypes {
 
@@ -18,15 +19,15 @@ public:
 	void initFMODSystem();
 	void update();
 	void loadAudio();
+
+	void startRiser();
+	void stopRiser();
 	void playAudioLoops();
 	void playAudioImpacts();
-	void playEnvelopes();
-	void startStopping();
-	void stopAudio(vector<Layer*> layersToStop);
+	void startRelease();
+	void stopAudioLayers(vector<Layer*> layersToStop);
 
 	void setGain(float gain);
-	void setPan(float p);
-	void setEnvelopes(modulationParameter type, float attack, float range, float curve);
 	void setModulation(modulationParameter type, float attack, float range, float curve);
 	void setAttack(float attack);
 	void setOffset(float offset);
@@ -34,8 +35,10 @@ public:
 	string getAudioName(FMOD_SOUND* sound);
 	Layer* getLayerByName(string name);
 
-	bool trigger = 0;
-	bool envelopeTrigger = 0;
+	bool modulationTrigger = 0;			// true on attack when playing
+	bool envelopeTrigger = 0;	// true on start, then immediatly false
+	bool playing = false;		// true while audio is playing
+	bool recordTimer = false;	// true while release is playing, to get notified when to stop audio
 	float _gain = 1;
 	float gainSnapshot = 1;
 
@@ -49,9 +52,10 @@ public:
 	Modulation mainPitchModulation;
 
 	ModulationData modData;
+
 private:
 	Envelopes attackEnv;
-
+	Timer stopTimer;
 
 	float frequencyStandard = 44100;
 };

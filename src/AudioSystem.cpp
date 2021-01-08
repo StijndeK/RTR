@@ -19,26 +19,6 @@ AudioSystem::AudioSystem()
 {
 	modData.MockData();
 	mainGainModulation.modType = exponential;
-	//Modulation mod1;
-	//Modulation mod2;
-	//mod1.modType = exponential;
-	//mod2.modType = exponential;
-	//modData.currentDistanceToGetTo = 1;
-
-	//mod1.CalculateStepSize(1000, 1000, 500);
-	//mod2.CalculateStepSize(1000, 1000, 500);
-	//float out;
-	//float out2;
-	//for (int i = 0; i < 30; i++) {
-	//	out = mod1.CalculateModulation(modData.currentDistanceToGetTo, 1);
-	//	out2 = mod2.CalculateModulation(out, 1);
-	//}
-
-	////float out = mod1.CalculateModulation(modData.currentDistanceToGetTo, 1);
-	//cout << out << endl;
-	////float out2 = mod2.CalculateModulation(out, 1);
-	//cout << out2 << endl;
-
 }
 
 AudioSystem::~AudioSystem()
@@ -104,39 +84,49 @@ void AudioSystem::initFMODSystem() {
 void AudioSystem::update() {
 	FMOD_System_Update(sys);
 
-	// this value to get to in the audio == the player position scaled to a value between 0 and 1
-	// float decimalValue = modData.ConvertToDecimalData(); 	// get value to get to from distance in float to value between 0 and 1 from distance values
-	// in mock no need to convert, use the currentPositionSlider value (which is already between 0 and 1)
-	float decimalValue = modData.currentDistanceToGetTo;
+	if (playing) {
+		// this value to get to in the audio == the player position scaled to a value between 0 and 1
+		// float decimalValue = modData.ConvertToDecimalData(); 	// get value to get to from distance in float to value between 0 and 1 from distance values
+		// in mock no need to convert, use the currentPositionSlider value (which is already between 0 and 1)
+		float decimalValue = modData.currentDistanceToGetTo;
 
-	// attack envelope
-	float attackedGain = attackEnv.arAttackExp(_gain, envelopeTrigger);
+		// attack envelope
+		float attackedGain = attackEnv.arAttackExp(_gain, envelopeTrigger);
 
-	// modulate gain audio
-	float outputGain = mainGainModulation.CalculateModulation(decimalValue, trigger);
+		// modulate gain audio
+		float outputGain = mainGainModulation.CalculateModulation(decimalValue, modulationTrigger);
 
-	for (auto layer : layerLoops) {
-		if (layer->_onOff) {
-			float layerOutputGain = layer->gainMod.CalculateModulation(decimalValue, trigger);
-			//float layerOutputGain = outputGain;
-			FMOD_Channel_SetVolume(layer->_channel, layerOutputGain * attackedGain * outputGain);
-			debugMessage(layer->_label + to_string(layerOutputGain * attackedGain * outputGain));
+		for (auto layer : layerLoops) {
+			if (layer->_onOff) {
+				float layerOutputGain = layer->gainMod.CalculateModulation(decimalValue, modulationTrigger);
+				FMOD_Channel_SetVolume(layer->_channel, layerOutputGain * attackedGain * outputGain);
+				//debugMessage(layer->_label + to_string(layerOutputGain * attackedGain * outputGain));
+			}
+		}
+
+		// modulate pitch
+		float frequencyRange = 1.5; // TODO: create UI setting for this value
+		float outputPitch = mainPitchModulation.CalculateModulation(decimalValue, modulationTrigger);
+		for (auto layer : pitchModLayers) {
+			if (layer->_onOff) {
+				float layerOutputPitch = layer->pitchMod.CalculateModulation(outputPitch, 1);
+				FMOD_Channel_SetFrequency(layer->_channel, layerOutputPitch * (frequencyRange * frequencyStandard));
+			}
+		}
+
+		// check if playing should end
+		if (recordTimer) {
+			float timerValue = stopTimer.timerTick();
+			if (timerValue == 1) {
+				stopRiser();
+				recordTimer = false;
+			}
 		}
 	}
 
-	//debugMessage(to_string(outputGain));
-
-	// modulate pitch
-	float frequencyRange = 1.5;
-	float outputPitch = mainPitchModulation.CalculateModulation(decimalValue, trigger);
-	for (auto layer : pitchModLayers) {
-		if (layer->_onOff) {
-			float layerOutputPitch = layer->pitchMod.CalculateModulation(outputPitch, 1);
-			FMOD_Channel_SetFrequency(layer->_channel, layerOutputPitch * (frequencyRange * frequencyStandard));
-		}
-	}
+	debugMessage(to_string(playing));
 	
-	// reset trigger
+	// reset trigger for envelopes
 	if (envelopeTrigger == 1) {
 		debugMessage("trigger envelope");
 		envelopeTrigger = 0;
@@ -220,18 +210,40 @@ void AudioSystem::loadAudio() {
 
 		audioLoaded = true;
 		debugMessage("audio loaded");
+
+		FMOD_Channel_SetVolume(getLayerByName("Noise")->_channel, 0.2);
 	}
 }
 
-void AudioSystem::playAudioLoops() {
-	stopAudio(layerLoops);
+void AudioSystem::startRiser()
+{
+	debugMessage("start riser");
+
+	stopRiser();
 
 	// create snapshot of gain for envelopes
 	gainSnapshot = _gain;
-	// trigger envelopes and modulation
-	trigger = 1;
-	envelopeTrigger = 1;
 
+	// set trigger bools
+	modulationTrigger = 1;
+	envelopeTrigger = 1;
+	playing = true;
+	recordTimer = false;
+
+	playAudioLoops();
+}
+
+void AudioSystem::stopRiser()
+{
+	debugMessage("stop riser");
+
+	stopAudioLayers(layerLoops);
+	stopAudioLayers(layerImpacts);
+
+	playing = false;
+}
+
+void AudioSystem::playAudioLoops() {
 	debugMessage("Now Playing Loops: ");
 	for (auto layer : layerLoops) {
 		// check if layer is on
@@ -241,8 +253,6 @@ void AudioSystem::playAudioLoops() {
 			debugMessage("		" + getAudioName(layer->_sounds[layer->_currentSoundIdentifier]));
 		}
 	}
-
-	// FMOD_Channel_SetVolume(getLayerByName("Noise")->_channel, 0.2);
 }
 
 void AudioSystem::playAudioImpacts() {
@@ -254,41 +264,10 @@ void AudioSystem::playAudioImpacts() {
 	}
 }
 
-void AudioSystem::playEnvelopes()
-{
-	//// attack
-	//float attackedGain = attackEnv.arAttackExp(_gain, trigger);
-	////debugMessage("attackedGain: " + to_string(attackedGain));
-
-	//// amplitude modulation
-	//for (auto layer : layerLoops) {
-	//	if (layer->_onOff) {
-	//		float envelopeGain = layer->gainEnv.arExp(_gain, trigger);
-	//		FMOD_Channel_SetVolume(layer->_channel, envelopeGain);
-	//		//debugMessage("gain: " + to_string(envelopeGain));
-	//	}
-	//}
-
-	//// pitch modulation
-	//for (auto layer : pitchModLayers) {
-	//	if (layer->_onOff) {
-	//		float envelopePitch = layer->pitchEnv.arLin(1.5 * frequencyStandard, trigger);
-	//		FMOD_Channel_SetFrequency(layer->_channel, envelopePitch);
-	//		//debugMessage("pitch: " + to_string(envelopePitch));
-	//	}
-	//}
-
-	//// play impact at the peak
-	//float impactTrigger = layerImpacts[0]->gainEnv.arExp(1, trigger);
-	//if (layerImpacts[0]->gainEnv.currentEnvState == 1) {
-	//	debugMessage("impact");
-	//	playAudioImpacts();
-	//}
-}
-
-void AudioSystem::startStopping() {
+void AudioSystem::startRelease() {
 	debugMessage("start stopping audio");
-	trigger = 0;
+	modulationTrigger = 0;
+	recordTimer = true;
 	playAudioImpacts();
 
 	// check if trigger needs to be set to 0 immediatly, or if there is an offset: if the riser can still rise a bit. and iddeally update the speed of the riser to reach the full end for the impact
@@ -296,7 +275,7 @@ void AudioSystem::startStopping() {
 	// after release is done completely stop the sounds
 }
 
-void AudioSystem::stopAudio(vector<Layer*> layersToStop) {
+void AudioSystem::stopAudioLayers(vector<Layer*> layersToStop) {
 	debugMessage("stop Audio");
 	for (auto layer : layersToStop) {
 		FMOD_Channel_Stop(layer->_channel);
@@ -308,45 +287,26 @@ void AudioSystem::setGain(float gain) {
 	_gain = pow(10, gain / 20);
 }
 
-void AudioSystem::setPan(float p) 
-{
-	//p = ofClamp(p, -1, 1);
-	//FMOD_Channel_SetPan(channel, p);
-	//FMOD_System_Update(sys);
-}
-
-void AudioSystem::setEnvelopes(modulationParameter type, float attack, float range, float curve)
-{
-	//if (type == Amp) {
-	//	for (auto layer : layerLoops) {
-	//		layer->gainEnv.setARExp(attack, 500); // use default release value, to be replaced with new release slider input
-	//	}
-	//	layerImpacts[0]->gainEnv.setARExp(attack, 500);
-	//}
-	//else if (type == Pitch) {
-	//	for (auto layer : pitchModLayers) {
-	//		layer->pitchEnv.setARLin(attack, 500);
-	//		layer->pitchModulationRange = range;
-	//		// TODO amp start value based on curve
-	//	}
-	//}
-}
-
 void AudioSystem::setModulation(modulationParameter type, float attack, float range, float curve)
 {
+	float release = 2000; // TODO: get release from UI
+
 	if (type == Amp) {
 		debugMessage("setModulation: Amp. " + to_string(attack));
-		mainGainModulation.CalculateStepSize(attack, attack * 1.5, 2000);
+		mainGainModulation.CalculateStepSize(attack, attack * 1.5, release);
 		for (auto layer : layerLoops) {
-			layer->gainMod.CalculateStepSize(attack, attack * 1.5, 2000);
+			layer->gainMod.CalculateStepSize(attack, attack * 1.5, release);
 		}
+
+		// set timer length
+		stopTimer.setLength(release);
 	}
 	else if (type == Pitch) {
 		debugMessage("setModulation: Pitch. " + to_string(attack));
-		mainPitchModulation.CalculateStepSize(attack, attack * 1.5, 2000);
+		mainPitchModulation.CalculateStepSize(attack, attack * 1.5, release);
 		for (auto layer : pitchModLayers) {
 			layer->pitchModulationRange = range;
-			layer->pitchMod.CalculateStepSize(attack, attack * 1.5, 2000);
+			layer->pitchMod.CalculateStepSize(attack, attack * 1.5, release);
 			// TODO amp start value based on curve
 		}
 	}

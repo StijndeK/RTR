@@ -9,6 +9,7 @@ public:
 	double arLin(double input, int trigger);
 	double arExp(double input, int trigger);
 	double arAttackExp(double input, int trigger);
+	double timer();
 	int dImpact(int trigger);
 
 	void setARLin(double attackMs, double releaseMs);

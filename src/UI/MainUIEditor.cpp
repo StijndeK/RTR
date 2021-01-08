@@ -36,8 +36,8 @@ void MainUIEditor::setup() {
     initGui(guiMock);
     guiMock->addHeader(":: Mock Editor ::", false);
 
-    guiMock->addButton("Play");
-    guiMock->addButton("Stop");
+    guiMock->addButton("Start");
+    guiMock->addButton("Impact");
     ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 5000, 20000, _ofApp->jsonSys.getValue("range in ms"));  // init with saved value
     rangeSlider->setPrecision(0);
     ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("currentPosition", 0, 1, _ofApp->jsonSys.getValue("currentPosition"));  // init with saved value
@@ -80,12 +80,11 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
 {
     string label = e.target->getLabel();
-    if (label == "Play") {
-        _ofApp->audio.playAudioLoops();
+    if (label == "Start") {
+        _ofApp->audio.startRiser();
     }
-    else if (label == "Stop") {
-        _ofApp->audio.startStopping();
-        //_ofApp->audio.stopAudio(_ofApp->audio.layerLoops);
+    else if (label == "Impact") {
+        _ofApp->audio.startRelease();
     }
     else if (label == "Fullscreen") {
         ofToggleFullscreen();
