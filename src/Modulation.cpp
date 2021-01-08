@@ -41,7 +41,7 @@ float Modulation::CalculateModulation(float currentDistanceToGetToInRange, int t
 void Modulation::CalculateStepSize(float attackUpMs, float attackDownMs, float releaseMs) {
 	if (modType == linear) {
 		upStep = (1.0 / updateRate) * (1 / (attackUpMs / 1000.0));
-		downStep = (1.0 / updateRate) * (1 / (attackDownMs / 1000.0));
+		downStep = 0 - ((1.0 / updateRate) * (1 / (attackDownMs / 1000.0)));
 	}
 	else {
 		upStep = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * (attackUpMs / 1000.0)));

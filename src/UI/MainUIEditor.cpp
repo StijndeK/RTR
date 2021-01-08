@@ -84,7 +84,8 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
         _ofApp->audio.playAudioLoops();
     }
     else if (label == "Stop") {
-        _ofApp->audio.stopAudio(_ofApp->audio.layerLoops);
+        _ofApp->audio.startStopping();
+        //_ofApp->audio.stopAudio(_ofApp->audio.layerLoops);
     }
     else if (label == "Fullscreen") {
         ofToggleFullscreen();
@@ -95,16 +96,13 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
     else { // set layer on or off TODO: create seperate function
         _ofApp->audio.getLayerByName(label)->_onOff = !_ofApp->audio.getLayerByName(label)->_onOff;
     }
-    //else {
-    //    ofLogError("MainUIEditor::onButtonEvent") << "unknown label type: " << e.target->getLabel() << endl;
-    //}
 }
 
 void MainUIEditor::setAudioValue()
 {
     _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
-    _ofApp->audio.setEnvelopes(_ofApp->audio.Amp, _ofApp->jsonSys.getValue("range in ms"), 1, 0);
-    _ofApp->audio.setEnvelopes(_ofApp->audio.Pitch, _ofApp->jsonSys.getValue("range in ms"), 1, 0);
+    _ofApp->audio.setModulation(_ofApp->audio.Amp, _ofApp->jsonSys.getValue("range in ms"), 1, 0);
+    _ofApp->audio.setModulation(_ofApp->audio.Pitch, _ofApp->jsonSys.getValue("range in ms"), 1, 0);
     _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
     _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
 }

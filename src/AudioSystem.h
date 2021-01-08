@@ -4,6 +4,7 @@
 #include "Layer.h"
 #include "AudioBase.h"
 #include "Envelopes.h"
+#include "Modulation.h"
 #include "ModulationData.h"
 
 class AudioSystem : public AudioBase, public ModulationTypes {
@@ -12,7 +13,7 @@ public:
 	AudioSystem();
 	~AudioSystem();
 
-	enum modulationType{ Amp, Pitch};
+	enum modulationParameter { Amp, Pitch};
 
 	void initFMODSystem();
 	void update();
@@ -20,11 +21,13 @@ public:
 	void playAudioLoops();
 	void playAudioImpacts();
 	void playEnvelopes();
+	void startStopping();
 	void stopAudio(vector<Layer*> layersToStop);
 
 	void setGain(float gain);
 	void setPan(float p);
-	void setEnvelopes(modulationType type, float attack, float range, float curve);
+	void setEnvelopes(modulationParameter type, float attack, float range, float curve);
+	void setModulation(modulationParameter type, float attack, float range, float curve);
 	void setAttack(float attack);
 	void setOffset(float offset);
 
@@ -36,13 +39,16 @@ public:
 	float _gain = 1;
 	float gainSnapshot = 1;
 
-	// vectors holding collections of layers
+	// vectors holding collections of layers initialised in load audio
 	vector<Layer*> layerImpacts;
 	vector<Layer*> layerLoops;
+
+	// vectors grouping types of modulation
 	vector<Layer*> pitchModLayers;
+	Modulation mainGainModulation;
+	Modulation mainPitchModulation;
 
 	ModulationData modData;
-
 private:
 	Envelopes attackEnv;
 

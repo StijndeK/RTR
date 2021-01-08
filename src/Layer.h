@@ -9,7 +9,7 @@
 class Layer : public ModulationTypes
 {
 public:
-	Layer(string label, modulationType modType);
+	Layer(string label, modulationType modType = linear);
 	~Layer();
 
 	vector<FMOD_SOUND*> _sounds;
@@ -17,10 +17,10 @@ public:
 	string _label;
 	int _currentSoundIdentifier = 0;
 	bool _onOff = 0;
-	Envelopes gainEnv;
-	Envelopes pitchEnv;
+
 	float ampModulationRange;
 	float pitchModulationRange;
+
 	Modulation gainMod;
 	Modulation pitchMod;
 };
