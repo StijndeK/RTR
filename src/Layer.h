@@ -4,11 +4,12 @@
 #include <string>
 #include "Envelopes.h"
 #include "Modulation.h"
+#include "ModulationTypes.h"
 
-class Layer
+class Layer : public ModulationTypes
 {
 public:
-	Layer(string label);
+	Layer(string label, modulationType modType);
 	~Layer();
 
 	vector<FMOD_SOUND*> _sounds;

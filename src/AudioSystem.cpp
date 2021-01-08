@@ -104,12 +104,12 @@ void AudioSystem::loadAudio() {
 		int amountofLoopLayers = 5;
 		string loopLayerNames[] = { "Pad: Start", "Pad: End", "Fx", "Noise", "Shepards" }; // TODO: use this voor UI as well
 		for (int i = 0; i < amountofLoopLayers; i++) {
-			layerLoops.push_back(new Layer(loopLayerNames[i]));
+			layerLoops.push_back(new Layer(loopLayerNames[i], exponential));
 		}
 		int amountOfImpactLayers = 2;
 		string impactLayerNames[] = { "Hit", "Sub" }; // TODO: use this voor UI as well
 		for (int i = 0; i < amountOfImpactLayers; i++) {
-			layerImpacts.push_back(new Layer(impactLayerNames[i]));
+			layerImpacts.push_back(new Layer(impactLayerNames[i], linear));
 		}
 
 		ofDirectory dir("");

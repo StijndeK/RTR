@@ -6,7 +6,7 @@
 #include "Envelopes.h"
 #include "ModulationData.h"
 
-class AudioSystem : public AudioBase {
+class AudioSystem : public AudioBase, public ModulationTypes {
 
 public:
 	AudioSystem();

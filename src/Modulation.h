@@ -1,13 +1,13 @@
 #pragma once
 #include "ofMain.h"
+#include "ModulationTypes.h"
 
-class Modulation
+class Modulation : public ModulationTypes
 {
 public:
 	Modulation();
 	~Modulation();
 
-	void MockData();
 	float CalculateModulation(float currentDistanceToGetToInRange);
 	void CalculateStepSize(float totalAttackMs, float totalReleaseMs);
 
@@ -17,7 +17,7 @@ public:
 	float updateRate = 60.f;
 	double amplitudeStartValue = 0.001;
 
-	bool modType = true; // false = exponential, true = linear
+	modulationType modType = linear; // false = exponential, true = linear TODO: make enum
 private:
 
 };
