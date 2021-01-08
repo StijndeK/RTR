@@ -123,8 +123,6 @@ void AudioSystem::update() {
 			}
 		}
 	}
-
-	debugMessage(to_string(playing));
 	
 	// reset trigger for envelopes
 	if (envelopeTrigger == 1) {
@@ -272,7 +270,6 @@ void AudioSystem::startRelease() {
 
 	// check if trigger needs to be set to 0 immediatly, or if there is an offset: if the riser can still rise a bit. and iddeally update the speed of the riser to reach the full end for the impact
 
-	// after release is done completely stop the sounds
 }
 
 void AudioSystem::stopAudioLayers(vector<Layer*> layersToStop) {

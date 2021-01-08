@@ -15,6 +15,7 @@ public:
     void initGui(ofxDatGui* gui);
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void onButtonEvent(ofxDatGuiButtonEvent e);
+    void onToggleEvent(ofxDatGuiToggleEvent e);
     void setAudioValue();
     
     ofApp* _ofApp;

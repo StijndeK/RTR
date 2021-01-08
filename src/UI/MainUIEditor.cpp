@@ -24,7 +24,6 @@ void MainUIEditor::setup() {
     guiGeneral->addHeader(":: General Editor ::", false);
 
     ofxDatGuiSlider* gainSlider = guiGeneral->addSlider("gain", -90, 0, _ofApp->jsonSys.getValue("gain")); // init with saved value
-    // gainSlider->bind(_ofApp->audio._gain);
     ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 2000, _ofApp->jsonSys.getValue("offset")); // init with saved value
     ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 200, 5000, _ofApp->jsonSys.getValue("attack")); // init with saved value
     attackSlider->setPrecision(0);
@@ -46,12 +45,14 @@ void MainUIEditor::setup() {
     // sound gui
     ofxDatGui* guiSound = new ofxDatGui(510 + offset, 0 + offset);
     initGui(guiSound);
+    guiSound->onToggleEvent(this, &MainUIEditor::onToggleEvent);
     guiSound->addHeader(":: Sound Editor ::", false);
-    guiSound->addToggle("Pad: Start");
-    guiSound->addToggle("Pad: End");
-    guiSound->addToggle("Fx");
-    guiSound->addToggle("Noise");
-    guiSound->addToggle("Shepards");
+    // set the defaults from json
+    ofxDatGuiToggle* padStartToggle = guiSound->addToggle("Pad: Start", _ofApp->jsonSys.getValue("Pad: Start"));
+    ofxDatGuiToggle* padEndToggle = guiSound->addToggle("Pad: End", _ofApp->jsonSys.getValue("Pad: End"));
+    ofxDatGuiToggle* fxToggle = guiSound->addToggle("Fx", _ofApp->jsonSys.getValue("Fx"));
+    ofxDatGuiToggle* noiseToggle = guiSound->addToggle("Noise", _ofApp->jsonSys.getValue("Noise"));
+    ofxDatGuiToggle* shepardsToggle = guiSound->addToggle("Shepards", _ofApp->jsonSys.getValue("Shepards"));
 
     // initialise audio values
     setAudioValue();
@@ -92,10 +93,19 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
     else if (label == "Select destination") {
         _ofApp->jsonSys.getPath();
     }
-    else { // set layer on or off TODO: create seperate function
-        _ofApp->audio.getLayerByName(label)->_onOff = !_ofApp->audio.getLayerByName(label)->_onOff;
-        _ofApp->audio.debugMessage("onoff for label: " + label + to_string(_ofApp->audio.getLayerByName(label)->_onOff));
+    else { 
+
     }
+}
+
+void MainUIEditor::onToggleEvent(ofxDatGuiToggleEvent e)
+{
+    string label = e.target->getLabel();
+
+    _ofApp->audio.getLayerByName(label)->_onOff = !_ofApp->audio.getLayerByName(label)->_onOff;
+    _ofApp->audio.debugMessage("onoff for label: " + label + to_string(_ofApp->audio.getLayerByName(label)->_onOff));
+
+    _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getChecked());
 }
 
 void MainUIEditor::setAudioValue()
