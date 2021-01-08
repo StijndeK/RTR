@@ -87,12 +87,15 @@ void AudioSystem::update() {
 	float decimalValue = modData.currentDistanceToGetTo;
 
 	// attack envelope
-	//float attackedGain = attackEnv.arAttackExp(_gain, trigger);
+	float attackedGain = attackEnv.arAttackExp(_gain, envelopeTrigger);
+	debugMessage("attacked gain: " + to_string(attackedGain));
 
 	// modulate gain audio
 	for (auto layer : layerLoops) {
 		float outputGain = layer->gainMod.CalculateModulation(decimalValue, trigger);
-		FMOD_Channel_SetVolume(layer->_channel, outputGain);
+		//debugMessage(to_string(outputGain));
+		//debugMessage("+ at: " + to_string(outputGain * attackedGain));
+		FMOD_Channel_SetVolume(layer->_channel, outputGain * attackedGain);
 	}
 
 	// modulate pitch
@@ -104,10 +107,10 @@ void AudioSystem::update() {
 	//playEnvelopes();
 
 	// reset trigger
-	//if (trigger == 1) {
-	//	debugMessage("trigger");
-	//	trigger = 0;
-	//}
+	if (envelopeTrigger == 1) {
+		debugMessage("trigger envelope");
+		envelopeTrigger = 0;
+	}
 }
 
 void AudioSystem::loadAudio() {
@@ -194,8 +197,9 @@ void AudioSystem::playAudioLoops() {
 
 	// create snapshot of gain for envelopes
 	gainSnapshot = _gain;
-	// trigger envelopes
+	// trigger envelopes and modulation
 	trigger = 1;
+	envelopeTrigger = 1;
 
 	debugMessage("Now Playing: ");
 	for (auto layer : layerLoops) {

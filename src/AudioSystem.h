@@ -32,6 +32,7 @@ public:
 	Layer* getLayerByName(string name);
 
 	bool trigger = 0;
+	bool envelopeTrigger = 0;
 	float _gain = 1;
 	float gainSnapshot = 1;
 
