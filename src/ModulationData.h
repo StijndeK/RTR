@@ -10,7 +10,7 @@ public:
 
 	float ConvertToDecimalData();
 
-	float currentDistanceToGetTo = 10000;
+	float currentDistanceToGetTo = 0;
 	float positionGoal;
 	float positionStart;
 	float totalDistance;

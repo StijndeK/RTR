@@ -81,21 +81,22 @@ void AudioSystem::initFMODSystem() {
 void AudioSystem::update() {
 	FMOD_System_Update(sys);
 
-	// get value to get to from distance in float to value between 0 and 1
-	// TODO: get this value per layer
-	float decimalValue = modData.ConvertToDecimalData();
+	// this value to get to in the audio == the player position scaled to a value between 0 and 1
+	// float decimalValue = modData.ConvertToDecimalData(); 	// get value to get to from distance in float to value between 0 and 1 from distance values
+	// in mock no need to convert, use the currentPositionSlider value (which is already between 0 and 1)
+	float decimalValue = modData.currentDistanceToGetTo;
 
 	// modulate audio
 	for (auto layer : layerLoops) {
-		FMOD_Channel_SetVolume(layer->_channel, layer->gainMod.CalculateModulation(decimalValue));
+		FMOD_Channel_SetVolume(layer->_channel, layer->gainMod.CalculateModulation(decimalValue, trigger));
 	}
 	//playEnvelopes();
 
 	// reset trigger
-	if (trigger == 1) {
-		debugMessage("trigger");
-		trigger = 0;
-	}
+	//if (trigger == 1) {
+	//	debugMessage("trigger");
+	//	trigger = 0;
+	//}
 }
 
 void AudioSystem::loadAudio() {
@@ -178,7 +179,7 @@ void AudioSystem::loadAudio() {
 }
 
 void AudioSystem::playAudioLoops() {
-	stopAudio(layerLoops);
+	//stopAudio(layerLoops);
 
 	// create snapshot of gain for envelopes
 	gainSnapshot = _gain;
@@ -240,9 +241,11 @@ void AudioSystem::playEnvelopes()
 }
 
 void AudioSystem::stopAudio(vector<Layer*> layersToStop) {
-	for (auto layer : layersToStop) {
-		FMOD_Channel_Stop(layer->_channel);
-	}
+	trigger = 0;
+	playAudioImpacts();
+	//for (auto layer : layersToStop) {
+	//	FMOD_Channel_Stop(layer->_channel);
+	//}
 }
 
 void AudioSystem::setGain(float gain) {
@@ -261,7 +264,7 @@ void AudioSystem::setEnvelopes(modulationType type, float attack, float range, f
 	if (type == Amp) {
 		for (auto layer : layerLoops) {
 			layer->gainEnv.setARExp(attack, 500); // use default release value, to be replaced with new release slider input
-			layer->gainMod.CalculateStepSize(attack, attack * 1.5);
+			layer->gainMod.CalculateStepSize(attack, attack * 1.5, 2000);
 		}
 		layerImpacts[0]->gainEnv.setARExp(attack, 500);
 	}

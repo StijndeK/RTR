@@ -8,16 +8,19 @@ public:
 	Modulation();
 	~Modulation();
 
-	float CalculateModulation(float currentDistanceToGetToInRange);
-	void CalculateStepSize(float totalAttackMs, float totalReleaseMs);
+	//enum riserState{ attack, release};
+
+	float CalculateModulation(float currentDistanceToGetToInRange, int trigger);
+	void CalculateStepSize(float attackUpMs, float attackDownMs, float releaseMs);
 
 	float currentDistance = 0;
 	float upStep;
 	float downStep;
+	float release;
 	float updateRate = 60.f;
 	double amplitudeStartValue = 0.001;
 
-	modulationType modType = linear; // false = exponential, true = linear TODO: make enum
+	modulationType modType = linear;
 private:
 
 };

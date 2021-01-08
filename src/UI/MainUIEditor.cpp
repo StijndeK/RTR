@@ -40,10 +40,8 @@ void MainUIEditor::setup() {
     guiMock->addButton("Stop");
     ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 5000, 20000, _ofApp->jsonSys.getValue("range in ms"));  // init with saved value
     rangeSlider->setPrecision(0);
-    ofxDatGuiSlider* ampModSlider = guiMock->addSlider("amplitude modulation", 2000, 10000, _ofApp->jsonSys.getValue("amplitude modulation"));  // init with saved value
-    ampModSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
-    ampModSlider->setPrecision(0);
-    // TODO: reverse this slider
+    ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("currentPosition", 0, 1, _ofApp->jsonSys.getValue("currentPosition"));  // init with saved value
+    currentPositionSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
 
     // sound gui
     ofxDatGui* guiSound = new ofxDatGui(510 + offset, 0 + offset);
