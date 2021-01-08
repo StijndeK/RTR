@@ -18,7 +18,7 @@ public:
 	float downStep;
 	float release;
 	float updateRate = 60.f;
-	double amplitudeStartValue = 0.001;
+	double amplitudeStartValue = 0.01;
 
 	modulationType modType = linear;
 private:

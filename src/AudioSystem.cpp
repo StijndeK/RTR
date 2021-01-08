@@ -114,12 +114,17 @@ void AudioSystem::update() {
 
 	// modulate gain audio
 	float outputGain = mainGainModulation.CalculateModulation(decimalValue, trigger);
+
 	for (auto layer : layerLoops) {
 		if (layer->_onOff) {
-			float layerOutputGain = layer->gainMod.CalculateModulation(outputGain, trigger);
-			FMOD_Channel_SetVolume(layer->_channel, layerOutputGain * attackedGain);
+			float layerOutputGain = layer->gainMod.CalculateModulation(decimalValue, trigger);
+			//float layerOutputGain = outputGain;
+			FMOD_Channel_SetVolume(layer->_channel, layerOutputGain * attackedGain * outputGain);
+			debugMessage(layer->_label + to_string(layerOutputGain * attackedGain * outputGain));
 		}
 	}
+
+	//debugMessage(to_string(outputGain));
 
 	// modulate pitch
 	float frequencyRange = 1.5;
@@ -144,7 +149,7 @@ void AudioSystem::loadAudio() {
 		int amountofLoopLayers = 5;
 		string loopLayerNames[] = { "Pad: Start", "Pad: End", "Fx", "Noise", "Shepards" }; // TODO: use this voor UI as well
 		for (int i = 0; i < amountofLoopLayers; i++) {
-			layerLoops.push_back(new Layer(loopLayerNames[i], exponential));
+			layerLoops.push_back(new Layer(loopLayerNames[i], exponential ));
 		}
 		int amountOfImpactLayers = 2;
 		string impactLayerNames[] = { "Hit", "Sub" }; // TODO: use this voor UI as well
@@ -362,7 +367,6 @@ string AudioSystem::getAudioName(FMOD_SOUND* sound) {
 	char name[256];
 	FMOD_Sound_GetName(sound, name, 256);
 	string outName = name;
-	debugMessage("getAudioName: " + outName);
 	return name;
 }
 

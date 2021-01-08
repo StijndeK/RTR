@@ -20,7 +20,7 @@ float Modulation::CalculateModulation(float currentDistanceToGetToInRange, int t
 				currentDistance += (currentDistance < currentDistanceToGetToInRange) ? upStep : downStep;
 			}
 			else {
-				currentDistance += amplitudeStartValue; // make sure multiplyvalue != 0 TODO: do automatically
+				if (currentDistance < amplitudeStartValue) { currentDistance = amplitudeStartValue; }; // make sure multiplyvalue != 0 TODO: do automatically
 				currentDistance *= (currentDistance < currentDistanceToGetToInRange) ? upStep : downStep;
 			}
 		}
