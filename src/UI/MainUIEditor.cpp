@@ -95,6 +95,7 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
     }
     else { // set layer on or off TODO: create seperate function
         _ofApp->audio.getLayerByName(label)->_onOff = !_ofApp->audio.getLayerByName(label)->_onOff;
+        _ofApp->audio.debugMessage("onoff for label: " + to_string(_ofApp->audio.getLayerByName(label)->_onOff));
     }
 }
 
