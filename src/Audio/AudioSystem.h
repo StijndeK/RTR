@@ -3,10 +3,10 @@
 #include "fmod.h"
 #include "Layer.h"
 #include "AudioBase.h"
-#include "Envelopes.h"
-#include "Modulation.h"
-#include "ModulationData.h"
-#include "Timer.h"
+#include "Modulation/Envelopes.h"
+#include "Modulation/Modulation.h"
+#include "Modulation/ModulationData.h"
+#include "Modulation/Timer.h"
 
 class AudioSystem : public AudioBase, public ModulationTypes {
 

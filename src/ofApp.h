@@ -1,7 +1,7 @@
 #pragma once
 #include "ofMain.h"
 #include "UI/MainUIEditor.h"
-#include "AudioSystem.h"
+#include "Audio/AudioSystem.h"
 
 class ofApp : public ofBaseApp {
 

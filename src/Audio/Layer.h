@@ -2,9 +2,9 @@
 #include "ofMain.h"
 #include "fmod.h"
 #include <string>
-#include "Envelopes.h"
-#include "Modulation.h"
-#include "ModulationTypes.h"
+#include "Modulation/Envelopes.h"
+#include "Modulation/Modulation.h"
+#include "Modulation/ModulationTypes.h"
 
 class Layer : public ModulationTypes
 {

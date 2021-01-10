@@ -18,6 +18,18 @@ void MainUIEditor::setup() {
     // GUI
     int offset = 5;
 
+    // sound gui
+    ofxDatGui* guiSound = new ofxDatGui(510 + offset, 0 + offset);
+    initGui(guiSound);
+    guiSound->onToggleEvent(this, &MainUIEditor::onToggleEvent);
+    guiSound->addHeader(":: Sound Editor ::", false);
+    // set the defaults from json
+    ofxDatGuiToggle* padStartToggle = guiSound->addToggle("Pad: Start", _ofApp->jsonSys.getValue("Pad: Start"));
+    ofxDatGuiToggle* padEndToggle = guiSound->addToggle("Pad: End", _ofApp->jsonSys.getValue("Pad: End"));
+    ofxDatGuiToggle* fxToggle = guiSound->addToggle("Fx", _ofApp->jsonSys.getValue("Fx"));
+    ofxDatGuiToggle* noiseToggle = guiSound->addToggle("Noise", _ofApp->jsonSys.getValue("Noise"));
+    ofxDatGuiToggle* shepardsToggle = guiSound->addToggle("Shepards", _ofApp->jsonSys.getValue("Shepards"));
+
     // general gui
     ofxDatGui* guiGeneral = new ofxDatGui(0 + offset, 0 + offset);
     initGui(guiGeneral);
@@ -42,17 +54,7 @@ void MainUIEditor::setup() {
     ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("currentPosition", 0, 1, _ofApp->jsonSys.getValue("currentPosition"));  // init with saved value
     currentPositionSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
 
-    // sound gui
-    ofxDatGui* guiSound = new ofxDatGui(510 + offset, 0 + offset);
-    initGui(guiSound);
-    guiSound->onToggleEvent(this, &MainUIEditor::onToggleEvent);
-    guiSound->addHeader(":: Sound Editor ::", false);
-    // set the defaults from json
-    ofxDatGuiToggle* padStartToggle = guiSound->addToggle("Pad: Start", _ofApp->jsonSys.getValue("Pad: Start"));
-    ofxDatGuiToggle* padEndToggle = guiSound->addToggle("Pad: End", _ofApp->jsonSys.getValue("Pad: End"));
-    ofxDatGuiToggle* fxToggle = guiSound->addToggle("Fx", _ofApp->jsonSys.getValue("Fx"));
-    ofxDatGuiToggle* noiseToggle = guiSound->addToggle("Noise", _ofApp->jsonSys.getValue("Noise"));
-    ofxDatGuiToggle* shepardsToggle = guiSound->addToggle("Shepards", _ofApp->jsonSys.getValue("Shepards"));
+
 
     // initialise audio values
     setAudioValue();
