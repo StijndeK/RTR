@@ -17,45 +17,53 @@ public:
 	enum modulationParameter { Amp, Pitch};
 
 	void initFMODSystem();
-	void update();
 	void loadAudio();
 
-	void startRiser();
-	void stopRiser();
-	void playAudioLoops();
-	void playAudioImpacts();
-	void startRelease();
-	void stopAudioLayers(vector<Layer*> layersToStop);
+	void update();
 
+	void startRiser();
+	void startRelease();
+	void stopRiser();
+	void startAudioLayers(vector<ImpactLayer*> layersToStart);
+	void startAudioLayers(vector<LoopLayer*> layersToStart);
+	void stopAudioLayers(vector<LoopLayer*> layersToStop);
+	void stopAudioLayers(vector<ImpactLayer*> layersToStop);
+
+	// setters
 	void setGain(float gain);
 	void setModulation(modulationParameter type, float attack, float range, float curve);
 	void setAttack(float attack);
 	void setOffset(float offset);
+	void setTimer(float slowdownTimeMs, float slowDownAmount = 1);
+	void setActionTimer(float slowdownTimeMs, float slowDownAmount = 1, float deviationThreshold = 1);
 
+	// getters
 	string getAudioName(FMOD_SOUND* sound);
-	Layer* getLayerByName(string name);
+	LoopLayer* getLayerByName(string name);
 
 	bool modulationTrigger = 0;			// true on attack when playing
 	bool envelopeTrigger = 0;	// true on start, then immediatly false
 	bool playing = false;		// true while audio is playing
 	bool recordTimer = false;	// true while release is playing, to get notified when to stop audio
+
 	float _gain = 1;
 	float gainSnapshot = 1;
 
 	// vectors holding collections of layers initialised in load audio
-	vector<Layer*> layerImpacts;
-	vector<Layer*> layerLoops;
+	vector<ImpactLayer*> layerImpacts;
+	vector<LoopLayer*> layerLoops;
 
-	// vectors grouping types of modulation
-	vector<Layer*> pitchModLayers;
-	Modulation mainGainModulation;
-	Modulation mainPitchModulation;
-
+	// data on the modulation, such as player position etc
 	ModulationData modData;
 
 private:
+	// attack only envelope for the start of the sound
 	Envelopes attackEnv;
+
+	// Timer on when to stop all audio after impact
 	Timer stopTimer;
+	// Timer to check time after start
+	Timer timePlaying;
 
 	float frequencyStandard = 44100;
 };

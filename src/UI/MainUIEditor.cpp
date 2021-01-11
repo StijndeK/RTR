@@ -19,7 +19,7 @@ void MainUIEditor::setup() {
     int offset = 5;
 
     // sound gui
-    ofxDatGui* guiSound = new ofxDatGui(510 + offset, 0 + offset);
+    ofxDatGui* guiSound = new ofxDatGui(0 + offset, 0 + offset);
     initGui(guiSound);
     guiSound->onToggleEvent(this, &MainUIEditor::onToggleEvent);
     guiSound->addHeader(":: Sound Editor ::", false);
@@ -29,9 +29,15 @@ void MainUIEditor::setup() {
     ofxDatGuiToggle* fxToggle = guiSound->addToggle("Fx", _ofApp->jsonSys.getValue("Fx"));
     ofxDatGuiToggle* noiseToggle = guiSound->addToggle("Noise", _ofApp->jsonSys.getValue("Noise"));
     ofxDatGuiToggle* shepardsToggle = guiSound->addToggle("Shepards", _ofApp->jsonSys.getValue("Shepards"));
+    //initialise (rest is initialised in setAudioValue). TODO: one way for every type of parameter instead of having to do different parameters a different way
+    onToggleEvent(padStartToggle);
+    onToggleEvent(padEndToggle);
+    onToggleEvent(fxToggle);
+    onToggleEvent(noiseToggle);
+    onToggleEvent(shepardsToggle);
 
     // general gui
-    ofxDatGui* guiGeneral = new ofxDatGui(0 + offset, 0 + offset);
+    ofxDatGui* guiGeneral = new ofxDatGui(255 + offset, 0 + offset);
     initGui(guiGeneral);
     guiGeneral->addHeader(":: General Editor ::", false);
 
@@ -43,7 +49,7 @@ void MainUIEditor::setup() {
     guiGeneral->addButton("Select destination");
 
     // mock gui
-    ofxDatGui* guiMock = new ofxDatGui(255 + offset, 0 + offset);
+    ofxDatGui* guiMock = new ofxDatGui(510 + offset, 0 + offset);
     initGui(guiMock);
     guiMock->addHeader(":: Mock Editor ::", false);
 
@@ -53,8 +59,6 @@ void MainUIEditor::setup() {
     rangeSlider->setPrecision(0);
     ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("currentPosition", 0, 1, _ofApp->jsonSys.getValue("currentPosition"));  // init with saved value
     currentPositionSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
-
-
 
     // initialise audio values
     setAudioValue();
@@ -80,6 +84,11 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
     setAudioValue();
 }
 
+// TODO: use a switch
+// TODO: link all functions the same way (now for some setAudioValue is used and for others this if statement)
+// TODO: do data conversion within the UI class
+// TODO: other notes discussed
+// TODO: setters with only 1 element, then call the function for recalculation if necessary
 void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
 {
     string label = e.target->getLabel();
@@ -104,7 +113,8 @@ void MainUIEditor::onToggleEvent(ofxDatGuiToggleEvent e)
 {
     string label = e.target->getLabel();
 
-    _ofApp->audio.getLayerByName(label)->_onOff = !_ofApp->audio.getLayerByName(label)->_onOff;
+    // reverse on off value
+    _ofApp->audio.getLayerByName(label)->_onOff = e.target->getChecked();
     _ofApp->audio.debugMessage("onoff for label: " + label + to_string(_ofApp->audio.getLayerByName(label)->_onOff));
 
     _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getChecked());

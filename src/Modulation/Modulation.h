@@ -5,11 +5,6 @@
 class Modulation : public ModulationTypes
 {
 public:
-	Modulation();
-	~Modulation();
-
-	//enum riserState{ attack, release};
-
 	float CalculateModulation(float currentDistanceToGetToInRange, int trigger);
 	void CalculateStepSize(float attackUpMs, float attackDownMs, float releaseMs);
 
@@ -20,7 +15,7 @@ public:
 	float updateRate = 60.f;
 	double amplitudeStartValue = 0.01;
 
-	modulationType modType = linear;
+	modulationType modType = exponential;
 private:
 
 };

@@ -1,14 +1,5 @@
 #include "Modulation.h"
 
-Modulation::Modulation()
-{
-}
-
-Modulation::~Modulation()
-{
-}
-
-
 float Modulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger) {
 	// TODO: when attack at its peek of the mainall modulation, automatically call stop
 

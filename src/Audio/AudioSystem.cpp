@@ -18,7 +18,8 @@ static bool systemInitialised = false;
 AudioSystem::AudioSystem()
 {
 	modData.MockData();
-	mainGainModulation.modType = exponential;
+
+	setTimer(5000);
 }
 
 AudioSystem::~AudioSystem()
@@ -81,68 +82,19 @@ void AudioSystem::initFMODSystem() {
 	loadAudio();
 }
 
-void AudioSystem::update() {
-	FMOD_System_Update(sys);
-
-	if (playing) {
-		// this value to get to in the audio == the player position scaled to a value between 0 and 1
-		// float decimalValue = modData.ConvertToDecimalData(); 	// get value to get to from distance in float to value between 0 and 1 from distance values
-		// in mock no need to convert, use the currentPositionSlider value (which is already between 0 and 1)
-		float decimalValue = modData.currentDistanceToGetTo;
-
-		// attack envelope
-		float attackedGain = attackEnv.arAttackExp(_gain, envelopeTrigger);
-
-		// modulate gain audio
-		float outputGain = mainGainModulation.CalculateModulation(decimalValue, modulationTrigger);
-
-		for (auto layer : layerLoops) {
-			if (layer->_onOff) {
-				float layerOutputGain = layer->gainMod.CalculateModulation(decimalValue, modulationTrigger);
-				FMOD_Channel_SetVolume(layer->_channel, layerOutputGain * attackedGain * outputGain);
-				//debugMessage(layer->_label + to_string(layerOutputGain * attackedGain * outputGain));
-			}
-		}
-
-		// modulate pitch
-		float frequencyRange = 1.5; // TODO: create UI setting for this value
-		float outputPitch = mainPitchModulation.CalculateModulation(decimalValue, modulationTrigger);
-		for (auto layer : pitchModLayers) {
-			if (layer->_onOff) {
-				float layerOutputPitch = layer->pitchMod.CalculateModulation(outputPitch, 1);
-				FMOD_Channel_SetFrequency(layer->_channel, layerOutputPitch * (frequencyRange * frequencyStandard));
-			}
-		}
-
-		// check if playing should end
-		if (recordTimer) {
-			float timerValue = stopTimer.timerTick();
-			if (timerValue == 1) {
-				stopRiser();
-				recordTimer = false;
-			}
-		}
-	}
-	
-	// reset trigger for envelopes
-	if (envelopeTrigger == 1) {
-		debugMessage("trigger envelope");
-		envelopeTrigger = 0;
-	}
-}
-
 void AudioSystem::loadAudio() {
 	if (audioLoaded == false) {
 		// initialise layers
 		int amountofLoopLayers = 5;
 		string loopLayerNames[] = { "Pad: Start", "Pad: End", "Fx", "Noise", "Shepards" }; // TODO: use this voor UI as well
 		for (int i = 0; i < amountofLoopLayers; i++) {
-			layerLoops.push_back(new Layer(loopLayerNames[i], exponential ));
+			layerLoops.push_back(new LoopLayer(loopLayerNames[i], sys));
 		}
+
 		int amountOfImpactLayers = 2;
 		string impactLayerNames[] = { "Hit", "Sub" }; // TODO: use this voor UI as well
 		for (int i = 0; i < amountOfImpactLayers; i++) {
-			layerImpacts.push_back(new Layer(impactLayerNames[i]));
+			layerImpacts.push_back(new ImpactLayer(impactLayerNames[i], sys));
 		}
 
 		// get directory
@@ -156,7 +108,7 @@ void AudioSystem::loadAudio() {
 			// get path and name
 			string tempName = dir.getName(i);
 
-			// create sound
+			// create sound and channel to add to layer
 			FMOD_SOUND* tempSound;
 
 			FMOD_System_CreateSound(sys, ofToDataPath(dir.getPath(i)).c_str(), FMOD_DEFAULT, 0, &tempSound);
@@ -202,9 +154,9 @@ void AudioSystem::loadAudio() {
 			}
 		}
 
-		// set what values need to be modulated by what
-		pitchModLayers.push_back(layerLoops[0]);
-		pitchModLayers.push_back(layerLoops[1]);
+		// set on for frequency
+		getLayerByName("Pad: Start")->mainPitchModToggle = true;
+		getLayerByName("Pad: End")->mainPitchModToggle = true;
 
 		audioLoaded = true;
 		debugMessage("audio loaded");
@@ -213,11 +165,57 @@ void AudioSystem::loadAudio() {
 	}
 }
 
+void AudioSystem::update() {
+	FMOD_System_Update(sys);
+
+	if (playing) {
+		// update timer
+		float currentTick = timePlaying.timerTick();
+
+		// this value to get to in the audio == the player position scaled to a value between 0 and 1
+		// float decimalValue = modData.ConvertToDecimalData(); 	// get value to get to from distance in float to value between 0 and 1 from distance values
+		// in mock no need to convert, use the currentPositionSlider value (which is already between 0 and 1)
+		float decimalValue = modData.currentDistanceToGetTo;
+
+		// attack envelope
+		float attackedGain = attackEnv.arAttackExp(_gain, envelopeTrigger);
+
+		for (auto layer : layerLoops) {
+			if (layer->_onOff) {
+				// gain modulation
+				float outputGain = layer->mainGainMod.CalculateModulation(decimalValue, modulationTrigger);
+				layer->setVolume(attackedGain * outputGain);
+
+				// pitch modulation
+				if (layer->mainPitchModToggle) {
+					float outputPitch = layer->mainPitchMod.CalculateModulation(decimalValue, modulationTrigger);
+					layer->setFrequency(outputPitch * (layer->frequencyRange * frequencyStandard));
+				}
+			}
+		}
+
+		// check if playing should end
+		if (recordTimer) {
+			float timerValue = stopTimer.timerTick();
+			if (timerValue == 1) {
+				stopRiser();
+				recordTimer = false;
+			}
+		}
+	}
+	
+	// reset trigger for envelopes
+	if (envelopeTrigger == 1) {
+		debugMessage("trigger envelope");
+		envelopeTrigger = 0;
+	}
+}
+
 void AudioSystem::startRiser()
 {
-	debugMessage("start riser");
-
 	stopRiser();
+
+	debugMessage("start riser");
 
 	// create snapshot of gain for envelopes
 	gainSnapshot = _gain;
@@ -228,7 +226,18 @@ void AudioSystem::startRiser()
 	playing = true;
 	recordTimer = false;
 
-	playAudioLoops();
+	//playAudioLoops();
+	startAudioLayers(layerLoops);
+}
+
+// begin release phase of riser, with timer that checks when to completely stop the riser
+void AudioSystem::startRelease() {
+	debugMessage("start stopping audio");
+	modulationTrigger = 0;
+	recordTimer = true;
+
+	// play impacts
+	startAudioLayers(layerImpacts);
 }
 
 void AudioSystem::stopRiser()
@@ -241,43 +250,36 @@ void AudioSystem::stopRiser()
 	playing = false;
 }
 
-void AudioSystem::playAudioLoops() {
-	debugMessage("Now Playing Loops: ");
-	for (auto layer : layerLoops) {
-		// check if layer is on
+void AudioSystem::startAudioLayers(vector<LoopLayer*> layersToStart) {
+	debugMessage("start Audio");
+	for (auto layer : layersToStart) {
 		if (layer->_onOff) {
-			FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layer->_sounds[layer->_currentSoundIdentifier], false, &layer->_channel);
-			debugMessage("	" + layer->_label + ":");
-			debugMessage("		" + getAudioName(layer->_sounds[layer->_currentSoundIdentifier]));
+			layer->startSounds();
 		}
 	}
 }
 
-void AudioSystem::playAudioImpacts() {
-	debugMessage("Now Playing Impacts: ");
-	for (auto layer : layerImpacts) {
-		int randValue = rand() % 3; 	// randomise sub and impact selection
-		FMOD_System_PlaySound(sys, FMOD_CHANNEL_FREE, layer->_sounds[randValue], false, &layer->_channel);
-		debugMessage(getAudioName(layer->_sounds[randValue]));
+void AudioSystem::startAudioLayers(vector<ImpactLayer*> layersToStart) {
+	debugMessage("start Audio");
+	for (auto layer : layersToStart) {
+		layer->startSounds();
 	}
 }
 
-void AudioSystem::startRelease() {
-	debugMessage("start stopping audio");
-	modulationTrigger = 0;
-	recordTimer = true;
-	playAudioImpacts();
-
-	// check if trigger needs to be set to 0 immediatly, or if there is an offset: if the riser can still rise a bit. and iddeally update the speed of the riser to reach the full end for the impact
-
-}
-
-void AudioSystem::stopAudioLayers(vector<Layer*> layersToStop) {
+void AudioSystem::stopAudioLayers(vector<LoopLayer*> layersToStop) {
 	debugMessage("stop Audio");
 	for (auto layer : layersToStop) {
-		FMOD_Channel_Stop(layer->_channel);
+		layer->stopSounds();
 	}
 }
+
+void AudioSystem::stopAudioLayers(vector<ImpactLayer*> layersToStop) {
+	debugMessage("stop Audio");
+	for (auto layer : layersToStop) {
+		layer->stopSounds();
+	}
+}
+
 
 void AudioSystem::setGain(float gain) {
 	debugMessage("setGain: " + to_string(gain));
@@ -290,9 +292,10 @@ void AudioSystem::setModulation(modulationParameter type, float attack, float ra
 
 	if (type == Amp) {
 		debugMessage("setModulation: Amp. " + to_string(attack));
-		mainGainModulation.CalculateStepSize(attack, attack * 1.5, release);
+		// mainGainModulation.CalculateStepSize(attack, attack * 1.5, release);
+
 		for (auto layer : layerLoops) {
-			layer->gainMod.CalculateStepSize(attack, attack * 1.5, release);
+			layer->mainGainMod.CalculateStepSize(attack, attack * 1.5, release);
 		}
 
 		// set timer length
@@ -300,11 +303,12 @@ void AudioSystem::setModulation(modulationParameter type, float attack, float ra
 	}
 	else if (type == Pitch) {
 		debugMessage("setModulation: Pitch. " + to_string(attack));
-		mainPitchModulation.CalculateStepSize(attack, attack * 1.5, release);
-		for (auto layer : pitchModLayers) {
-			layer->pitchModulationRange = range;
-			layer->pitchMod.CalculateStepSize(attack, attack * 1.5, release);
-			// TODO amp start value based on curve
+		//mainPitchModulation.CalculateStepSize(attack, attack * 1.5, release);
+
+		for (auto layer : layerLoops) {
+			if (layer->mainPitchModToggle) {
+				layer->mainPitchMod.CalculateStepSize(attack, attack * 1.5, release);
+			}
 		}
 	}
 }
@@ -320,6 +324,21 @@ void AudioSystem::setOffset(float offset) {
 	// set values for offset to happen and sound to modulate to its conclusion
 }
 
+// after how long should the riser slowdown when goal hasnt been reached yet
+// generally this point should not be reached as action over time is checked by the action timer, but due to players maybe going afk etc, you might want the timer to slow down after a long amount of time
+void AudioSystem::setTimer(float slowdownTimeMs, float slowDownAmount) {
+	timePlaying.setLength(slowdownTimeMs);
+}
+
+// after how long and how much defiation in player position should the riser slow down
+void AudioSystem::setActionTimer(float slowdownTimeMs, float slowDownAmount, float deviationThreshold) {
+	// TODO: do this in timer maybe, or somewhere else
+	// check previous [x] values
+	// check if its [deviation] higher
+	// if so do slowdown modulation
+	// then if threshold is reached again, move up untill back to 1 (0db)
+}
+
 string AudioSystem::getAudioName(FMOD_SOUND* sound) {
 	char name[256];
 	FMOD_Sound_GetName(sound, name, 256);
@@ -327,7 +346,7 @@ string AudioSystem::getAudioName(FMOD_SOUND* sound) {
 	return name;
 }
 
-Layer* AudioSystem::getLayerByName(string name) {
+LoopLayer* AudioSystem::getLayerByName(string name) {
 	for (auto l : layerLoops) {
 		if (l->_label == name) {
 			debugMessage("getLayerByName: " + l->_label);
