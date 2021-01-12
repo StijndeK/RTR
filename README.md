@@ -1,11 +1,35 @@
-# RTR 
-## MVP version
-Project
-References 
+# RTR (MVP)
+These issues, RTR attempts to tackle for risers.
+Risers are interesting because.
+Industry relevance
+Low level audio combination of FMOD low level and layer-based system build on top of it.
 
-## Design
+*Link to the plugin*
+
+*image on Pipeline*
+Info on pipeline
+
+*CODING EXAMPLES*
+*VIDEO*
+*SITE PAGE*
+
+## Mapping riser audio parameters to game
+*image*
+Info
+
+## Layer & modulation system
+*image*
+info
 
 ## Dataflow
+*image class diagram*
+Info
+
+*image both dataflows*
+Info both dataflows, and difference between engine specific and general low level audio system. Easy to create integration for other
+
+## Current stage: MVP reached
+*image on MVP*
 
 ## Improvements
 ### UI to add
