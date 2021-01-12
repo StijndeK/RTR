@@ -18,11 +18,16 @@ public:
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void onButtonEvent(ofxDatGuiButtonEvent e);
     void onToggleEvent(ofxDatGuiToggleEvent e);
-    void setAudioValue();
+    void initialiseAllValues();
     
     ofApp* _ofApp;
 
     ofxDatGuiValuePlotter* gainPlotter;
     ofxDatGuiWaveMonitor* waveMonitor;
+    ofxDatGuiToggle* padStartToggle;
+    ofxDatGuiToggle* padEndToggle;
+    ofxDatGuiToggle* fxToggle;
+    ofxDatGuiToggle* noiseToggle;
+    ofxDatGuiToggle* shepardsToggle;
 };
 

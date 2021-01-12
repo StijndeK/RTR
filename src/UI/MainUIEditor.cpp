@@ -24,17 +24,11 @@ void MainUIEditor::setup() {
     guiSound->onToggleEvent(this, &MainUIEditor::onToggleEvent);
     guiSound->addHeader(":: Sound Editor ::", false);
     // set the defaults from json
-    ofxDatGuiToggle* padStartToggle = guiSound->addToggle("Pad: Start", _ofApp->jsonSys.getValue("Pad: Start"));
-    ofxDatGuiToggle* padEndToggle = guiSound->addToggle("Pad: End", _ofApp->jsonSys.getValue("Pad: End"));
-    ofxDatGuiToggle* fxToggle = guiSound->addToggle("Fx", _ofApp->jsonSys.getValue("Fx"));
-    ofxDatGuiToggle* noiseToggle = guiSound->addToggle("Noise", _ofApp->jsonSys.getValue("Noise"));
-    ofxDatGuiToggle* shepardsToggle = guiSound->addToggle("Shepards", _ofApp->jsonSys.getValue("Shepards"));
-    //initialise (rest is initialised in setAudioValue). TODO: one way for every type of parameter instead of having to do different parameters a different way
-    onToggleEvent(padStartToggle);
-    onToggleEvent(padEndToggle);
-    onToggleEvent(fxToggle);
-    onToggleEvent(noiseToggle);
-    onToggleEvent(shepardsToggle);
+    padStartToggle = guiSound->addToggle("Pad: Start", _ofApp->jsonSys.getValue("Pad: Start"));
+    padEndToggle = guiSound->addToggle("Pad: End", _ofApp->jsonSys.getValue("Pad: End"));
+    fxToggle = guiSound->addToggle("Fx", _ofApp->jsonSys.getValue("Fx"));
+    noiseToggle = guiSound->addToggle("Noise", _ofApp->jsonSys.getValue("Noise"));
+    shepardsToggle = guiSound->addToggle("Shepards", _ofApp->jsonSys.getValue("Shepards"));
 
     // general gui
     ofxDatGui* guiGeneral = new ofxDatGui(255 + offset, 0 + offset);
@@ -47,8 +41,6 @@ void MainUIEditor::setup() {
     attackSlider->setPrecision(0);
     guiGeneral->addToggle("Fullscreen", false);
     guiGeneral->addButton("Select destination");
-
-
 
     // mock gui
     ofxDatGui* guiMock = new ofxDatGui(510 + offset, 0 + offset);
@@ -78,9 +70,8 @@ void MainUIEditor::setup() {
     //visualMock2->setTheme(new ofxDatGuiThemeSmoke());
     //visualMock2->setWidth(250);
 
-
     // initialise audio values
-    setAudioValue();
+    initialiseAllValues();
 }
 
 void MainUIEditor::draw() {
@@ -106,18 +97,35 @@ void MainUIEditor::initGui(ofxDatGui* gui) {
 
 void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 {
+    // export to json
     _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
-    setAudioValue();
+
+    string label = e.target->getLabel();
+
+    //setAudioValue();
+    if (label == "gain") {
+        _ofApp->audio.setGain(_ofApp->jsonSys.getValue(label));
+    }
+    else if (label == "attack") {
+        _ofApp->audio.setAttack(_ofApp->jsonSys.getValue(label));
+    }
+    else if (label == "range in ms") {
+        _ofApp->audio.setGainModulation(_ofApp->jsonSys.getValue(label));
+        _ofApp->audio.setPitchModulation(_ofApp->jsonSys.getValue(label));
+    }
+    else if (label == "offset") {
+        _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
+    }
+    else {
+        cout << "Error: slider label not found" << endl;
+    }
 }
 
-// TODO: use a switch
-// TODO: link all functions the same way (now for some setAudioValue is used and for others this if statement)
 // TODO: do data conversion within the UI class
-// TODO: other notes discussed
-// TODO: setters with only 1 element, then call the function for recalculation if necessary
 void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
 {
     string label = e.target->getLabel();
+
     if (label == "Start") {
         _ofApp->audio.startRiser();
     }
@@ -131,7 +139,7 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
         _ofApp->jsonSys.getPath();
     }
     else { 
-
+        cout << "Error: button label not found" << endl;
     }
 }
 
@@ -139,18 +147,26 @@ void MainUIEditor::onToggleEvent(ofxDatGuiToggleEvent e)
 {
     string label = e.target->getLabel();
 
-    // reverse on off value
+    // export to json
+    _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getChecked());
+
     _ofApp->audio.getLayerByName(label)->_onOff = e.target->getChecked();
     _ofApp->audio.debugMessage("onoff for label: " + label + to_string(_ofApp->audio.getLayerByName(label)->_onOff));
 
-    _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getChecked());
+    // NOTE: only toggles for layers exist, so no need to check which is pressed
 }
 
-void MainUIEditor::setAudioValue()
+void MainUIEditor::initialiseAllValues()
 {
     _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
-    _ofApp->audio.setModulation(_ofApp->audio.Amp, _ofApp->jsonSys.getValue("range in ms"), 1, 0);
-    _ofApp->audio.setModulation(_ofApp->audio.Pitch, _ofApp->jsonSys.getValue("range in ms"), 1, 0);
+    _ofApp->audio.setGainModulation(_ofApp->jsonSys.getValue("range in ms"));
+    _ofApp->audio.setPitchModulation(_ofApp->jsonSys.getValue("range in ms"));
     _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
     _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
+
+    onToggleEvent(padStartToggle);
+    onToggleEvent(padEndToggle);
+    onToggleEvent(fxToggle);
+    onToggleEvent(noiseToggle);
+    onToggleEvent(shepardsToggle);
 }

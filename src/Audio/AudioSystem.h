@@ -14,7 +14,7 @@ public:
 	AudioSystem();
 	~AudioSystem();
 
-	enum modulationParameter { Amp, Pitch};
+	//enum modulationParameter { Amp, Pitch};
 
 	void initFMODSystem();
 	void loadAudio();
@@ -30,8 +30,10 @@ public:
 	void stopAudioLayers(vector<ImpactLayer*> layersToStop);
 
 	// setters
+	// TODO: maybe move all setters to layers
 	void setGain(float gain);
-	void setModulation(modulationParameter type, float attack, float range, float curve);
+	void setGainModulation(float attack);
+	void setPitchModulation(float attack);
 	void setAttack(float attack);
 	void setOffset(float offset);
 	void setTimer(float slowdownTimeMs, float slowDownAmount = 1);

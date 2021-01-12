@@ -20,7 +20,7 @@ AudioSystem::AudioSystem()
 	modData.MockData();
 
 	setTimer(5000);
-	vector<float> vect(4, 1.f);
+	vector<float> vect(40, 0.f);
 	lastValues = vect;
 }
 
@@ -173,7 +173,7 @@ void AudioSystem::update() {
 
 	if (playing) {
 		// update timer
-		float currentTick = timePlaying.timerTick();
+		timePlaying.timerTick();
 
 		// this value to get to in the audio == the player position scaled to a value between 0 and 1
 		// float decimalValue = modData.ConvertToDecimalData(); 	// get value to get to from distance in float to value between 0 and 1 from distance values
@@ -214,7 +214,12 @@ void AudioSystem::update() {
 		// check every 10 ticks to set lessGain
 		if (currentTick == 10) {
 			// TODO: map value to a value between 0 and 1 in UE4
-			checkLessModifier(modData.currentDistanceToGetTo);
+			// TODO: check if in tool or in engine
+			// if in tool, use actuall gain, because slider can be moved instantly
+			float currentDistanceValue = mainOutputGainAllLayers;
+			// else
+			//float currentDistanceValue = modData.currentDistanceToGetTo;
+			checkLessModifier(currentDistanceValue);
 			currentTick = 0;
 		}
 		else {
@@ -259,6 +264,10 @@ void AudioSystem::startRiser()
 
 // begin release phase of riser, with timer that checks when to completely stop the riser
 void AudioSystem::startRelease() {
+	// check if offset is necessary
+	// check if max offset is necessary (maybe only needs half of the time, as the sound does need to get more intense)
+	// set values for offset to happen and sound to modulate to its conclusion
+
 	debugMessage("start stopping audio");
 	modulationTrigger = 0;
 	recordTimer = true;
@@ -314,29 +323,31 @@ void AudioSystem::setGain(float gain) {
 	_gain = pow(10, gain / 20);
 }
 
-void AudioSystem::setModulation(modulationParameter type, float attack, float range, float curve)
+void AudioSystem::setGainModulation(float attack)
 {
 	float release = 2000; // TODO: get release from UI
+	// TODO:  float range, float curve
 
-	if (type == Amp) {
-		debugMessage("setModulation: Amp. " + to_string(attack));
-		// mainGainModulation.CalculateStepSize(attack, attack * 1.5, release);
+	debugMessage("setModulation: Amp. " + to_string(attack));
 
-		for (auto layer : layerLoops) {
-			layer->mainGainMod.CalculateStepSize(attack, attack * 1.5, release);
-		}
-
-		// set timer length
-		stopTimer.setLength(release + 50);
+	for (auto layer : layerLoops) {
+		layer->mainGainMod.CalculateStepSize(attack, attack * 1.5, release);
 	}
-	else if (type == Pitch) {
-		debugMessage("setModulation: Pitch. " + to_string(attack));
-		//mainPitchModulation.CalculateStepSize(attack, attack * 1.5, release);
 
-		for (auto layer : layerLoops) {
-			if (layer->mainPitchModToggle) {
-				layer->mainPitchMod.CalculateStepSize(attack, attack * 1.5, release);
-			}
+	// set timer length
+	stopTimer.setLength(release + 50);
+}
+
+void AudioSystem::setPitchModulation(float attack)
+{
+	float release = 2000; // TODO: get release from UI
+	// TODO:  float range, float curve
+
+	debugMessage("setModulation: Pitch. " + to_string(attack));
+
+	for (auto layer : layerLoops) {
+		if (layer->mainPitchModToggle) {
+			layer->mainPitchMod.CalculateStepSize(attack, attack * 1.5, release);
 		}
 	}
 }
@@ -373,7 +384,13 @@ void AudioSystem::checkLessModifier(float value) {
 	}
 	currentDeviation /= lastValues.size();
 
-	debugMessage(to_string(currentDeviation));
+	float threshold = 0.1; // TODO: set this value from input
+
+	if (currentDeviation - value <= threshold && currentDeviation - value >= 0 - threshold) {
+		debugMessage("current deviation" + to_string(currentDeviation) = " | value: " + to_string(value));
+	}
+	// check only for if its bigger
+	// then check if has not changed enough
 }
 
 string AudioSystem::getAudioName(FMOD_SOUND* sound) {
