@@ -12,6 +12,8 @@ public:
     void setup();
     void draw();
 
+    void update();
+
     void initGui(ofxDatGui* gui);
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void onButtonEvent(ofxDatGuiButtonEvent e);
@@ -19,5 +21,8 @@ public:
     void setAudioValue();
     
     ofApp* _ofApp;
+
+    ofxDatGuiValuePlotter* gainPlotter;
+    ofxDatGuiWaveMonitor* waveMonitor;
 };
 

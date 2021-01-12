@@ -33,6 +33,15 @@ void BaseLayer::setFrequency(float frequency)
 		FMOD_Channel_SetFrequency(_channels[i], frequency);
 	}
 }
+
+float BaseLayer::getFrequency()
+{
+	float out = 0;
+	for (int i = 0; i < _sounds.size(); i++) {
+		FMOD_Channel_GetFrequency(_channels[i], &out);
+	}
+	return out;
+}
 // impactLayer
 ImpactLayer::ImpactLayer(string label, FMOD_SYSTEM* system) : BaseLayer(label, system)
 {

@@ -48,6 +48,8 @@ void MainUIEditor::setup() {
     guiGeneral->addToggle("Fullscreen", false);
     guiGeneral->addButton("Select destination");
 
+
+
     // mock gui
     ofxDatGui* guiMock = new ofxDatGui(510 + offset, 0 + offset);
     initGui(guiMock);
@@ -60,6 +62,23 @@ void MainUIEditor::setup() {
     ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("currentPosition", 0, 1, _ofApp->jsonSys.getValue("currentPosition"));  // init with saved value
     currentPositionSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
 
+    gainPlotter = guiMock->addValuePlotter("Gain", 0, 1);
+    gainPlotter->setValue(0);
+    gainPlotter->setSpeed(0.5);
+
+    waveMonitor = guiMock->addWaveMonitor("wave", 0, 0);
+    waveMonitor->setDrawMode(ofxDatGuiGraph::LINES);
+
+    // visualisation gui
+    //ofxDatGui* visualMock = new ofxDatGui(100, guiSound->getHeight() + 20);
+    //visualMock->setTheme(new ofxDatGuiThemeSmoke());
+    //visualMock->setWidth(250);
+
+    //ofxDatGui* visualMock2 = new ofxDatGui(450, guiSound->getHeight() + 20);
+    //visualMock2->setTheme(new ofxDatGuiThemeSmoke());
+    //visualMock2->setWidth(250);
+
+
     // initialise audio values
     setAudioValue();
 }
@@ -69,6 +88,13 @@ void MainUIEditor::draw() {
     ofSetHexColor(0x00FF00);
 
     _ofApp->jsonSys.draw();
+}
+
+void MainUIEditor::update() {
+    // plotters
+    gainPlotter->setValue(_ofApp->audio.mainOutputGainAllLayers);
+    waveMonitor->setAmplitude(_ofApp->audio.mainOutputGainAllLayers);
+    waveMonitor->setFrequency(_ofApp->audio.mainFrequencyAllLayers);
 }
 
 void MainUIEditor::initGui(ofxDatGui* gui) {

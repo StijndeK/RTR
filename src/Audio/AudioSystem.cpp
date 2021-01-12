@@ -20,6 +20,8 @@ AudioSystem::AudioSystem()
 	modData.MockData();
 
 	setTimer(5000);
+	vector<float> vect(4, 1.f);
+	lastValues = vect;
 }
 
 AudioSystem::~AudioSystem()
@@ -79,6 +81,7 @@ void AudioSystem::initFMODSystem() {
 		debugMessage("Fmod initialised");
 	}
 
+	FMOD_ChannelGroup_SetVolume(channelgroup, 0);
 	loadAudio();
 }
 
@@ -180,11 +183,21 @@ void AudioSystem::update() {
 		// attack envelope
 		float attackedGain = attackEnv.arAttackExp(_gain, envelopeTrigger);
 
+		// plotting
+		int onLayers = 0;
+		mainOutputGainAllLayers = 0;
+		mainFrequencyAllLayers = 0;
+
 		for (auto layer : layerLoops) {
 			if (layer->_onOff) {
 				// gain modulation
 				float outputGain = layer->mainGainMod.CalculateModulation(decimalValue, modulationTrigger);
 				layer->setVolume(attackedGain * outputGain);
+
+				// plotting
+				onLayers++;
+				mainOutputGainAllLayers += attackedGain * outputGain;
+				mainFrequencyAllLayers += layer->getFrequency();
 
 				// pitch modulation
 				if (layer->mainPitchModToggle) {
@@ -192,6 +205,20 @@ void AudioSystem::update() {
 					layer->setFrequency(outputPitch * (layer->frequencyRange * frequencyStandard));
 				}
 			}
+		}
+
+		// plotting
+		mainOutputGainAllLayers /= onLayers;
+		mainFrequencyAllLayers /= onLayers;
+
+		// check every 10 ticks to set lessGain
+		if (currentTick == 10) {
+			// TODO: map value to a value between 0 and 1 in UE4
+			checkLessModifier(modData.currentDistanceToGetTo);
+			currentTick = 0;
+		}
+		else {
+			currentTick++;
 		}
 
 		// check if playing should end
@@ -226,7 +253,7 @@ void AudioSystem::startRiser()
 	playing = true;
 	recordTimer = false;
 
-	//playAudioLoops();
+	FMOD_ChannelGroup_SetVolume(channelgroup, 1);
 	startAudioLayers(layerLoops);
 }
 
@@ -246,6 +273,7 @@ void AudioSystem::stopRiser()
 
 	stopAudioLayers(layerLoops);
 	stopAudioLayers(layerImpacts);
+	FMOD_ChannelGroup_SetVolume(channelgroup, 0);
 
 	playing = false;
 }
@@ -299,7 +327,7 @@ void AudioSystem::setModulation(modulationParameter type, float attack, float ra
 		}
 
 		// set timer length
-		stopTimer.setLength(release);
+		stopTimer.setLength(release + 50);
 	}
 	else if (type == Pitch) {
 		debugMessage("setModulation: Pitch. " + to_string(attack));
@@ -331,12 +359,21 @@ void AudioSystem::setTimer(float slowdownTimeMs, float slowDownAmount) {
 }
 
 // after how long and how much defiation in player position should the riser slow down
-void AudioSystem::setActionTimer(float slowdownTimeMs, float slowDownAmount, float deviationThreshold) {
-	// TODO: do this in timer maybe, or somewhere else
-	// check previous [x] values
-	// check if its [deviation] higher
-	// if so do slowdown modulation
-	// then if threshold is reached again, move up untill back to 1 (0db)
+void AudioSystem::checkLessModifier(float value) {
+	float deviationValue = 0.5; // if only distance moved changed half, start decreasing intensity of the riser
+
+	lastValues[currentValue] = value;
+
+	// set value in currentValue
+	currentValue = (currentValue + 1) % lastValues.size();
+
+	float currentDeviation = 0;
+	for (float v : lastValues) {
+		currentDeviation += v;
+	}
+	currentDeviation /= lastValues.size();
+
+	debugMessage(to_string(currentDeviation));
 }
 
 string AudioSystem::getAudioName(FMOD_SOUND* sound) {

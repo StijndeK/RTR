@@ -19,6 +19,7 @@ public:
 	void stopSounds();
 	void setVolume(float volume);
 	void setFrequency(float frequency);
+	float getFrequency();
 
 	vector<FMOD_SOUND*> _sounds;
 	// TODO: automatically assign channels to vector

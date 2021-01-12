@@ -35,7 +35,7 @@ public:
 	void setAttack(float attack);
 	void setOffset(float offset);
 	void setTimer(float slowdownTimeMs, float slowDownAmount = 1);
-	void setActionTimer(float slowdownTimeMs, float slowDownAmount = 1, float deviationThreshold = 1);
+	void checkLessModifier(float value);
 
 	// getters
 	string getAudioName(FMOD_SOUND* sound);
@@ -49,6 +49,11 @@ public:
 	float _gain = 1;
 	float gainSnapshot = 1;
 
+	// holds values to check deviation for lessGain
+	vector<float> lastValues; // TODO: fill immediatly
+	int currentValue = 0;
+	int currentTick = 0;
+
 	// vectors holding collections of layers initialised in load audio
 	vector<ImpactLayer*> layerImpacts;
 	vector<LoopLayer*> layerLoops;
@@ -56,6 +61,9 @@ public:
 	// data on the modulation, such as player position etc
 	ModulationData modData;
 
+	// values for UI plotters
+	float mainOutputGainAllLayers;
+	float mainFrequencyAllLayers;
 private:
 	// attack only envelope for the start of the sound
 	Envelopes attackEnv;

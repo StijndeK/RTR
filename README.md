@@ -14,7 +14,6 @@ References
 - curve
 - visualisation (drawing)
 ### features to add
-- *play more sounds per layer*
 - panning
 - panning modulation
 - *controll over parameter linking and grouping*
@@ -24,6 +23,5 @@ References
 - some wait or slow down time before turning 
 ### cleanup
 - remove global variables
-- *setters and getters in 1 functions*
+- *setters and getters cleanup*
 - *link audio element to a parameter*
-- *different types of layers*
