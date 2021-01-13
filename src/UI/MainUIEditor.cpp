@@ -19,10 +19,10 @@ void MainUIEditor::setup() {
     int offset = 5;
 
     // Title gui
-    ofxDatGui* guiTitle = new ofxDatGui(0 + offset, 5 + offset);
-    guiTitle->setTheme(new ofxDatGuiThemeSmoke());
-    guiTitle->setWidth(100);
-    guiTitle->addToggle("Fullscreen", false);
+    //ofxDatGui* guiTitle = new ofxDatGui(0 + offset, 5 + offset);
+    //guiTitle->setTheme(new ofxDatGuiThemeSmoke());
+    //guiTitle->setWidth(100);
+    //guiTitle->addToggle("Fullscreen", false);
 
     // Visualisation gui 1
     ofxDatGui* guiVis1 = new ofxDatGui(255 + offset, 5 + offset);
@@ -72,7 +72,7 @@ void MainUIEditor::setup() {
     guiMock->addButton("Impact");
     ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 5000, 20000, _ofApp->jsonSys.getValue("range in ms"));  // init with saved value
     rangeSlider->setPrecision(0);
-    ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("currentPosition", 0, 1, _ofApp->jsonSys.getValue("currentPosition"));  // init with saved value
+    ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("Position", 0, 1, _ofApp->jsonSys.getValue("Position"));  // init with saved value
     currentPositionSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
 
     // initialise audio values
@@ -81,11 +81,12 @@ void MainUIEditor::setup() {
 
 void MainUIEditor::draw() {
     ofBackground(ofColor(0, 0, 0));
-    ofSetHexColor(0x00FF00);
+    //ofSetHexColor(0x00FF00);
+    ofSetColor(240, 249, 250);
 
     //_ofApp->jsonSys.draw();
     std::stringstream ss;
-    ss << "\n" << "\n" << "\n" << "Real-Time Risers" << endl;
+    ss  << "\n" << "REAL-TIME RISERS" << endl;
     ofDrawBitmapString(ss.str(), 10, 14);
 }
 

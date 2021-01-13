@@ -13,7 +13,7 @@ public:
 	float downStep;
 	float release;
 	float updateRate = 60.f;
-	double amplitudeStartValue = 0.01;
+	double amplitudeStartValue = 0.001; // TODO: influence the curve by changing the start value
 
 	modulationType modType = exponential;
 private:

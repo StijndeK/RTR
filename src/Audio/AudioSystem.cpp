@@ -406,9 +406,9 @@ void AudioSystem::checkLessModifier(float value) {
 
 	float threshold = 0.1; // TODO: set this value from input
 
-	if (currentDeviation - value <= threshold && currentDeviation - value >= 0 - threshold) {
-		debugMessage("current deviation" + to_string(currentDeviation) = " | value: " + to_string(value));
-	}
+	//if (currentDeviation - value <= threshold && currentDeviation - value >= 0 - threshold) {
+	//	debugMessage("current deviation" + to_string(currentDeviation) = " | value: " + to_string(value));
+	//}
 	// check only for if its bigger
 	// then check if has not changed enough
 }
