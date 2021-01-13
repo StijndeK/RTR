@@ -317,7 +317,6 @@ void AudioSystem::stopAudioLayers(vector<ImpactLayer*> layersToStop) {
 	}
 }
 
-
 void AudioSystem::setGain(float gain) {
 	debugMessage("setGain: " + to_string(gain));
 	_gain = pow(10, gain / 20);
@@ -357,6 +356,11 @@ void AudioSystem::setAttack(float attack) {
 	attackEnv.setARExp(attack, 0);
 }
 
+void AudioSystem::setRelease(float release)
+{
+	// TODO: release set functionality
+}
+
 void AudioSystem::setOffset(float offset) {
 	// check if offset is necessary
 	// check if max offset is necessary (maybe only needs half of the time, as the sound does need to get more intense)
@@ -367,6 +371,22 @@ void AudioSystem::setOffset(float offset) {
 // generally this point should not be reached as action over time is checked by the action timer, but due to players maybe going afk etc, you might want the timer to slow down after a long amount of time
 void AudioSystem::setTimer(float slowdownTimeMs, float slowDownAmount) {
 	timePlaying.setLength(slowdownTimeMs);
+}
+
+string AudioSystem::getAudioName(FMOD_SOUND* sound) {
+	char name[256];
+	FMOD_Sound_GetName(sound, name, 256);
+	string outName = name;
+	return name;
+}
+
+LoopLayer* AudioSystem::getLayerByName(string name) {
+	for (auto l : layerLoops) {
+		if (l->_label == name) {
+			debugMessage("getLayerByName: " + l->_label);
+			return l;
+		}
+	}
 }
 
 // after how long and how much defiation in player position should the riser slow down
@@ -391,20 +411,4 @@ void AudioSystem::checkLessModifier(float value) {
 	}
 	// check only for if its bigger
 	// then check if has not changed enough
-}
-
-string AudioSystem::getAudioName(FMOD_SOUND* sound) {
-	char name[256];
-	FMOD_Sound_GetName(sound, name, 256);
-	string outName = name;
-	return name;
-}
-
-LoopLayer* AudioSystem::getLayerByName(string name) {
-	for (auto l : layerLoops) {
-		if (l->_label == name) {
-			debugMessage("getLayerByName: " + l->_label);
-			return l;
-		}
-	}
 }

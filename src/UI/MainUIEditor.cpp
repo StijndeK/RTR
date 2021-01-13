@@ -1,6 +1,8 @@
 #include "MainUIEditor.h"
 #include "ofApp.h"
 
+// TODO: skew factors for sliders
+
 MainUIEditor::MainUIEditor(ofApp* appReference)
 {
     _ofApp = appReference;
@@ -13,13 +15,32 @@ MainUIEditor::~MainUIEditor()
 void MainUIEditor::setup() {
     _ofApp->audio.initFMODSystem();
 
-    // TODO: skew factors for sliders
-
     // GUI
     int offset = 5;
 
+    // Title gui
+    ofxDatGui* guiTitle = new ofxDatGui(0 + offset, 5 + offset);
+    guiTitle->setTheme(new ofxDatGuiThemeSmoke());
+    guiTitle->setWidth(100);
+    guiTitle->addToggle("Fullscreen", false);
+
+    // Visualisation gui 1
+    ofxDatGui* guiVis1 = new ofxDatGui(255 + offset, 5 + offset);
+    guiVis1->setTheme(new ofxDatGuiThemeSmoke());
+    guiVis1->setWidth(250);
+    gainPlotter = guiVis1->addValuePlotter("Intensity", 0, 1);
+    gainPlotter->setValue(0);
+    gainPlotter->setSpeed(0.5);
+
+    // Visualisation gui 2
+    ofxDatGui* guiVis2 = new ofxDatGui(510 + offset, 5 + offset);
+    guiVis2->setTheme(new ofxDatGuiThemeSmoke());
+    guiVis2->setWidth(250);
+    waveMonitor = guiVis2->addWaveMonitor("Waveform", 0, 0);
+    waveMonitor->setDrawMode(ofxDatGuiGraph::LINES);
+
     // sound gui
-    ofxDatGui* guiSound = new ofxDatGui(0 + offset, 0 + offset);
+    ofxDatGui* guiSound = new ofxDatGui(0 + offset, 80 + offset);
     initGui(guiSound);
     guiSound->onToggleEvent(this, &MainUIEditor::onToggleEvent);
     guiSound->addHeader(":: Sound Editor ::", false);
@@ -31,19 +52,19 @@ void MainUIEditor::setup() {
     shepardsToggle = guiSound->addToggle("Shepards", _ofApp->jsonSys.getValue("Shepards"));
 
     // general gui
-    ofxDatGui* guiGeneral = new ofxDatGui(255 + offset, 0 + offset);
+    ofxDatGui* guiGeneral = new ofxDatGui(255 + offset, 80 + offset);
     initGui(guiGeneral);
     guiGeneral->addHeader(":: General Editor ::", false);
 
     ofxDatGuiSlider* gainSlider = guiGeneral->addSlider("gain", -90, 0, _ofApp->jsonSys.getValue("gain")); // init with saved value
     ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 2000, _ofApp->jsonSys.getValue("offset")); // init with saved value
     ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 200, 5000, _ofApp->jsonSys.getValue("attack")); // init with saved value
+    ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 50, 5000, _ofApp->jsonSys.getValue("release")); // init with saved value
     attackSlider->setPrecision(0);
-    guiGeneral->addToggle("Fullscreen", false);
     guiGeneral->addButton("Select destination");
 
     // mock gui
-    ofxDatGui* guiMock = new ofxDatGui(510 + offset, 0 + offset);
+    ofxDatGui* guiMock = new ofxDatGui(510 + offset, 80 + offset);
     initGui(guiMock);
     guiMock->addHeader(":: Mock Editor ::", false);
 
@@ -54,22 +75,6 @@ void MainUIEditor::setup() {
     ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("currentPosition", 0, 1, _ofApp->jsonSys.getValue("currentPosition"));  // init with saved value
     currentPositionSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
 
-    gainPlotter = guiMock->addValuePlotter("Gain", 0, 1);
-    gainPlotter->setValue(0);
-    gainPlotter->setSpeed(0.5);
-
-    waveMonitor = guiMock->addWaveMonitor("wave", 0, 0);
-    waveMonitor->setDrawMode(ofxDatGuiGraph::LINES);
-
-    // visualisation gui
-    //ofxDatGui* visualMock = new ofxDatGui(100, guiSound->getHeight() + 20);
-    //visualMock->setTheme(new ofxDatGuiThemeSmoke());
-    //visualMock->setWidth(250);
-
-    //ofxDatGui* visualMock2 = new ofxDatGui(450, guiSound->getHeight() + 20);
-    //visualMock2->setTheme(new ofxDatGuiThemeSmoke());
-    //visualMock2->setWidth(250);
-
     // initialise audio values
     initialiseAllValues();
 }
@@ -78,7 +83,10 @@ void MainUIEditor::draw() {
     ofBackground(ofColor(0, 0, 0));
     ofSetHexColor(0x00FF00);
 
-    _ofApp->jsonSys.draw();
+    //_ofApp->jsonSys.draw();
+    std::stringstream ss;
+    ss << "\n" << "\n" << "\n" << "Real-Time Risers" << endl;
+    ofDrawBitmapString(ss.str(), 10, 14);
 }
 
 void MainUIEditor::update() {
@@ -102,12 +110,14 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 
     string label = e.target->getLabel();
 
-    //setAudioValue();
     if (label == "gain") {
         _ofApp->audio.setGain(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "attack") {
         _ofApp->audio.setAttack(_ofApp->jsonSys.getValue(label));
+    }
+    else if (label == "release") {
+        _ofApp->audio.setRelease(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "range in ms") {
         _ofApp->audio.setGainModulation(_ofApp->jsonSys.getValue(label));

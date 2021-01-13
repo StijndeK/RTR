@@ -35,8 +35,10 @@ public:
 	void setGainModulation(float attack);
 	void setPitchModulation(float attack);
 	void setAttack(float attack);
+	void setRelease(float release);
 	void setOffset(float offset);
 	void setTimer(float slowdownTimeMs, float slowDownAmount = 1);
+
 	void checkLessModifier(float value);
 
 	// getters
