@@ -3,7 +3,7 @@ These issues, RTR attempts to tackle for risers.
 Risers are interesting because.
 Industry relevance
 Low level audio combination of FMOD low level and layer-based system build on top of it.
-![RTR_Pitch 001_Git](https://user-images.githubusercontent.com/31696336/104463933-a8d4f380-55b2-11eb-8546-52767fd80a8b.png)
+![RTR_Pitch 001_Git](https://user-images.githubusercontent.com/31696336/104464204-f3ef0680-55b2-11eb-9cd9-ab35327b2e41.png)
 
 ![RTR_Pitch 002_Git](https://user-images.githubusercontent.com/31696336/104463994-ba1e0000-55b2-11eb-90bb-23ad7fe00a7b.png)
 Info on pipeline
