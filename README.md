@@ -3,15 +3,10 @@ These issues, RTR attempts to tackle for risers.
 Risers are interesting because.
 Industry relevance
 Low level audio combination of FMOD low level and layer-based system build on top of it.
+![RTR_Pitch 001_Git](https://user-images.githubusercontent.com/31696336/104463933-a8d4f380-55b2-11eb-8546-52767fd80a8b.png)
 
-*Link to the plugin*
-
-*image on Pipeline*
+![RTR_Pitch 002_Git](https://user-images.githubusercontent.com/31696336/104463994-ba1e0000-55b2-11eb-90bb-23ad7fe00a7b.png)
 Info on pipeline
-
-*CODING EXAMPLES*
-*VIDEO*
-*SITE PAGE*
 
 ## Mapping riser audio parameters to game
 *image*
@@ -49,3 +44,7 @@ Info both dataflows, and difference between engine specific and general low leve
 - remove global variables
 - *setters and getters cleanup*
 - *link audio element to a parameter*
+### readme
+- *CODING EXAMPLES*
+- *VIDEO*
+- *SITE PAGE*
