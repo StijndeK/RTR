@@ -24,8 +24,9 @@ Different layers all have their own modulators, sounds and channels.
 
 Both the engine and the tool use the same audio and json-to-audio-translation systems. The tool has a user interface to edit settings and design the riser, and the engine plugin has a blueprint to get the game data to adapt to.
 
-*image both dataflows*
-Audio base class contains the specific elements for the surrounding framework and audio class itself is the exact same between all surrounding frameworks and engines.
+![RTR_DataflowSplit](https://user-images.githubusercontent.com/31696336/104633126-fb8bd980-569e-11eb-92f6-6616ba3970e0.png)
+
+The AudioBase class contains the specific elements for the surrounding framework and audio class itself is the exact same between all surrounding frameworks and engines.
 
 ## Next Improvements
 ### UI to add
