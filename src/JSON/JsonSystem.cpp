@@ -5,14 +5,6 @@
 set a check for if there is an engine connected or there needs to be a standalone
 */
 
-JsonSystem::JsonSystem()
-{
-}
-
-JsonSystem::~JsonSystem()
-{
-}
-
 void JsonSystem::setup()
 {
     parseJson();

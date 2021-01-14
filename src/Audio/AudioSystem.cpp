@@ -15,6 +15,13 @@ std::vector<std::string> AudioSystem::ofxFmodDeviceNames;
 bool AudioSystem::audioLoaded = false;
 bool AudioSystem::systemInitialised = false;
 
+int AudioSystem::currentValue = 0;
+int AudioSystem::currentTick = 0;
+vector<float> AudioSystem::lastValues;
+
+float AudioSystem::mainOutputGainAllLayers;
+float AudioSystem::mainFrequencyAllLayers;
+
 float AudioSystem::_gain = 1;
 float AudioSystem::gainSnapshot = 1;
 
@@ -24,6 +31,14 @@ bool AudioSystem::playing = false;		// true while audio is playing
 bool AudioSystem::recordTimer = false;	// true while release is playing, to get notified when to stop audio
 vector<ImpactLayer*> AudioSystem::layerImpacts;
 vector<LoopLayer*> AudioSystem::layerLoops;
+
+float AudioSystem::frequencyStandard = 44100;
+
+Envelopes AudioSystem::attackEnv;
+Timer AudioSystem::stopTimer;
+Timer AudioSystem::timePlaying;
+ModulationData AudioSystem::modData;
+
 
 //--------------------------------------------------------------
 AudioSystem::AudioSystem()
@@ -188,10 +203,8 @@ void AudioSystem::update() {
 		// update timer
 		timePlaying.timerTick();
 
-		// this value to get to in the audio == the player position scaled to a value between 0 and 1
-		// float decimalValue = modData.ConvertToDecimalData(); 	// get value to get to from distance in float to value between 0 and 1 from distance values
-		// in mock no need to convert, use the currentPositionSlider value (which is already between 0 and 1)
-		float decimalValue = modData.currentDistanceToGetTo;
+		// get the players position in float
+		float decimalValue = setDecimalValue(modData);
 
 		// attack envelope
 		float attackedGain = attackEnv.arAttackExp(_gain, envelopeTrigger);
@@ -226,13 +239,10 @@ void AudioSystem::update() {
 
 		// check every 10 ticks to set lessGain
 		if (currentTick == 10) {
-			// TODO: map value to a value between 0 and 1 in UE4
-			// TODO: check if in tool or in engine
-			// if in tool, use actuall gain, because slider can be moved instantly
-			float currentDistanceValue = mainOutputGainAllLayers;
-			// else
-			//float currentDistanceValue = modData.currentDistanceToGetTo;
+			float currentDistanceValue = setCurrentDistanceValue(decimalValue, mainOutputGainAllLayers);
+
 			checkLessModifier(currentDistanceValue);
+
 			currentTick = 0;
 		}
 		else {

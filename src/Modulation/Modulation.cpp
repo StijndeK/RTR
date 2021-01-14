@@ -1,8 +1,6 @@
 #include "Modulation.h"
 
 float Modulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger) {
-	// TODO: when attack at its peek of the mainall modulation, automatically call stop
-
 	// attack stage
 	if (trigger == 1) {
 		float buffer = 0.01; // buffer because value might not get to exact goal because of step sizes

@@ -4,9 +4,6 @@
 
 class JsonSystem{
 public:
-    JsonSystem();
-    ~JsonSystem();
-
     void setup();
     void draw();
 

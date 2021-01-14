@@ -5,7 +5,6 @@
 #include "AudioBase.h"
 #include "Modulation/Envelopes.h"
 #include "Modulation/Modulation.h"
-#include "Modulation/ModulationData.h"
 #include "Modulation/Timer.h"
 
 class AudioSystem : public AudioBase, public ModulationTypes {
@@ -16,13 +15,12 @@ public:
 
 	//enum modulationParameter { Amp, Pitch};
 
-	void initFMODSystem();
-	void loadAudio();
-
-	void update();
+	static void initFMODSystem();
+	static void loadAudio();
+	static void update();
 
 	static void startRiser();
-	void startRelease();
+	static void startRelease();
 	static void stopRiser();
 	static void startAudioLayers(vector<ImpactLayer*> layersToStart);
 	static void startAudioLayers(vector<LoopLayer*> layersToStart);
@@ -31,20 +29,20 @@ public:
 
 	// setters
 	// TODO: maybe move all setters to layers
-	void setGain(float gain);
-	void setGainModulation(float attack);
-	void setPitchModulation(float attack);
-	void setAttack(float attack);
-	void setRelease(float release);
-	void setOffset(float offset);
-	void setModulationCurve(float startValue);
-	void setTimer(float slowdownTimeMs, float slowDownAmount = 1);
+	static void setGain(float gain);
+	static void setGainModulation(float attack);
+	static void setPitchModulation(float attack);
+	static void setAttack(float attack);
+	static void setRelease(float release);
+	static void setOffset(float offset);
+	static void setModulationCurve(float startValue);
+	static void setTimer(float slowdownTimeMs, float slowDownAmount = 1);
 
-	void checkLessModifier(float value);
+	static void checkLessModifier(float value);
 
 	// getters
-	string getAudioName(FMOD_SOUND* sound);
-	LoopLayer* getLayerByName(string name);
+	static string getAudioName(FMOD_SOUND* sound);
+	static LoopLayer* getLayerByName(string name);
 
 	static bool audioLoaded;
 	static bool systemInitialised;
@@ -58,20 +56,20 @@ public:
 	static float gainSnapshot;
 
 	// holds values to check deviation for lessGain
-	vector<float> lastValues; // TODO: fill immediatly
-	int currentValue = 0;
-	int currentTick = 0;
+	static vector<float> lastValues; // TODO: fill immediatly
+	static int currentValue;
+	static int currentTick;
 
 	// vectors holding collections of layers initialised in load audio
 	static vector<ImpactLayer*> layerImpacts;
 	static vector<LoopLayer*> layerLoops;
 
 	// data on the modulation, such as player position etc
-	ModulationData modData;
+	static ModulationData modData;
 
 	// values for UI plotters
-	float mainOutputGainAllLayers;
-	float mainFrequencyAllLayers;
+	static float mainOutputGainAllLayers;
+	static float mainFrequencyAllLayers;
 
 	// FMOD
 	static int ofxFmodNumDevices;
@@ -85,12 +83,12 @@ public:
 	static FMOD_SYSTEM* sys;
 private:
 	// attack only envelope for the start of the sound
-	Envelopes attackEnv;
+	static Envelopes attackEnv;
 
 	// Timer on when to stop all audio after impact
-	Timer stopTimer;
+	static Timer stopTimer;
 	// Timer to check time after start
-	Timer timePlaying;
+	static Timer timePlaying;
 
-	float frequencyStandard = 44100;
+	static float frequencyStandard;
 };
