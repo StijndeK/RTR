@@ -1,13 +1,5 @@
 #include "ModulationData.h"
 
-ModulationData::ModulationData()
-{
-}
-
-ModulationData::~ModulationData()
-{
-}
-
 // set values that in the engine version need to be set using BPs
 void ModulationData::MockData() {
 	positionGoal = 10000;

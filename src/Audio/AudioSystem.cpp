@@ -367,6 +367,14 @@ void AudioSystem::setOffset(float offset) {
 	// set values for offset to happen and sound to modulate to its conclusion
 }
 
+void AudioSystem::setModulationCurve(float startValue)
+{
+	debugMessage("setcurve: " + to_string(startValue));
+	for (auto layer : layerLoops) {
+		layer->mainGainMod.amplitudeStartValue = startValue;
+	}
+}
+
 // after how long should the riser slowdown when goal hasnt been reached yet
 // generally this point should not be reached as action over time is checked by the action timer, but due to players maybe going afk etc, you might want the timer to slow down after a long amount of time
 void AudioSystem::setTimer(float slowdownTimeMs, float slowDownAmount) {

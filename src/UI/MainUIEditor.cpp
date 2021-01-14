@@ -19,10 +19,13 @@ void MainUIEditor::setup() {
     int offset = 5;
 
     // Title gui
-    //ofxDatGui* guiTitle = new ofxDatGui(0 + offset, 5 + offset);
-    //guiTitle->setTheme(new ofxDatGuiThemeSmoke());
-    //guiTitle->setWidth(100);
-    //guiTitle->addToggle("Fullscreen", false);
+    ofxDatGui* guiTitle = new ofxDatGui(0 + offset, 40 + offset);
+    guiTitle->setWidth(100);
+    guiTitle->addToggle("Fullscreen", false);
+   
+    ofxDatGui* guiTitle2 = new ofxDatGui(120 + offset, 40 + offset);
+    guiTitle2->setWidth(120);
+    guiTitle2->addButton("Project location");
 
     // Visualisation gui 1
     ofxDatGui* guiVis1 = new ofxDatGui(255 + offset, 5 + offset);
@@ -43,7 +46,7 @@ void MainUIEditor::setup() {
     ofxDatGui* guiSound = new ofxDatGui(0 + offset, 80 + offset);
     initGui(guiSound);
     guiSound->onToggleEvent(this, &MainUIEditor::onToggleEvent);
-    guiSound->addHeader(":: Sound Editor ::", false);
+    guiSound->addHeader(":: Sound ::", false);
     // set the defaults from json
     padStartToggle = guiSound->addToggle("Pad: Start", _ofApp->jsonSys.getValue("Pad: Start"));
     padEndToggle = guiSound->addToggle("Pad: End", _ofApp->jsonSys.getValue("Pad: End"));
@@ -54,25 +57,26 @@ void MainUIEditor::setup() {
     // general gui
     ofxDatGui* guiGeneral = new ofxDatGui(255 + offset, 80 + offset);
     initGui(guiGeneral);
-    guiGeneral->addHeader(":: General Editor ::", false);
+    guiGeneral->addHeader(":: General ::", false);
 
-    ofxDatGuiSlider* gainSlider = guiGeneral->addSlider("gain", -90, 0, _ofApp->jsonSys.getValue("gain")); // init with saved value
-    ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 2000, _ofApp->jsonSys.getValue("offset")); // init with saved value
-    ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 200, 5000, _ofApp->jsonSys.getValue("attack")); // init with saved value
-    ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 50, 5000, _ofApp->jsonSys.getValue("release")); // init with saved value
+    ofxDatGuiSlider* gainSlider = guiGeneral->addSlider("gain", -90, 0, _ofApp->jsonSys.getValue("gain")); 
+    ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 2000, _ofApp->jsonSys.getValue("offset")); 
+    ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 200, 5000, _ofApp->jsonSys.getValue("attack")); 
+    ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 50, 5000, _ofApp->jsonSys.getValue("release")); 
+    ofxDatGuiSlider* curveSlider = guiGeneral->addSlider("curve", 0.001, 0.1, _ofApp->jsonSys.getValue("curve"));
     attackSlider->setPrecision(0);
-    guiGeneral->addButton("Select destination");
+    curveSlider->setPrecision(3);
 
     // mock gui
     ofxDatGui* guiMock = new ofxDatGui(510 + offset, 80 + offset);
     initGui(guiMock);
-    guiMock->addHeader(":: Mock Editor ::", false);
+    guiMock->addHeader(":: Mock ::", false);
 
     guiMock->addButton("Start");
     guiMock->addButton("Impact");
-    ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 5000, 20000, _ofApp->jsonSys.getValue("range in ms"));  // init with saved value
+    ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 5000, 20000, _ofApp->jsonSys.getValue("range in ms")); 
     rangeSlider->setPrecision(0);
-    ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("Position", 0, 1, _ofApp->jsonSys.getValue("Position"));  // init with saved value
+    ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("Position", 0, 1, _ofApp->jsonSys.getValue("Position")); 
     currentPositionSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
 
     // initialise audio values
@@ -125,10 +129,13 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
         _ofApp->audio.setPitchModulation(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "offset") {
-        _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
+        _ofApp->audio.setOffset(_ofApp->jsonSys.getValue(label));
+    }
+    else if (label == "curve") {
+        _ofApp->audio.setModulationCurve(_ofApp->jsonSys.getValue(label));
     }
     else {
-        cout << "Error: slider label not found" << endl;
+        cout << "Error: slider label not found: " << label << endl;
     }
 }
 
@@ -150,7 +157,7 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
         _ofApp->jsonSys.getPath();
     }
     else { 
-        cout << "Error: button label not found" << endl;
+        cout << "Error: button label not found: " << label << endl;
     }
 }
 

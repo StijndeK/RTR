@@ -1,14 +1,6 @@
 #include "Envelopes.h"
 #include <cmath>
 
-Envelopes::Envelopes()
-{
-}
-
-Envelopes::~Envelopes()
-{
-}
-
 double Envelopes::arLin(double input, int trigger)
 {
     switch (currentEnvState) {

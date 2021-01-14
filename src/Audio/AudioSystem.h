@@ -37,6 +37,7 @@ public:
 	void setAttack(float attack);
 	void setRelease(float release);
 	void setOffset(float offset);
+	void setModulationCurve(float startValue);
 	void setTimer(float slowdownTimeMs, float slowDownAmount = 1);
 
 	void checkLessModifier(float value);
