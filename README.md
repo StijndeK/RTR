@@ -37,7 +37,6 @@ Both the engine and the tool use the same audio and json-to-audio-translation sy
 - panning modulation
 - *controll over parameter linking and grouping*
 - get minimum attack time from engine
-- mock improvements (dont have to do by hand)
 - *predict player time to goal and improve / lessen attack up speed*
 - some wait or slow down time before turning 
 ### cleanup
