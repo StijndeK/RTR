@@ -9,8 +9,5 @@ public:
 
 	float currentTick = 0;
 	float addValue;
-
-private:
-
 };
 

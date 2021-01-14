@@ -6,8 +6,6 @@
 #include "Modulation/Modulation.h"
 #include "Modulation/ModulationTypes.h"
 
-// TODO: add curve editing (by calculating max and min as with transitionfx (now exp or linear)) and range for the modulation (min and max value for the audio (now 0 and 1))
-
 class BaseLayer : public ModulationTypes
 {
 public:

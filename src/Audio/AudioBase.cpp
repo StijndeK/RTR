@@ -20,18 +20,18 @@ void AudioBase::getDriverInfo(int& ofxFmodNumDevices, FMOD_SYSTEM* system, std::
 	}
 }
 
+// this value to get to in the audio == the player position scaled to a value between 0 and 1
+// in mock no need to convert, use the currentPositionSlider value (which is already between 0 and 1)
+// in engine you would set the value like this: data.ConvertToDecimalData();
 float AudioBase::setDecimalValue(ModulationData& data)
 {
-	// this value to get to in the audio == the player position scaled to a value between 0 and 1
-	// in mock no need to convert, use the currentPositionSlider value (which is already between 0 and 1)
-	// in engine you would set the value like this: data.ConvertToDecimalData();
 	float decimalValue = data.currentDistanceToGetTo;
 	return decimalValue;
 }
 
+// map value to a value between 0 and 1 in UE4
+// if in tool, use gain (and decimalValue in engine), because slider can be moved instantly opposite to the player that has to take time to move
 float AudioBase::setCurrentDistanceValue(float decimValue, float gainValue)
 {
-	// map value to a value between 0 and 1 in UE4
-	// if in tool, use gain (and decimalValue in engine), because slider can be moved instantly opposite to the player that has to take time to move
 	return gainValue;
 }
