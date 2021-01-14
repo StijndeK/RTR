@@ -181,6 +181,7 @@ void MainUIEditor::initialiseAllValues()
     _ofApp->audio.setPitchModulation(_ofApp->jsonSys.getValue("range in ms"));
     _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
     _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
+    _ofApp->audio.setModulationCurve(_ofApp->jsonSys.getValue("curve"));
 
     onToggleEvent(padStartToggle);
     onToggleEvent(padEndToggle);

@@ -1,20 +1,31 @@
 #include "AudioSystem.h"
 
-// General FMOD variables
-// TODO: move these variables
-static FMOD_CHANNELGROUP* channelgroup;
-static FMOD_SYSTEM* sys;
+// initialise static FMOD variables
+FMOD_CHANNELGROUP* AudioSystem::channelgroup;
+FMOD_SYSTEM* AudioSystem::sys;
 
-static int ofxFmodNumDevices = 0;
-static int ofxFmodPreferedDevice = 0;
-static int ofxFmodDevice = 0;
-static unsigned int buffersize = 1024;
+int AudioSystem::ofxFmodNumDevices = 0;
+int AudioSystem::ofxFmodPreferedDevice = 0;
+int AudioSystem::ofxFmodDevice = 0;
+unsigned int AudioSystem::buffersize = 1024;
 
-static std::vector<std::string> ofxFmodDeviceNames;
+std::vector<std::string> AudioSystem::ofxFmodDeviceNames;
 
-static bool audioLoaded = false;
-static bool systemInitialised = false;
+// Initialise other static members
+bool AudioSystem::audioLoaded = false;
+bool AudioSystem::systemInitialised = false;
 
+float AudioSystem::_gain = 1;
+float AudioSystem::gainSnapshot = 1;
+
+bool AudioSystem::modulationTrigger = 0;			// true on attack when playing
+bool AudioSystem::envelopeTrigger = 0;	// true on start, then immediatly false
+bool AudioSystem::playing = false;		// true while audio is playing
+bool AudioSystem::recordTimer = false;	// true while release is playing, to get notified when to stop audio
+vector<ImpactLayer*> AudioSystem::layerImpacts;
+vector<LoopLayer*> AudioSystem::layerLoops;
+
+//--------------------------------------------------------------
 AudioSystem::AudioSystem()
 {
 	modData.MockData();
@@ -42,6 +53,7 @@ AudioSystem::~AudioSystem()
 	layerImpacts.clear();
 }
 
+//--------------------------------------------------------------
 void AudioSystem::initFMODSystem() {
 	if (systemInitialised == false) {
 		// init
@@ -168,6 +180,7 @@ void AudioSystem::loadAudio() {
 	}
 }
 
+//--------------------------------------------------------------
 void AudioSystem::update() {
 	FMOD_System_Update(sys);
 
@@ -243,6 +256,7 @@ void AudioSystem::update() {
 	}
 }
 
+//--------------------------------------------------------------
 void AudioSystem::startRiser()
 {
 	stopRiser();
@@ -317,6 +331,7 @@ void AudioSystem::stopAudioLayers(vector<ImpactLayer*> layersToStop) {
 	}
 }
 
+//--------------------------------------------------------------
 void AudioSystem::setGain(float gain) {
 	debugMessage("setGain: " + to_string(gain));
 	_gain = pow(10, gain / 20);
@@ -381,6 +396,7 @@ void AudioSystem::setTimer(float slowdownTimeMs, float slowDownAmount) {
 	timePlaying.setLength(slowdownTimeMs);
 }
 
+//--------------------------------------------------------------
 string AudioSystem::getAudioName(FMOD_SOUND* sound) {
 	char name[256];
 	FMOD_Sound_GetName(sound, name, 256);
@@ -397,6 +413,7 @@ LoopLayer* AudioSystem::getLayerByName(string name) {
 	}
 }
 
+//--------------------------------------------------------------
 // after how long and how much defiation in player position should the riser slow down
 void AudioSystem::checkLessModifier(float value) {
 	float deviationValue = 0.5; // if only distance moved changed half, start decreasing intensity of the riser

@@ -21,13 +21,13 @@ public:
 
 	void update();
 
-	void startRiser();
+	static void startRiser();
 	void startRelease();
-	void stopRiser();
-	void startAudioLayers(vector<ImpactLayer*> layersToStart);
-	void startAudioLayers(vector<LoopLayer*> layersToStart);
-	void stopAudioLayers(vector<LoopLayer*> layersToStop);
-	void stopAudioLayers(vector<ImpactLayer*> layersToStop);
+	static void stopRiser();
+	static void startAudioLayers(vector<ImpactLayer*> layersToStart);
+	static void startAudioLayers(vector<LoopLayer*> layersToStart);
+	static void stopAudioLayers(vector<LoopLayer*> layersToStop);
+	static void stopAudioLayers(vector<ImpactLayer*> layersToStop);
 
 	// setters
 	// TODO: maybe move all setters to layers
@@ -46,13 +46,16 @@ public:
 	string getAudioName(FMOD_SOUND* sound);
 	LoopLayer* getLayerByName(string name);
 
-	bool modulationTrigger = 0;			// true on attack when playing
-	bool envelopeTrigger = 0;	// true on start, then immediatly false
-	bool playing = false;		// true while audio is playing
-	bool recordTimer = false;	// true while release is playing, to get notified when to stop audio
+	static bool audioLoaded;
+	static bool systemInitialised;
 
-	float _gain = 1;
-	float gainSnapshot = 1;
+	static bool modulationTrigger;			// true on attack when playing
+	static bool envelopeTrigger;	// true on start, then immediatly false
+	static bool playing;		// true while audio is playing
+	static bool recordTimer;	// true while release is playing, to get notified when to stop audio
+
+	static float _gain;
+	static float gainSnapshot;
 
 	// holds values to check deviation for lessGain
 	vector<float> lastValues; // TODO: fill immediatly
@@ -60,8 +63,8 @@ public:
 	int currentTick = 0;
 
 	// vectors holding collections of layers initialised in load audio
-	vector<ImpactLayer*> layerImpacts;
-	vector<LoopLayer*> layerLoops;
+	static vector<ImpactLayer*> layerImpacts;
+	static vector<LoopLayer*> layerLoops;
 
 	// data on the modulation, such as player position etc
 	ModulationData modData;
@@ -69,6 +72,17 @@ public:
 	// values for UI plotters
 	float mainOutputGainAllLayers;
 	float mainFrequencyAllLayers;
+
+	// FMOD
+	static int ofxFmodNumDevices;
+	static int ofxFmodPreferedDevice;
+	static int ofxFmodDevice;
+	static unsigned int buffersize;
+
+	static std::vector<std::string> ofxFmodDeviceNames;
+
+	static FMOD_CHANNELGROUP* channelgroup;
+	static FMOD_SYSTEM* sys;
 private:
 	// attack only envelope for the start of the sound
 	Envelopes attackEnv;

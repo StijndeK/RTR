@@ -21,7 +21,7 @@ float Modulation::CalculateModulation(float currentDistanceToGetToInRange, int t
 	// release value is fixed and not influenced by game data
 	// release modulation is always exponential
 	else {
-		if (currentDistance > amplitudeStartValue) {
+		if (currentDistance > 0.01) {
 			currentDistance *= release;
 		}
 	}
