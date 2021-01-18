@@ -74,10 +74,10 @@ void MainUIEditor::setup() {
 
     guiMock->addButton("Start");
     guiMock->addButton("Impact");
-    ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 5000, 20000, _ofApp->jsonSys.getValue("range in ms")); 
+    ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 5000, 20000, 10000); 
     rangeSlider->setPrecision(0);
     ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("Position", 0, 1, _ofApp->jsonSys.getValue("Position")); 
-    currentPositionSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
+    //currentPositionSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
 
     // initialise audio values
     initialiseAllValues();
@@ -111,17 +111,19 @@ void MainUIEditor::initGui(ofxDatGui* gui) {
 void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 {
     // export to json
-    _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
 
     string label = e.target->getLabel();
 
     if (label == "gain") {
+        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setGain(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "attack") {
+        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setAttack(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "release") {
+        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setRelease(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "range in ms") {
@@ -129,10 +131,15 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
         _ofApp->audio.setPitchModulation(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "offset") {
+        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setOffset(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "curve") {
+        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setModulationCurve(_ofApp->jsonSys.getValue(label));
+    }
+    else if (label == "Position") {
+        _ofApp->audio.setPosition(_ofApp->jsonSys.getValue(label));
     }
     else {
         cout << "Error: slider label not found: " << label << endl;
@@ -177,10 +184,10 @@ void MainUIEditor::onToggleEvent(ofxDatGuiToggleEvent e)
 void MainUIEditor::initialiseAllValues()
 {
     _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
+    _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
     _ofApp->audio.setGainModulation(_ofApp->jsonSys.getValue("range in ms"));
     _ofApp->audio.setPitchModulation(_ofApp->jsonSys.getValue("range in ms"));
     _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
-    _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
     _ofApp->audio.setModulationCurve(_ofApp->jsonSys.getValue("curve"));
 
     onToggleEvent(padStartToggle);

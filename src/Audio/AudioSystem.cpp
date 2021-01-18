@@ -26,9 +26,9 @@ float AudioSystem::_gain = 1;
 float AudioSystem::gainSnapshot = 1;
 
 bool AudioSystem::modulationTrigger = 0;			// true on attack when playing
-bool AudioSystem::envelopeTrigger = 0;	// true on start, then immediatly false
-bool AudioSystem::playing = false;		// true while audio is playing
-bool AudioSystem::recordTimer = false;	// true while release is playing, to get notified when to stop audio
+bool AudioSystem::envelopeTrigger = 0;				// true on start, then immediatly false
+bool AudioSystem::playing = false;					// true while audio is playing
+bool AudioSystem::recordTimer = false;				// true while release is playing, to get notified when to stop audio
 vector<ImpactLayer*> AudioSystem::layerImpacts;
 vector<LoopLayer*> AudioSystem::layerLoops;
 
@@ -38,7 +38,6 @@ Envelopes AudioSystem::attackEnv;
 Timer AudioSystem::stopTimer;
 Timer AudioSystem::timePlaying;
 ModulationData AudioSystem::modData;
-
 
 //--------------------------------------------------------------
 AudioSystem::AudioSystem()
@@ -53,16 +52,10 @@ AudioSystem::AudioSystem()
 AudioSystem::~AudioSystem()
 {
 	for (auto layer : layerLoops) {
-		for (auto s : layer->_sounds) {
-			FMOD_Sound_Release(s);
-		}
 		delete layer;
 	}
 	layerLoops.clear();
 	for (auto layer : layerImpacts) {
-		for (auto s : layer->_sounds) {
-			FMOD_Sound_Release(s);
-		}
 		delete layer;
 	}
 	layerImpacts.clear();
@@ -190,8 +183,6 @@ void AudioSystem::loadAudio() {
 
 		audioLoaded = true;
 		debugMessage("audio loaded");
-
-		FMOD_Channel_SetVolume(getLayerByName("Noise")->_channel, 0.2);
 	}
 }
 
@@ -398,6 +389,11 @@ void AudioSystem::setModulationCurve(float startValue)
 	for (auto layer : layerLoops) {
 		layer->mainGainMod.amplitudeStartValue = startValue;
 	}
+}
+
+void AudioSystem::setPosition(float position)
+{
+	modData.currentDistanceToGetTo = position;
 }
 
 // after how long should the riser slowdown when goal hasnt been reached yet

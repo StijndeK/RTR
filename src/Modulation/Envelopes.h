@@ -9,6 +9,7 @@ public:
 
 	void setARLin(double attackMs, double releaseMs);
 	void setARExp(double attackMs, double releaseMs);
+	void setAExp(double attackMs);
 
 	// arlin envelope states
 	enum ArLinState { ATTACK, HOLD, RELEASE, STOP };

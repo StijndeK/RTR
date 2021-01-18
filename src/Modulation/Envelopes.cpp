@@ -107,3 +107,10 @@ void Envelopes::setARExp(double attackMs, double releaseMs)
     attack = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * (attackMs / 1000.0)));
     release = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * (releaseMs / 1000.0)));
 }
+
+void Envelopes::setAExp(double attackMs)
+{
+    if (attackMs != 0) {
+        attack = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * (attackMs / 1000.0)));
+    }
+}

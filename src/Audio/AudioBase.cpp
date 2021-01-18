@@ -1,5 +1,6 @@
 #include "AudioBase.h"
 
+
 void AudioBase::debugMessage(string message)
 {
 	std::cout << message << std::endl;
@@ -35,3 +36,5 @@ float AudioBase::setCurrentDistanceValue(float decimValue, float gainValue)
 {
 	return gainValue;
 }
+
+
