@@ -43,6 +43,10 @@ The AudioBase class contains the specific elements for the surrounding framework
 - get minimum attack time from engine
 - *predict player time to goal and improve / lessen attack up speed*
 - some wait or slow down time before turning 
+- *curve per layer*
+- *ask for plugin location and save it*
+- *visualise envelopes while making them*
+- *convert curve value to 0 1 value*
 ### cleanup
 - only stop sounds that are playing
 ### UE4 integration
