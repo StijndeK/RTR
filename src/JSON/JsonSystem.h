@@ -16,5 +16,5 @@ private:
     ofxJSONElement result;
     ofFile jsonFile;
 
-    std::string file = "C:\\Users\\sdkst\\Documents\\Unreal Projects\\MyProject3\\Plugins\\myPlugin\\Content\\example.json"; // TODO: get from input
+    std::string file = "C:\\Users\\sdkst\\Documents\\Unreal Projects\\Project_Rookery\\Plugins\\RTR\\Content\\example.json"; // TODO: get from input
 };

@@ -210,6 +210,7 @@ void AudioSystem::update() {
 				// gain modulation
 				float outputGain = layer->mainGainMod.CalculateModulation(decimalValue, modulationTrigger);
 				layer->setVolume(attackedGain * outputGain);
+				debugMessage(to_string(attackedGain * outputGain));
 
 				// plotting
 				onLayers++;
