@@ -33,11 +33,12 @@ The AudioBase class contains the specific elements for the surrounding framework
 ## Improvements
 ![RTR_MVPRoadmap](https://user-images.githubusercontent.com/31696336/105043909-66a22b00-5a66-11eb-8fc1-6c9146cb2036.png)
 
-### UI to add
+### GUI
 - *ranges and curves for modulation*
 - modulation direction
 - curve
 - visualisation (drawing)
+- huisstijl & logo
 ### features to add
 - panning
 - panning modulation
