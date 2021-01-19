@@ -45,6 +45,8 @@ The AudioBase class contains the specific elements for the surrounding framework
 - some wait or slow down time before turning 
 - *curve per layer*
 - *ask for plugin location and save it*
+- *visualise envelopes while making them*
+- *convert curve value to 0 1 value*
 ### cleanup
 - only stop sounds that are playing
 ### UE4 integration
