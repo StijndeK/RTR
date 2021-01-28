@@ -1,7 +1,7 @@
 # RTR (MVP)
 Adapting parameters of audio in real-time, instead of playing cutup pieces of the audio based on game state and events, could be a practical and efficient game audio design method. Time and energy can be saved by using adaptive risers instead of other currently standard nonlinear audio development techniques. RTR is a game audio tool that lets the user design a riser that adapts to game data in real time. Not only does this provide an original adapting riser effect, the tool aims to optimise the workflow. RTR is made using a low level audio combination of [FMOD](https://fmod.com/) low level and layer-based system build on top of it.
 
-The tool is implemented in UE4 using the [UE4 integration plugin](https://github.com/StijndeK/RTR_UE4Integration).
+The tool can be implemented in UE4 using the [UE4 integration plugin](https://github.com/StijndeK/RTR_UE4Integration).
 
 **Current status: MVP reached**
 
