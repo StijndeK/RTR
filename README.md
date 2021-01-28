@@ -7,7 +7,7 @@ The tool can be implemented in UE4 using the [UE4 integration plugin](https://gi
 
 Risers are an interesting audio effect to implement in an adaptive system, because instead of synchronising to their start point they are synced to the impact in between the attack and release. By adapting parameters such as pitch and amplitude in the attack of the riser, the riser can adapt to nonlinear game data.
 
-![RTR_Pitch 002_Git](https://user-images.githubusercontent.com/31696336/104463994-ba1e0000-55b2-11eb-90bb-23ad7fe00a7b.png)
+<img width="1235" alt="Screenshot 2021-01-28 at 16 03 13" src="https://user-images.githubusercontent.com/31696336/106205781-55bc8c80-61bf-11eb-9aab-bfdd4743eaab.png">
 
 The user can design the riser and some options on how fast it should adapt in the standalone tool. This tool exports the users choices to a .Json datafile, that is imported by an Unreal engine 4 (or any other engine) plugin. In the engine some game data is passed on to the plugin. The standalone tool and its UE4 plugin use the same audio playing and layering system, so that the audio can be tested instantaniously within the tool as well as the engine.
 
