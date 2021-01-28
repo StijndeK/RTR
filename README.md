@@ -3,9 +3,9 @@ Adapting parameters of audio in real-time, instead of playing cutup pieces of th
 
 The tool can be implemented in UE4 using the [UE4 integration plugin](https://github.com/StijndeK/RTR_UE4Integration).
 
-![RTR_Pitch 001_Git](https://user-images.githubusercontent.com/31696336/104464204-f3ef0680-55b2-11eb-9cd9-ab35327b2e41.png)
+![Screenshot (23)](https://user-images.githubusercontent.com/31696336/106205591-05452f00-61bf-11eb-9e43-9032ad42582e.png)
 
-Risers are interesting because instead of synchronising to their start point, they are synced to the impact in between the attack and release. By adapting parameters such as pitch and amplitude in the attack of the riser, the riser can adapt to nonlinear game data.
+Risers are an interesting audio effect to implement in an adaptive system, because instead of synchronising to their start point they are synced to the impact in between the attack and release. By adapting parameters such as pitch and amplitude in the attack of the riser, the riser can adapt to nonlinear game data.
 
 ![RTR_Pitch 002_Git](https://user-images.githubusercontent.com/31696336/104463994-ba1e0000-55b2-11eb-90bb-23ad7fe00a7b.png)
 
@@ -34,12 +34,9 @@ The AudioBase class contains the specific elements for the surrounding framework
 ### GUI
 - *ranges and curves for modulation*
 - modulation direction
-- curve
 - visualisation (drawing)
-- huisstijl & logo
 ### features to add
-- panning
-- panning modulation
+- panning & panning modulation
 - *controll over parameter linking and grouping*
 - get minimum attack time from engine
 - *predict player time to goal and improve / lessen attack up speed*
@@ -52,8 +49,3 @@ The AudioBase class contains the specific elements for the surrounding framework
 - only stop sounds that are playing
 ### UE4 integration
 - plotting in seperate place
-- clean up rest of audiosystem to implement in ue4
-### readme
-- *Coding examples*
-- *video*
-- *Site page*
