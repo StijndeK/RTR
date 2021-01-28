@@ -3,8 +3,6 @@ Adapting parameters of audio in real-time, instead of playing cutup pieces of th
 
 The tool can be implemented in UE4 using the [UE4 integration plugin](https://github.com/StijndeK/RTR_UE4Integration).
 
-**Current status: MVP reached**
-
 ![RTR_Pitch 001_Git](https://user-images.githubusercontent.com/31696336/104464204-f3ef0680-55b2-11eb-9cd9-ab35327b2e41.png)
 
 Risers are interesting because instead of synchronising to their start point, they are synced to the impact in between the attack and release. By adapting parameters such as pitch and amplitude in the attack of the riser, the riser can adapt to nonlinear game data.
