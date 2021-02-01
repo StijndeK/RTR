@@ -1,8 +1,6 @@
 #include "MainUIEditor.h"
 #include "ofApp.h"
 
-// TODO: skew factors for sliders
-
 MainUIEditor::MainUIEditor(ofApp* appReference)
 {
     _ofApp = appReference;
@@ -19,12 +17,14 @@ void MainUIEditor::setup() {
     int offset = 5;
 
     // Title gui
-    ofxDatGui* guiTitle = new ofxDatGui(0 + offset, 40 + offset);
-    guiTitle->setWidth(100);
+    ofxDatGui* guiTitle = new ofxDatGui(10 + offset, 45 + offset);
+    guiTitle->setTheme(new ofxDatGuiThemeSmoke());
+    guiTitle->setWidth(110);
     guiTitle->addToggle("Fullscreen", false);
    
-    ofxDatGui* guiTitle2 = new ofxDatGui(120 + offset, 40 + offset);
-    guiTitle2->setWidth(120);
+    ofxDatGui* guiTitle2 = new ofxDatGui(130 + offset, 45 + offset);
+    guiTitle2->setTheme(new ofxDatGuiThemeSmoke());
+    guiTitle2->setWidth(110);
     guiTitle2->addButton("Project location");
 
     // Visualisation gui 1
@@ -84,14 +84,13 @@ void MainUIEditor::setup() {
 }
 
 void MainUIEditor::draw() {
-    ofBackground(ofColor(0, 0, 0));
-    //ofSetHexColor(0x00FF00);
-    ofSetColor(240, 249, 250);
+    ofBackground(ofColor(141, 158, 171));
 
-    //_ofApp->jsonSys.draw();
+    ofSetColor(0, 0, 0);
+    
     std::stringstream ss;
     ss  << "\n" << "REAL-TIME RISERS" << endl;
-    ofDrawBitmapString(ss.str(), 10, 14);
+    ofDrawBitmapString(ss.str(), 20, 15);
 }
 
 void MainUIEditor::update() {

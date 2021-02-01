@@ -13,8 +13,6 @@ public:
 	AudioSystem();
 	~AudioSystem();
 
-	//enum modulationParameter { Amp, Pitch};
-
 	static void initFMODSystem();
 	static void loadAudio();
 	static void update();
@@ -28,7 +26,6 @@ public:
 	static void stopAudioLayers(vector<ImpactLayer*> layersToStop);
 
 	// setters
-	// TODO: maybe move all setters to layers
 	static void setGain(float gain);
 	static void setGainModulation(float attack);
 	static void setPitchModulation(float attack);
@@ -48,10 +45,10 @@ public:
 	static bool audioLoaded;
 	static bool systemInitialised;
 
-	static bool modulationTrigger;			// true on attack when playing
-	static bool envelopeTrigger;	// true on start, then immediatly false
-	static bool playing;		// true while audio is playing
-	static bool recordTimer;	// true while release is playing, to get notified when to stop audio
+	static bool modulationTrigger;		// true on attack when playing
+	static bool envelopeTrigger;		// true on start, then immediatly false
+	static bool playing;				// true while audio is playing
+	static bool recordTimer;			// true while release is playing, to get notified when to stop audio
 
 	static float _gain;
 	static float gainSnapshot;

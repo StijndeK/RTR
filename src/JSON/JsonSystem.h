@@ -9,12 +9,12 @@ public:
 
     void parseJson();
     void getPath();
-    void setValue(std::string type, float value); // TODO: struct so that value can be multiple types of values
+    void setValue(std::string type, float value);
     float getValue(std::string type);
     
 private:
     ofxJSONElement result;
     ofFile jsonFile;
 
-    std::string file = "C:\\Users\\sdkst\\Documents\\Unreal Projects\\Project_Rookery\\Plugins\\RTR\\Content\\example.json"; // TODO: get from input
+    std::string file = "C:\\Users\\sdkst\\Documents\\Unreal Projects\\Project_Rookery\\Plugins\\RTR\\Content\\example.json"; 
 };

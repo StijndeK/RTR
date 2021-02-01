@@ -11,7 +11,6 @@ public:
 
     void setup();
     void draw();
-
     void update();
 
     void initGui(ofxDatGui* gui);
@@ -20,6 +19,7 @@ public:
     void onToggleEvent(ofxDatGuiToggleEvent e);
     void initialiseAllValues();
     
+private:
     ofApp* _ofApp;
 
     ofxDatGuiValuePlotter* gainPlotter;

@@ -1,5 +1,6 @@
 #include "Layer.h"
 
+//--------------------------------------------------------------
 // baseLayer
 BaseLayer::BaseLayer(string label, FMOD_SYSTEM* system)
 {
@@ -42,6 +43,8 @@ float BaseLayer::getFrequency()
 	}
 	return out;
 }
+
+//--------------------------------------------------------------
 // impactLayer
 ImpactLayer::ImpactLayer(string label, FMOD_SYSTEM* system) : BaseLayer(label, system)
 {
@@ -57,6 +60,7 @@ void ImpactLayer::startSounds()
 	FMOD_System_PlaySound(_system, FMOD_CHANNEL_FREE, _sounds[randValue], false, &_channels[randValue]);
 }
 
+//--------------------------------------------------------------
 // loopLayer
 LoopLayer::LoopLayer(string label, FMOD_SYSTEM* system) : BaseLayer(label, system)
 {

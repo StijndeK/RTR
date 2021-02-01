@@ -10,9 +10,10 @@ public:
 
 	float currentDistance = 0;
 	float updateRate = 60.f;
-	double amplitudeStartValue = 0.001; // TODO: influence the curve by changing the start value
+	double amplitudeStartValue = 0.001;
 
 	modulationType modType = exponential;
+
 private:
 	float upStep;
 	float downStep;

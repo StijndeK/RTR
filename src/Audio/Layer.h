@@ -20,7 +20,6 @@ public:
 	float getFrequency();
 
 	vector<FMOD_SOUND*> _sounds;
-	// TODO: automatically assign channels to vector
 	vector<FMOD_CHANNEL*> _channels;
 	FMOD_CHANNEL* _channel;
 	FMOD_CHANNEL* channel2;
@@ -56,6 +55,6 @@ public:
 
 	// set if pitch mod should be on, main gain mod and less gain mod is always on
 	bool mainPitchModToggle = false;
-	float frequencyRange = 1.5; // TODO: create UI setting for this value
+	float frequencyRange = 1.5;
 };
 
