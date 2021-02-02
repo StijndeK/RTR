@@ -17,7 +17,7 @@ Audio parameters are mapped to game data in different ways. Aspects such as play
 ## Layer & modulation system
 ![RTR_Layersystem](https://user-images.githubusercontent.com/31696336/104494075-41c93600-55d6-11eb-9480-007c5f8846e3.png)
 
-Different layers all have their own modulators, sounds and channels.
+The audio is divided into two types of layers. Evert layer has its own modulation, sounds and channels.
 
 ## Dataflow
 ![RTR_GeneralDataflow2](https://user-images.githubusercontent.com/31696336/104494070-41309f80-55d6-11eb-9640-c1777158fe26.png)
@@ -26,7 +26,7 @@ Both the engine and the tool use the same audio and json-to-audio-translation sy
 
 ![RTR_DataflowSplit](https://user-images.githubusercontent.com/31696336/104633126-fb8bd980-569e-11eb-92f6-6616ba3970e0.png)
 
-The AudioBase class contains the specific elements for the surrounding framework and audio class itself is the exact same between all surrounding frameworks and engines.
+The AudioBase class contains the specific elements for the surrounding framework, so that the rest of the AudioSystem is exactly the same for every framework or engine. For example, the AudioBase handles debugmessages as every engine has its own debugging system build in. 
 
 ## Improvements
 ![RTR_MVPRoadmap](https://user-images.githubusercontent.com/31696336/105043909-66a22b00-5a66-11eb-8fc1-6c9146cb2036.png)
