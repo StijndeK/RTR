@@ -44,7 +44,34 @@ AudioSystem::AudioSystem()
 {
 	modData.MockData();
 
-	setTimer(5000);
+	/* modulation improvements
+	* curve per modulator
+	* seek speed per modulator
+	* range setting
+	* range per modulator
+	*/
+
+	// timer with threshold of start to decrease intensity
+	// after this timer goes of, a new timer should start decreasing the intensity
+	/* required features: (seperate class)
+	* init function that starts the timer based on the length
+	* only start after this timer went off
+	* input for after how long this hould happen
+	* curve by which this should happen
+	* seek speed how fast this should happen
+	* optional: how much this should happen
+	*/
+	timePlaying.setLength(5000);
+
+	// intialise vector to check if movement is less
+	/* required features: (seperate class)
+	* init function that fills an empty vector
+	* check function to check if should be decreasing
+	* input for after how long this should happen
+	* curve
+	* seek speed
+	* optional: how much
+	*/
 	vector<float> vect(40, 0.f);
 	lastValues = vect;
 }
@@ -208,43 +235,33 @@ void AudioSystem::update() {
 		for (auto layer : layerLoops) {
 			if (layer->_onOff) {
 				// gain modulation
-				float outputGain = layer->mainGainMod.CalculateModulation(decimalValue, modulationTrigger);
-				layer->setVolume(attackedGain * outputGain);
-				debugMessage(to_string(attackedGain * outputGain));
+				float outputGain = layer->positionGainMod.CalculateModulation(decimalValue, modulationTrigger);
+				
+				// TODO: calculate gain within layer: that checks the now calculate modulation which is the position modulation, and the time modulation and action modulation
 
-				// plotting
+				layer->setVolume(attackedGain * outputGain);
+				//debugMessage(to_string(attackedGain * outputGain));
+
+				// get main amplitude and pitch (used for plotting)
 				onLayers++;
 				mainOutputGainAllLayers += attackedGain * outputGain;
 				mainFrequencyAllLayers += layer->getFrequency();
 
 				// pitch modulation
 				if (layer->mainPitchModToggle) {
-					float outputPitch = layer->mainPitchMod.CalculateModulation(decimalValue, modulationTrigger);
+					float outputPitch = layer->positionPitchMod.CalculateModulation(decimalValue, modulationTrigger);
 					layer->setFrequency(outputPitch * (layer->frequencyRange * frequencyStandard));
 				}
 			}
 		}
 
-		// plotting
+		// set main amplitude and pitch (used for plotting)
 		mainOutputGainAllLayers /= onLayers;
 		mainFrequencyAllLayers /= onLayers;
 
-		// check every 10 ticks to set lessGain
-		if (currentTick == 10) {
-			float currentDistanceValue = setCurrentDistanceValue(decimalValue, mainOutputGainAllLayers);
-
-			checkLessModifier(currentDistanceValue);
-
-			currentTick = 0;
-		}
-		else {
-			currentTick++;
-		}
-
 		// check if playing should end
 		if (recordTimer) {
-			float timerValue = stopTimer.timerTick();
-			if (timerValue == 1) {
+			if (stopTimer.timerTick() == 1) {
 				stopRiser();
 				recordTimer = false;
 			}
@@ -280,10 +297,6 @@ void AudioSystem::startRiser()
 
 // begin release phase of riser, with timer that checks when to completely stop the riser
 void AudioSystem::startRelease() {
-	// check if offset is necessary
-	// check if max offset is necessary (maybe only needs half of the time, as the sound does need to get more intense)
-	// set values for offset to happen and sound to modulate to its conclusion
-
 	debugMessage("start stopping audio");
 	modulationTrigger = 0;
 	recordTimer = true;
@@ -304,7 +317,7 @@ void AudioSystem::stopRiser()
 }
 
 void AudioSystem::startAudioLayers(vector<LoopLayer*> layersToStart) {
-	debugMessage("start Audio");
+	debugMessage("start Audio loops");
 	for (auto layer : layersToStart) {
 		if (layer->_onOff) {
 			layer->startSounds();
@@ -313,7 +326,7 @@ void AudioSystem::startAudioLayers(vector<LoopLayer*> layersToStart) {
 }
 
 void AudioSystem::startAudioLayers(vector<ImpactLayer*> layersToStart) {
-	debugMessage("start Audio");
+	debugMessage("start Audio impacts");
 	for (auto layer : layersToStart) {
 		layer->startSounds();
 	}
@@ -341,30 +354,17 @@ void AudioSystem::setGain(float gain) {
 
 void AudioSystem::setGainModulation(float attack)
 {
-	float release = 2000; // TODO: get release from UI
-	// TODO:  float range, float curve
-
 	debugMessage("setModulation: Amp. " + to_string(attack));
-
 	for (auto layer : layerLoops) {
-		layer->mainGainMod.CalculateStepSize(attack, attack * 1.5, release);
+		layer->positionGainMod.CalculateAttackStepSize(attack, attack * 1.5);
 	}
-
-	// set timer length
-	stopTimer.setLength(release + 50);
 }
 
 void AudioSystem::setPitchModulation(float attack)
 {
-	float release = 2000; // TODO: get release from UI
-	// TODO:  float range, float curve
-
 	debugMessage("setModulation: Pitch. " + to_string(attack));
-
 	for (auto layer : layerLoops) {
-		if (layer->mainPitchModToggle) {
-			layer->mainPitchMod.CalculateStepSize(attack, attack * 1.5, release);
-		}
+		if (layer->mainPitchModToggle) { layer->positionPitchMod.CalculateAttackStepSize(attack, attack * 1.5); }
 	}
 }
 
@@ -375,20 +375,25 @@ void AudioSystem::setAttack(float attack) {
 
 void AudioSystem::setRelease(float release)
 {
-	// TODO: release set functionality
-}
+	debugMessage("setRelease: " + to_string(release));
 
-void AudioSystem::setOffset(float offset) {
-	// check if offset is necessary
-	// check if max offset is necessary (maybe only needs half of the time, as the sound does need to get more intense)
-	// set values for offset to happen and sound to modulate to its conclusion
+	for (auto layer : layerLoops) {
+		layer->positionGainMod.CalculateReleaseStepSize(release);
+	}
+
+	for (auto layer : layerLoops) {
+		if (layer->mainPitchModToggle) { layer->positionPitchMod.CalculateReleaseStepSize(release); }
+	}
+
+	// set timer length
+	stopTimer.setLength(release + 50);
 }
 
 void AudioSystem::setModulationCurve(float startValue)
 {
 	debugMessage("setcurve: " + to_string(startValue));
 	for (auto layer : layerLoops) {
-		layer->mainGainMod.amplitudeStartValue = startValue;
+		layer->positionGainMod.amplitudeStartValue = startValue;
 	}
 }
 
@@ -396,13 +401,6 @@ void AudioSystem::setPosition(float position)
 {
 	modData.currentDistanceToGetTo = position;
 }
-
-// after how long should the riser slowdown when goal hasnt been reached yet
-// generally this point should not be reached as action over time is checked by the action timer, but due to players maybe going afk etc, you might want the timer to slow down after a long amount of time
-void AudioSystem::setTimer(float slowdownTimeMs, float slowDownAmount) {
-	timePlaying.setLength(slowdownTimeMs);
-}
-
 //--------------------------------------------------------------
 string AudioSystem::getAudioName(FMOD_SOUND* sound) {
 	char name[256];
@@ -421,8 +419,27 @@ LoopLayer* AudioSystem::getLayerByName(string name) {
 }
 
 //--------------------------------------------------------------
+// after how long should the riser slowdown when goal hasnt been reached yet
+// generally this point should not be reached as action over time is checked by the action timer, but due to players maybe going afk etc, you might want the timer to slow down after a long amount of time
+void AudioSystem::setTimer(float slowdownTimeMs, float slowDownAmount) {
+}
+
 // after how long and how much defiation in player position should the riser slow down
 void AudioSystem::checkLessModifier(float value) {
+	// check every 10 ticks to set lessGain
+	if (currentTick == 10) {
+		// use setcurrentdistance value to convert the value to a 0 1 value in the engine (if this is not done before)
+		//float currentDistanceValue = setCurrentDistanceValue(decimalValue, mainOutputGainAllLayers);
+
+		checkLessModifier(value);
+
+		currentTick = 0;
+	}
+	else {
+		currentTick++;
+	}
+
+
 	float deviationValue = 0.5; // if only distance moved changed half, start decreasing intensity of the riser
 
 	lastValues[currentValue] = value;
@@ -443,4 +460,10 @@ void AudioSystem::checkLessModifier(float value) {
 	//}
 	// check only for if its bigger
 	// then check if has not changed enough
+}
+
+void AudioSystem::setOffset(float offset) {
+	// check if offset is necessary
+	// check if max offset is necessary (maybe only needs half of the time, as the sound does need to get more intense)
+	// set values for offset to happen and sound to modulate to its conclusion
 }

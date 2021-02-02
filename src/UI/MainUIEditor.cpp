@@ -115,13 +115,13 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
         _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setGain(_ofApp->jsonSys.getValue(label));
     }
-    else if (label == "attack") {
-        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
-        _ofApp->audio.setAttack(_ofApp->jsonSys.getValue(label));
-    }
     else if (label == "release") {
         _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setRelease(_ofApp->jsonSys.getValue(label));
+    }
+    else if (label == "attack") {
+        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
+        _ofApp->audio.setAttack(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "range in ms") {
         _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
@@ -187,6 +187,7 @@ void MainUIEditor::initialiseAllValues()
     _ofApp->audio.setGainModulation(_ofApp->jsonSys.getValue("range in ms"));
     _ofApp->audio.setPitchModulation(_ofApp->jsonSys.getValue("range in ms"));
     _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
+    _ofApp->audio.setRelease(_ofApp->jsonSys.getValue("release"));
 
     onToggleEvent(padStartToggle);
     onToggleEvent(padEndToggle);

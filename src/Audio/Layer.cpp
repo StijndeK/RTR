@@ -65,7 +65,7 @@ void ImpactLayer::startSounds()
 LoopLayer::LoopLayer(string label, FMOD_SYSTEM* system) : BaseLayer(label, system)
 {
 	_label = label;
-	mainPitchMod.modType = linear;
+	positionPitchMod.modType = linear;
 }
 
 LoopLayer::~LoopLayer()

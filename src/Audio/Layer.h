@@ -49,9 +49,8 @@ public:
 
 	void startSounds();
 
-	Modulation mainGainMod;
-	Modulation mainPitchMod;
-	Modulation lessGainMod;
+	Modulation positionGainMod;
+	Modulation positionPitchMod;
 
 	// set if pitch mod should be on, main gain mod and less gain mod is always on
 	bool mainPitchModToggle = false;

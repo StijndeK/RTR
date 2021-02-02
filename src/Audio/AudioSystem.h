@@ -30,12 +30,13 @@ public:
 	static void setGainModulation(float attack);
 	static void setPitchModulation(float attack);
 	static void setAttack(float attack);
-	static void setRelease(float release);
+	static void setRelease(float release); // move to layer
 	static void setOffset(float offset);
 	static void setModulationCurve(float startValue);
 	static void setPosition(float position);
-	static void setTimer(float slowdownTimeMs, float slowDownAmount = 1);
 
+	// TODO: less modifiers
+	static void setTimer(float slowdownTimeMs, float slowDownAmount = 1);
 	static void checkLessModifier(float value);
 
 	// getters
