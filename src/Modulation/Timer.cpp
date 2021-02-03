@@ -11,13 +11,34 @@ void Timer::setFunctionToCall(void(&functionToCall)())
 }
 
 // returns 0 untill value is 1
-void Timer::timerTick()
+void Timer::update()
 {
-	if (currentTick < 1) {
-		currentTick += addValue;
+	if (currentTick != 2) {
+		if (currentTick < 1) {
+			// update tick;
+			currentTick += addValue;
+		}
+		else {
+			// call the function
+			(*_functionToCall)();
+
+			// check if looping or timer finished
+			if (looping) {
+				startTimer();
+			}
+			else {
+				stopTimer();
+			}
+		}
 	}
-	else {
-		currentTick = 0;
-		(*_functionToCall)();
-	}
+}
+
+void Timer::startTimer()
+{
+	currentTick = 0;
+}
+
+void Timer::stopTimer()
+{
+	currentTick = 2;
 }

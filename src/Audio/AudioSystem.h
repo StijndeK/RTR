@@ -35,7 +35,7 @@ public:
 	static void setPosition(float position);
 
 	// TODO: less modifiers
-	static void TimeModulation();
+	static void timeModulation();
 
 	static void setTimer(float slowdownTimeMs, float slowDownAmount = 1);
 	static void checkLessModifier(float value);
@@ -89,10 +89,10 @@ private:
 	// attack only envelope for the start of the sound
 	static Envelopes attackEnv;
 
-	// Timer on when to stop all audio after impact
-	static Timer releaseTimer;
-	// Timer to check time after start
-	static Timer timePlaying;
+	static Timer releaseTimer;			// Timer on when to stop all audio after impact
+	static Timer timeModulationTimer;	// Timer to start decreasing intensity if the riser is taking long
+	static Timer timePlaying; 	// Timer to check time after start
+
 
 	static float frequencyStandard;
 };
