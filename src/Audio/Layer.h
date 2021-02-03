@@ -55,7 +55,7 @@ public:
 
 	PositionModulation positionGainMod;
 	PositionModulation positionPitchMod;
-	PositionModulation timeGainMod;
+	TimeModulation timeGainMod;
 
 	// set if pitch mod should be on, main gain mod and less gain mod is always on
 	bool mainPitchModToggle = false;

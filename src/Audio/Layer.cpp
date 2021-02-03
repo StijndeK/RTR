@@ -87,7 +87,10 @@ void LoopLayer::startSounds()
 
 float LoopLayer::gainModulation(float inputValue, float positionTrigger, float timeTrigger)
 {
-	float output = positionGainMod.CalculateModulation(inputValue, positionTrigger);
+	float output = positionGainMod.CalculateModulation(inputValue, positionTrigger) * timeGainMod.CalculateModulation(inputValue, timeTrigger);
+	//float output = positionGainMod.CalculateModulation(inputValue, positionTrigger);
+
+	//cout << timeGainMod.CalculateModulation(inputValue, timeTrigger) << endl;
 	return output;
 }
 

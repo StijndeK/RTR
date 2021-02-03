@@ -27,13 +27,14 @@ public:
 
 	// setters
 	static void setGain(float gain);
-	static void setGainModulation(float attack);
-	static void setPitchModulation(float attack);
+	static void setPositionGainModulation(float attack);
+	static void setPositionPitchModulation(float attack);
 	static void setAttack(float attack);
 	static void setRelease(float release); // move to layer
 	static void setModulationCurve(float startValue);
 	static void setPosition(float position);
-	static void setTimeModulationTreshold(float modulation);
+	static void setTimeModulationThreshold(float modulation);
+	static void setTimeModulationLength(float lengthInMs);
 
 	// TODO: less modifiers
 	static void timeModulation();

@@ -61,10 +61,11 @@ void MainUIEditor::setup() {
 
     ofxDatGuiSlider* gainSlider = guiGeneral->addSlider("gain", -90, 0, _ofApp->jsonSys.getValue("gain")); 
     ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 2000, _ofApp->jsonSys.getValue("offset")); 
-    ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 200, 5000, _ofApp->jsonSys.getValue("attack"));     attackSlider->setPrecision(0);
-    ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 50, 5000, _ofApp->jsonSys.getValue("release"));   releaseSlider->setPrecision(0);
-    ofxDatGuiSlider* curveSlider = guiGeneral->addSlider("curve", 0.001, 0.1, _ofApp->jsonSys.getValue("curve"));       curveSlider->setPrecision(3);
-    ofxDatGuiSlider* timeModulationSlider = guiGeneral->addSlider("time modulation", 5000, 20000, _ofApp->jsonSys.getValue("time modulation"));       timeModulationSlider->setPrecision(0);
+    ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 200, 5000, _ofApp->jsonSys.getValue("attack"));         attackSlider->setPrecision(0);
+    ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 2000, 5000, _ofApp->jsonSys.getValue("release"));     releaseSlider->setPrecision(0);
+    ofxDatGuiSlider* curveSlider = guiGeneral->addSlider("curve", 0.001, 0.1, _ofApp->jsonSys.getValue("curve"));           curveSlider->setPrecision(3);
+    ofxDatGuiSlider* timeModulationThresholdSlider = guiGeneral->addSlider("timemod threshold", 5000, 20000, _ofApp->jsonSys.getValue("timemod threshold"));       timeModulationThresholdSlider->setPrecision(0);
+    ofxDatGuiSlider* timeModulationLengthSlider = guiGeneral->addSlider("timemod length", 5000, 20000, _ofApp->jsonSys.getValue("timemod length"));                timeModulationLengthSlider->setPrecision(0);
 
     // mock gui
     ofxDatGui* guiMock = new ofxDatGui(510 + offset, 80 + offset);
@@ -122,8 +123,8 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
         _ofApp->audio.setAttack(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "range in ms") {
-        _ofApp->audio.setGainModulation(_ofApp->jsonSys.getValue(label));
-        _ofApp->audio.setPitchModulation(_ofApp->jsonSys.getValue(label));
+        _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue(label));
+        _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "offset") {
         _ofApp->audio.setOffset(_ofApp->jsonSys.getValue(label));
@@ -134,8 +135,11 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
     else if (label == "Position") {
         _ofApp->audio.setPosition(e.target->getValue());
     }
-    else if (label == "time modulation") {
-        _ofApp->audio.setTimeModulationTreshold(e.target->getValue());
+    else if (label == "timemod threshold") {
+        _ofApp->audio.setTimeModulationThreshold(e.target->getValue());
+    }
+    else if (label == "timemod length") {
+        _ofApp->audio.setTimeModulationLength(e.target->getValue());
     }
     else {
         cout << "Error: slider label not found: " << label << endl;
@@ -182,11 +186,12 @@ void MainUIEditor::initialiseAllValues() // TODO: do this automatically
     _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
     _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
     _ofApp->audio.setModulationCurve(_ofApp->jsonSys.getValue("curve"));
-    _ofApp->audio.setGainModulation(_ofApp->jsonSys.getValue("range in ms"));
-    _ofApp->audio.setPitchModulation(_ofApp->jsonSys.getValue("range in ms"));
+    _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue("range in ms"));
+    _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue("range in ms"));
     _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
     _ofApp->audio.setRelease(_ofApp->jsonSys.getValue("release"));
-    _ofApp->audio.setRelease(_ofApp->jsonSys.getValue("time modulation"));
+    _ofApp->audio.setTimeModulationThreshold(_ofApp->jsonSys.getValue("timemod threshold"));
+    _ofApp->audio.setTimeModulationLength(_ofApp->jsonSys.getValue("timemod length"));
 
     onToggleEvent(padStartToggle);
     onToggleEvent(padEndToggle);

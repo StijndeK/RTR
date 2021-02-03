@@ -48,6 +48,7 @@ void PositionModulation::CalculateReleaseStepSize(float releaseMs) {
 // Time Modulation
 //--------------------------------------------------------------
 
+// reduce intensity when trigger = 1
 float TimeModulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger)
 {
 	if (trigger == 1) {
@@ -56,7 +57,6 @@ float TimeModulation::CalculateModulation(float currentDistanceToGetToInRange, i
 		}
 	}
 
-	// if no decreasing of intensity is required because the time modulation threshold has not been reached yet
 	else {
 		currentDistance = 1;
 	}
@@ -66,5 +66,6 @@ float TimeModulation::CalculateModulation(float currentDistanceToGetToInRange, i
 
 void TimeModulation::CalculateStepSize(float stepMs)
 {
+	// TODO: reverse the curve. 
 	downStep = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * (stepMs / 1000.0)));
 }

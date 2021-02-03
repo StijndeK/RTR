@@ -268,8 +268,6 @@ void AudioSystem::update() {
 		// reset trigger for envelopes
 		if (envelopeTrigger == 1) envelopeTrigger = 0;
 	}
-	
-
 }
 
 //--------------------------------------------------------------
@@ -364,17 +362,17 @@ void AudioSystem::setGain(float gain) {
 	_gain = pow(10, gain / 20);
 }
 
-void AudioSystem::setGainModulation(float attack)
+void AudioSystem::setPositionGainModulation(float attack)
 {
-	debugMessage("setModulation: Amp. " + to_string(attack));
+	debugMessage("setPositionModulation: Amp. " + to_string(attack));
 	for (auto layer : layerLoops) {
 		layer->positionGainMod.CalculateAttackStepSize(attack, attack * 1.5);
 	}
 }
 
-void AudioSystem::setPitchModulation(float attack)
+void AudioSystem::setPositionPitchModulation(float attack)
 {
-	debugMessage("setModulation: Pitch. " + to_string(attack));
+	debugMessage("setPositionModulation: Pitch. " + to_string(attack));
 	for (auto layer : layerLoops) {
 		if (layer->mainPitchModToggle) { layer->positionPitchMod.CalculateAttackStepSize(attack, attack * 1.5); }
 	}
@@ -414,9 +412,18 @@ void AudioSystem::setPosition(float position)
 	modData.currentDistanceToGetTo = position;
 }
 
-void AudioSystem::setTimeModulationTreshold(float modulation)
+void AudioSystem::setTimeModulationThreshold(float modulation)
 {
+	debugMessage("setTimeModulationThreshold: " + to_string(modulation));
 	timeModulationTimer.setLength(modulation);
+}
+
+void AudioSystem::setTimeModulationLength(float lengthInMs)
+{
+	debugMessage("setTimeModulationLength " + to_string(lengthInMs));
+	for (auto layer : layerLoops) {
+		layer->timeGainMod.CalculateStepSize(lengthInMs);
+	}
 }
 
 //--------------------------------------------------------------
