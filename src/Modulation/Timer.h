@@ -5,9 +5,11 @@ class Timer
 {
 public:
 	void setLength(float timeInMs);
-	float timerTick();
+	void setFunctionToCall(void (&functionToCall)());
+	void timerTick();
 
 	float currentTick = 0;
 	float addValue;
+	void (*_functionToCall)();
 };
 

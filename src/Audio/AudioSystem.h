@@ -31,13 +31,18 @@ public:
 	static void setPitchModulation(float attack);
 	static void setAttack(float attack);
 	static void setRelease(float release); // move to layer
-	static void setOffset(float offset);
 	static void setModulationCurve(float startValue);
 	static void setPosition(float position);
 
 	// TODO: less modifiers
+	static void TimeModulation();
+
 	static void setTimer(float slowdownTimeMs, float slowDownAmount = 1);
 	static void checkLessModifier(float value);
+	static void setOffset(float offset);
+
+	static void setTimeModulationTreshold(float modulation);
+	static Modulation timeMod;
 
 	// getters
 	static string getAudioName(FMOD_SOUND* sound);
@@ -49,7 +54,7 @@ public:
 	static bool modulationTrigger;		// true on attack when playing
 	static bool envelopeTrigger;		// true on start, then immediatly false
 	static bool playing;				// true while audio is playing
-	static bool recordTimer;			// true while release is playing, to get notified when to stop audio
+	static bool releasePhase;			// true while release is playing, to get notified when to stop audio
 
 	static float _gain;
 	static float gainSnapshot;
@@ -85,7 +90,7 @@ private:
 	static Envelopes attackEnv;
 
 	// Timer on when to stop all audio after impact
-	static Timer stopTimer;
+	static Timer releaseTimer;
 	// Timer to check time after start
 	static Timer timePlaying;
 

@@ -61,11 +61,10 @@ void MainUIEditor::setup() {
 
     ofxDatGuiSlider* gainSlider = guiGeneral->addSlider("gain", -90, 0, _ofApp->jsonSys.getValue("gain")); 
     ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 2000, _ofApp->jsonSys.getValue("offset")); 
-    ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 200, 5000, _ofApp->jsonSys.getValue("attack")); 
-    ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 50, 5000, _ofApp->jsonSys.getValue("release")); 
-    ofxDatGuiSlider* curveSlider = guiGeneral->addSlider("curve", 0.001, 0.1, _ofApp->jsonSys.getValue("curve"));
-    attackSlider->setPrecision(0);
-    curveSlider->setPrecision(3);
+    ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 200, 5000, _ofApp->jsonSys.getValue("attack"));     attackSlider->setPrecision(0);
+    ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 50, 5000, _ofApp->jsonSys.getValue("release"));   releaseSlider->setPrecision(0);
+    ofxDatGuiSlider* curveSlider = guiGeneral->addSlider("curve", 0.001, 0.1, _ofApp->jsonSys.getValue("curve"));       curveSlider->setPrecision(3);
+    ofxDatGuiSlider* timeModulationSlider = guiGeneral->addSlider("time modulation", 5000, 20000, _ofApp->jsonSys.getValue("time modulation"));       timeModulationSlider->setPrecision(0);
 
     // mock gui
     ofxDatGui* guiMock = new ofxDatGui(510 + offset, 80 + offset);
@@ -111,33 +110,32 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 {
     string label = e.target->getLabel();
 
+    _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
+
     if (label == "gain") {
-        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setGain(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "release") {
-        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setRelease(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "attack") {
-        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setAttack(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "range in ms") {
-        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setGainModulation(_ofApp->jsonSys.getValue(label));
         _ofApp->audio.setPitchModulation(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "offset") {
-        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setOffset(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "curve") {
-        _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
         _ofApp->audio.setModulationCurve(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "Position") {
         _ofApp->audio.setPosition(e.target->getValue());
+    }
+    else if (label == "time modulation") {
+        _ofApp->audio.setTimeModulationTreshold(e.target->getValue());
     }
     else {
         cout << "Error: slider label not found: " << label << endl;
@@ -179,7 +177,7 @@ void MainUIEditor::onToggleEvent(ofxDatGuiToggleEvent e)
     // NOTE: only toggles for layers exist, so no need to check which is pressed
 }
 
-void MainUIEditor::initialiseAllValues()
+void MainUIEditor::initialiseAllValues() // TODO: do this automatically
 {
     _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
     _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
