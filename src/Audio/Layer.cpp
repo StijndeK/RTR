@@ -78,3 +78,16 @@ void LoopLayer::startSounds()
 		FMOD_System_PlaySound(_system, FMOD_CHANNEL_FREE, _sounds[i], false, &_channels[i]);
 	}
 }
+
+float LoopLayer::gainModulation(float inputValue, float positionTrigger, float timeTrigger)
+{
+	float output = positionGainMod.CalculateModulation(inputValue, positionTrigger);// *(1 - positionGainMod.CalculateModulation(inputValue, timeTrigger));
+
+	return output;
+}
+
+float LoopLayer::pitchModulation(float inputValue, float positionTrigger, float timeTrigger)
+{
+	float output = positionPitchMod.CalculateModulation(inputValue, positionTrigger);
+	return output;
+}

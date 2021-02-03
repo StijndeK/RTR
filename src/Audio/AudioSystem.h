@@ -33,6 +33,7 @@ public:
 	static void setRelease(float release); // move to layer
 	static void setModulationCurve(float startValue);
 	static void setPosition(float position);
+	static void setTimeModulationTreshold(float modulation);
 
 	// TODO: less modifiers
 	static void timeModulation();
@@ -41,7 +42,6 @@ public:
 	static void checkLessModifier(float value);
 	static void setOffset(float offset);
 
-	static void setTimeModulationTreshold(float modulation);
 	static Modulation timeMod;
 
 	// getters
@@ -52,6 +52,7 @@ public:
 	static bool systemInitialised;
 
 	static bool modulationTrigger;		// true on attack when playing
+	static bool timeModulationTrigger;
 	static bool envelopeTrigger;		// true on start, then immediatly false
 	static bool playing;				// true while audio is playing
 	static bool releasePhase;			// true while release is playing, to get notified when to stop audio
@@ -91,8 +92,6 @@ private:
 
 	static Timer releaseTimer;			// Timer on when to stop all audio after impact
 	static Timer timeModulationTimer;	// Timer to start decreasing intensity if the riser is taking long
-	static Timer timePlaying; 	// Timer to check time after start
-
 
 	static float frequencyStandard;
 };

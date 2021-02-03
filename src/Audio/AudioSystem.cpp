@@ -26,6 +26,7 @@ float AudioSystem::_gain = 1;
 float AudioSystem::gainSnapshot = 1;
 
 bool AudioSystem::modulationTrigger = 0;			// true on attack when playing
+bool AudioSystem::timeModulationTrigger = 0;		// true after timeModulation threshold is passed
 bool AudioSystem::envelopeTrigger = 0;				// true on start, then immediatly false
 bool AudioSystem::playing = false;					// true while audio is playing
 vector<ImpactLayer*> AudioSystem::layerImpacts;
@@ -36,7 +37,6 @@ float AudioSystem::frequencyStandard = 44100;
 Envelopes AudioSystem::attackEnv;
 Timer AudioSystem::releaseTimer;
 Timer AudioSystem::timeModulationTimer;
-Timer AudioSystem::timePlaying;
 ModulationData AudioSystem::modData;
 
 //--------------------------------------------------------------
@@ -47,6 +47,7 @@ AudioSystem::AudioSystem()
 	// initialise timers
 	releaseTimer.setFunctionToCall(stopRiser);
 	timeModulationTimer.setFunctionToCall(timeModulation);
+
 	/* modulation improvements
 	* curve per modulator
 	* seek speed per modulator
@@ -64,7 +65,6 @@ AudioSystem::AudioSystem()
 	* seek speed how fast this should happen
 	* optional: how much this should happen
 	*/
-	timePlaying.setLength(5000);
 
 	// intialise vector to check if movement is less
 	/* required features: (seperate class)
@@ -239,24 +239,21 @@ void AudioSystem::update() {
 
 		for (auto layer : layerLoops) {
 			if (layer->_onOff) {
-				// gain modulation
-				float outputGain = layer->positionGainMod.CalculateModulation(decimalValue, modulationTrigger);
-				
-				// TODO: calculate gain within layer: that checks the now calculate modulation which is the position modulation, and the time modulation and action modulation
 
-				layer->setVolume(attackedGain * outputGain);
-				//debugMessage(to_string(attackedGain * outputGain));
+				// gain modulation
+				float outputGain = attackedGain * layer->gainModulation(decimalValue, modulationTrigger, timeModulationTrigger);
+				layer->setVolume(outputGain);
+
+				// pitch modulation
+				if (layer->mainPitchModToggle) {
+					float outputPitch = (layer->frequencyRange * frequencyStandard) * layer->pitchModulation(decimalValue, modulationTrigger, timeModulationTrigger);   // positionPitchMod.CalculateModulation(decimalValue, modulationTrigger)*;
+					layer->setFrequency(outputPitch);
+				}
 
 				// get main amplitude and pitch (used for plotting)
 				onLayers++;
 				mainOutputGainAllLayers += attackedGain * outputGain;
 				mainFrequencyAllLayers += layer->getFrequency();
-
-				// pitch modulation
-				if (layer->mainPitchModToggle) {
-					float outputPitch = layer->positionPitchMod.CalculateModulation(decimalValue, modulationTrigger);
-					layer->setFrequency(outputPitch * (layer->frequencyRange * frequencyStandard));
-				}
 			}
 		}
 
@@ -267,10 +264,12 @@ void AudioSystem::update() {
 		// update timers
 		releaseTimer.update();
 		timeModulationTimer.update();
+
+		// reset trigger for envelopes
+		if (envelopeTrigger == 1) envelopeTrigger = 0;
 	}
 	
-	// reset trigger for envelopes
-	if (envelopeTrigger == 1) envelopeTrigger = 0;
+
 }
 
 //--------------------------------------------------------------
@@ -300,7 +299,10 @@ void AudioSystem::startRiser()
 // begin release phase of riser, with timer that checks when to completely stop the riser
 void AudioSystem::startRelease() {
 	debugMessage("start stopping audio");
+
+	// reset triggers
 	modulationTrigger = 0;
+	timeModulationTrigger = 0;
 
 	releaseTimer.startTimer();
 
@@ -412,6 +414,11 @@ void AudioSystem::setPosition(float position)
 	modData.currentDistanceToGetTo = position;
 }
 
+void AudioSystem::setTimeModulationTreshold(float modulation)
+{
+	timeModulationTimer.setLength(modulation);
+}
+
 //--------------------------------------------------------------
 // getters
 //--------------------------------------------------------------
@@ -445,11 +452,7 @@ void AudioSystem::setTimer(float slowdownTimeMs, float slowDownAmount)
 void AudioSystem::timeModulation() 
 {
 	debugMessage("start time modulation");
-}
-
-void AudioSystem::setTimeModulationTreshold(float modulation)
-{
-	timeModulationTimer.setLength(modulation);
+	timeModulationTrigger = 1;
 }
 
 //--------------------------------------------------------------

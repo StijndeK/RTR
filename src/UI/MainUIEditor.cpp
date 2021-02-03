@@ -186,6 +186,7 @@ void MainUIEditor::initialiseAllValues() // TODO: do this automatically
     _ofApp->audio.setPitchModulation(_ofApp->jsonSys.getValue("range in ms"));
     _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
     _ofApp->audio.setRelease(_ofApp->jsonSys.getValue("release"));
+    _ofApp->audio.setRelease(_ofApp->jsonSys.getValue("time modulation"));
 
     onToggleEvent(padStartToggle);
     onToggleEvent(padEndToggle);

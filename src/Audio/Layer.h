@@ -49,8 +49,13 @@ public:
 
 	void startSounds();
 
+	float gainModulation(float inputValue, float positionTrigger, float timeTrigger);
+
+	float pitchModulation(float inputValue, float positionTrigger, float timeTrigger);
+
 	Modulation positionGainMod;
 	Modulation positionPitchMod;
+	Modulation timeGainMod;
 
 	// set if pitch mod should be on, main gain mod and less gain mod is always on
 	bool mainPitchModToggle = false;
