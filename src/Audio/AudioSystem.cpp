@@ -246,7 +246,7 @@ void AudioSystem::update() {
 
 				// pitch modulation
 				if (layer->mainPitchModToggle) {
-					float outputPitch = (layer->frequencyRange * frequencyStandard) * layer->pitchModulation(decimalValue, modulationTrigger, timeModulationTrigger);   // positionPitchMod.CalculateModulation(decimalValue, modulationTrigger)*;
+					float outputPitch = (layer->frequencyRange * frequencyStandard) * layer->pitchModulation(decimalValue, modulationTrigger, timeModulationTrigger); 
 					layer->setFrequency(outputPitch);
 				}
 

@@ -2,6 +2,8 @@
 
 //--------------------------------------------------------------
 // baseLayer
+//--------------------------------------------------------------
+
 BaseLayer::BaseLayer(string label, FMOD_SYSTEM* system)
 {
 	_label = label;
@@ -46,6 +48,8 @@ float BaseLayer::getFrequency()
 
 //--------------------------------------------------------------
 // impactLayer
+//--------------------------------------------------------------
+
 ImpactLayer::ImpactLayer(string label, FMOD_SYSTEM* system) : BaseLayer(label, system)
 {
 }
@@ -62,6 +66,8 @@ void ImpactLayer::startSounds()
 
 //--------------------------------------------------------------
 // loopLayer
+//--------------------------------------------------------------
+
 LoopLayer::LoopLayer(string label, FMOD_SYSTEM* system) : BaseLayer(label, system)
 {
 	_label = label;
@@ -81,8 +87,7 @@ void LoopLayer::startSounds()
 
 float LoopLayer::gainModulation(float inputValue, float positionTrigger, float timeTrigger)
 {
-	float output = positionGainMod.CalculateModulation(inputValue, positionTrigger);// *(1 - positionGainMod.CalculateModulation(inputValue, timeTrigger));
-
+	float output = positionGainMod.CalculateModulation(inputValue, positionTrigger);
 	return output;
 }
 

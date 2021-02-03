@@ -42,7 +42,7 @@ public:
 	static void checkLessModifier(float value);
 	static void setOffset(float offset);
 
-	static Modulation timeMod;
+	static PositionModulation timeMod;
 
 	// getters
 	static string getAudioName(FMOD_SOUND* sound);

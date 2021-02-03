@@ -1,6 +1,10 @@
 #include "Modulation.h"
 
-float Modulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger) {
+//--------------------------------------------------------------
+// Position Modulation
+//--------------------------------------------------------------
+
+float PositionModulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger) {
 	// attack stage
 	if (trigger == 1) {
 		float buffer = 0.01; // buffer because value might not get to exact goal because of step sizes
@@ -15,11 +19,7 @@ float Modulation::CalculateModulation(float currentDistanceToGetToInRange, int t
 		}
 	}
 
-	/* 
-	release / hold at 0 stage
-	release value is fixed and not influenced by game data
-	release modulation is always exponential
-	*/
+	// release value is fixed, exponential, and not influenced by game data
 	else {
 		if (currentDistance > 0.01) {
 			currentDistance *= release;
@@ -29,7 +29,7 @@ float Modulation::CalculateModulation(float currentDistanceToGetToInRange, int t
 	return currentDistance;
 }
 
-void Modulation::CalculateAttackStepSize(float attackUpMs, float attackDownMs) {
+void PositionModulation::CalculateAttackStepSize(float attackUpMs, float attackDownMs) {
 	if (modType == linear) {
 		upStep = (1.0 / updateRate) * (1 / (attackUpMs / 1000.0));
 		downStep = 0 - ((1.0 / updateRate) * (1 / (attackDownMs / 1000.0)));
@@ -40,6 +40,31 @@ void Modulation::CalculateAttackStepSize(float attackUpMs, float attackDownMs) {
 	}
 }
 
-void Modulation::CalculateReleaseStepSize(float releaseMs) {
+void PositionModulation::CalculateReleaseStepSize(float releaseMs) {
 	release = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * (releaseMs / 1000.0)));
+}
+
+//--------------------------------------------------------------
+// Time Modulation
+//--------------------------------------------------------------
+
+float TimeModulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger)
+{
+	if (trigger == 1) {
+		if (currentDistance > 0.01) {
+			currentDistance *= downStep;
+		}
+	}
+
+	// if no decreasing of intensity is required because the time modulation threshold has not been reached yet
+	else {
+		currentDistance = 1;
+	}
+
+	return currentDistance;
+}
+
+void TimeModulation::CalculateStepSize(float stepMs)
+{
+	downStep = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * (stepMs / 1000.0)));
 }
