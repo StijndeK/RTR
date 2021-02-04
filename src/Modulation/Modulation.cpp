@@ -29,16 +29,24 @@ float PositionModulation::CalculateModulation(float currentDistanceToGetToInRang
 	return currentDistance;
 }
 
-void PositionModulation::CalculateAttackStepSize(float attackUpMs, float attackDownMs) {
+void PositionModulation::CalculateAttackStepSize(float attackUpMs) {
 	if (modType == linear) {
 		upStep = (1.0 / updateRate) * (1 / (attackUpMs / 1000.0));
-		downStep = 0 - ((1.0 / updateRate) * (1 / (attackDownMs / 1000.0)));
 	}
 	else {
 		upStep = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * (attackUpMs / 1000.0)));
+	}
+}
+
+void PositionModulation::CalculateAttackDecreaseStepSize(float attackDownMs) {
+	if (modType == linear) {
+		downStep = 0 - ((1.0 / updateRate) * (1 / (attackDownMs / 1000.0)));
+	}
+	else {
 		downStep = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * (attackDownMs / 1000.0)));
 	}
 }
+
 
 void PositionModulation::CalculateReleaseStepSize(float releaseMs) {
 	release = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * (releaseMs / 1000.0)));

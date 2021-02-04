@@ -366,7 +366,7 @@ void AudioSystem::setPositionGainModulation(float attack)
 {
 	debugMessage("setPositionModulation: Amp. " + to_string(attack));
 	for (auto layer : layerLoops) {
-		layer->positionGainMod.CalculateAttackStepSize(attack, attack * 1.5);
+		layer->positionGainMod.CalculateAttackStepSize(attack);
 	}
 }
 
@@ -374,7 +374,15 @@ void AudioSystem::setPositionPitchModulation(float attack)
 {
 	debugMessage("setPositionModulation: Pitch. " + to_string(attack));
 	for (auto layer : layerLoops) {
-		if (layer->mainPitchModToggle) { layer->positionPitchMod.CalculateAttackStepSize(attack, attack * 1.5); }
+		if (layer->mainPitchModToggle) { layer->positionPitchMod.CalculateAttackStepSize(attack); }
+	}
+}
+
+void AudioSystem::setPositionGainModulationDecreaseModifier(float modifier, float attack)
+{
+	debugMessage("setPositionModulation decrease modifier: Amp + Pitch " + to_string(modifier));
+	for (auto layer : layerLoops) {
+		layer->positionGainMod.CalculateAttackDecreaseStepSize(modifier * attack);
 	}
 }
 

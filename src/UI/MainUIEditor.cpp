@@ -65,7 +65,8 @@ void MainUIEditor::setup() {
     ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 2000, 5000, _ofApp->jsonSys.getValue("release"));     releaseSlider->setPrecision(0);
     ofxDatGuiSlider* curveSlider = guiGeneral->addSlider("curve", 0.001, 0.1, _ofApp->jsonSys.getValue("curve"));           curveSlider->setPrecision(3);
     ofxDatGuiSlider* timeModulationThresholdSlider = guiGeneral->addSlider("timemod threshold", 5000, 20000, _ofApp->jsonSys.getValue("timemod threshold"));       timeModulationThresholdSlider->setPrecision(0);
-    ofxDatGuiSlider* timeModulationLengthSlider = guiGeneral->addSlider("timemod length", 5000, 20000, _ofApp->jsonSys.getValue("timemod length"));                timeModulationLengthSlider->setPrecision(0);
+    ofxDatGuiSlider* timeModulationLengthSlider = guiGeneral->addSlider("timemod length", 5000, 60000, _ofApp->jsonSys.getValue("timemod length"));                timeModulationLengthSlider->setPrecision(0);
+    ofxDatGuiSlider* attackDecreaseModifierSlider = guiGeneral->addSlider("attack decrease modifier", 0.5, 2, _ofApp->jsonSys.getValue("attack decrease modifier"));         attackDecreaseModifierSlider->setPrecision(2);
 
     // mock gui
     ofxDatGui* guiMock = new ofxDatGui(510 + offset, 80 + offset);
@@ -121,6 +122,9 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
     }
     else if (label == "attack") {
         _ofApp->audio.setAttack(_ofApp->jsonSys.getValue(label));
+    }
+    else if (label == "attack decrease modifier") {
+        _ofApp->audio.setPositionGainModulationDecreaseModifier(_ofApp->jsonSys.getValue(label), _ofApp->jsonSys.getValue("range in ms"));
     }
     else if (label == "range in ms") {
         _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue(label));
@@ -192,8 +196,9 @@ void MainUIEditor::initialiseAllValues() // TODO: do this automatically
     _ofApp->audio.setRelease(_ofApp->jsonSys.getValue("release"));
     _ofApp->audio.setTimeModulationThreshold(_ofApp->jsonSys.getValue("timemod threshold"));
     _ofApp->audio.setTimeModulationLength(_ofApp->jsonSys.getValue("timemod length"));
+    _ofApp->audio.setPositionGainModulationDecreaseModifier(_ofApp->jsonSys.getValue("attack decrease modifier"), _ofApp->jsonSys.getValue("range in ms"));
 
-    onToggleEvent(padStartToggle);
+    onToggleEvent(padStartToggle); 
     onToggleEvent(padEndToggle);
     onToggleEvent(fxToggle);
     onToggleEvent(noiseToggle);

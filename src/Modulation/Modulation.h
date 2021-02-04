@@ -14,7 +14,8 @@ class PositionModulation : public ModulationBase, public ModulationTypes
 {
 public:
 	float CalculateModulation(float currentDistanceToGetToInRange, int trigger);
-	void CalculateAttackStepSize(float attackUpMs, float attackDownMs);
+	void CalculateAttackStepSize(float attackUpMs);
+	void CalculateAttackDecreaseStepSize(float attackDownMs);
 	void CalculateReleaseStepSize(float releaseMs);
 
 	modulationType modType = exponential;

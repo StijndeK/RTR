@@ -29,6 +29,7 @@ public:
 	static void setGain(float gain);
 	static void setPositionGainModulation(float attack);
 	static void setPositionPitchModulation(float attack);
+	static void setPositionGainModulationDecreaseModifier(float modifier, float attack);
 	static void setAttack(float attack);
 	static void setRelease(float release); // move to layer
 	static void setModulationCurve(float startValue);
