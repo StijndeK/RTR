@@ -98,19 +98,19 @@ double Envelopes::arAttackExp(double input, int trigger)
 
 void Envelopes::setARLin(double attackMs, double releaseMs) 
 {
-    attack = (1.0 / updateRate) * (1 / (attackMs / 1000.0));
-    release = (1.0 / updateRate) * (1 / (releaseMs / 1000.0));
+    attack = (1.0 / updateRate) * (1 / attackMs);
+    release = (1.0 / updateRate) * (1 / releaseMs);
 }
 
 void Envelopes::setARExp(double attackMs, double releaseMs)
 {
-    attack = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * (attackMs / 1000.0)));
-    release = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * (releaseMs / 1000.0)));
+    attack = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * attackMs));
+    release = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * releaseMs));
 }
 
 void Envelopes::setAExp(double attackMs)
 {
     if (attackMs != 0) {
-        attack = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * (attackMs / 1000.0)));
+        attack = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * attackMs));
     }
 }

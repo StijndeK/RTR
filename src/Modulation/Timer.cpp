@@ -2,7 +2,7 @@
 
 void Timer::setLength(float timeInMs)
 {
-	addValue = (1.0 / 60) * (1 / (timeInMs / 1000.0));
+	addValue = (1.0 / 60) * (1 / timeInMs);
 }
 
 void Timer::setFunctionToCall(void(&functionToCall)())

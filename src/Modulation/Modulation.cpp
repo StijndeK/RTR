@@ -29,27 +29,27 @@ float PositionModulation::CalculateModulation(float currentDistanceToGetToInRang
 	return currentDistance;
 }
 
-void PositionModulation::CalculateAttackStepSize(float attackUpMs) {
+void PositionModulation::CalculateAttackStepSize(float attackUpSec) {
 	if (modType == linear) {
-		upStep = (1.0 / updateRate) * (1 / (attackUpMs / 1000.0));
+		upStep = (1.0 / updateRate) * (1.0 / attackUpSec);
 	}
 	else {
-		upStep = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * (attackUpMs / 1000.0)));
+		upStep = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * attackUpSec));
 	}
 }
 
-void PositionModulation::CalculateAttackDecreaseStepSize(float attackDownMs) {
+void PositionModulation::CalculateAttackDecreaseStepSize(float attackDownSec) {
 	if (modType == linear) {
-		downStep = 0 - ((1.0 / updateRate) * (1 / (attackDownMs / 1000.0)));
+		downStep = 0 - ((1.0 / updateRate) * (1.0 / attackDownSec));
 	}
 	else {
-		downStep = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * (attackDownMs / 1000.0)));
+		downStep = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * attackDownSec));
 	}
 }
 
 
-void PositionModulation::CalculateReleaseStepSize(float releaseMs) {
-	release = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * (releaseMs / 1000.0)));
+void PositionModulation::CalculateReleaseStepSize(float releaseSec) {
+	release = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * releaseSec));
 }
 
 //--------------------------------------------------------------
@@ -72,8 +72,8 @@ float TimeModulation::CalculateModulation(float currentDistanceToGetToInRange, i
 	return currentDistance;
 }
 
-void TimeModulation::CalculateStepSize(float stepMs)
+void TimeModulation::CalculateStepSize(float stepSec)
 {
 	// TODO: reverse the curve. 
-	downStep = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * (stepMs / 1000.0)));
+	downStep = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * stepSec));
 }

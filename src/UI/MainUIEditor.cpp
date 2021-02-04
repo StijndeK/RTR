@@ -60,12 +60,12 @@ void MainUIEditor::setup() {
     guiGeneral->addHeader(":: Adaption ::", false);
 
     ofxDatGuiSlider* gainSlider = guiGeneral->addSlider("gain", -90, 0, _ofApp->jsonSys.getValue("gain")); 
-    ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 2000, _ofApp->jsonSys.getValue("offset")); 
-    ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 200, 5000, _ofApp->jsonSys.getValue("attack"));         attackSlider->setPrecision(0);
-    ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 2000, 5000, _ofApp->jsonSys.getValue("release"));     releaseSlider->setPrecision(0);
+    ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 2, _ofApp->jsonSys.getValue("offset")); 
+    ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 0.5, 5, _ofApp->jsonSys.getValue("attack"));         
+    ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 2, 5, _ofApp->jsonSys.getValue("release"));     
     ofxDatGuiSlider* curveSlider = guiGeneral->addSlider("curve", 0.001, 0.1, _ofApp->jsonSys.getValue("curve"));           curveSlider->setPrecision(3);
-    ofxDatGuiSlider* timeModulationThresholdSlider = guiGeneral->addSlider("timemod threshold", 5000, 20000, _ofApp->jsonSys.getValue("timemod threshold"));       timeModulationThresholdSlider->setPrecision(0);
-    ofxDatGuiSlider* timeModulationLengthSlider = guiGeneral->addSlider("timemod length", 5000, 60000, _ofApp->jsonSys.getValue("timemod length"));                timeModulationLengthSlider->setPrecision(0);
+    ofxDatGuiSlider* timeModulationThresholdSlider = guiGeneral->addSlider("timemod threshold", 5, 20, _ofApp->jsonSys.getValue("timemod threshold"));      
+    ofxDatGuiSlider* timeModulationLengthSlider = guiGeneral->addSlider("timemod length", 5, 60, _ofApp->jsonSys.getValue("timemod length"));                
     ofxDatGuiSlider* attackDecreaseModifierSlider = guiGeneral->addSlider("attack decrease modifier", 0.5, 2, _ofApp->jsonSys.getValue("attack decrease modifier"));         attackDecreaseModifierSlider->setPrecision(2);
 
     // mock gui
@@ -75,8 +75,7 @@ void MainUIEditor::setup() {
 
     guiMock->addButton("Start");
     guiMock->addButton("Impact");
-    ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 5000, 20000, _ofApp->jsonSys.getValue("range in ms"));
-    rangeSlider->setPrecision(0);
+    ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 5, 20, _ofApp->jsonSys.getValue("range in ms"));
     ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("Position", 0, 1, 0); 
     //currentPositionSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
 
