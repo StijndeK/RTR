@@ -29,10 +29,13 @@ private:
 class TimeModulation : public ModulationBase
 {
 public:
-	float CalculateModulation(float currentDistanceToGetToInRange, int trigger);
+	float CalculateModulation(int trigger);
 	void CalculateStepSize(float stepSec);
 
 private:
-
-	float downStep;
+	float currentDistanceExp = 0;
+	float currentDistanceAc = 1;
+	float curveRatio;
+	float downStepExp;
+	float downStepAc;
 };

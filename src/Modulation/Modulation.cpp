@@ -57,16 +57,30 @@ void PositionModulation::CalculateReleaseStepSize(float releaseSec) {
 //--------------------------------------------------------------
 
 // reduce intensity when trigger = 1
-float TimeModulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger)
+float TimeModulation::CalculateModulation(int trigger)
 {
 	if (trigger == 1) {
 		if (currentDistance > 0.01) {
-			currentDistance *= downStep;
+			//expDistance *= downStep;
+			//currentDistance = 1 - expDistance;
+
+			// calculate exp curve
+			currentDistanceExp *= downStepExp;
+
+			// calculate AC curve
+			currentDistanceAc *= downStepAc;
+
+			// set ratio between the two curves
+			// for now just use the AC curve
+			currentDistance = currentDistance * (1 - currentDistanceAc);
+			cout << currentDistance << endl;
 		}
 	}
 
 	else {
 		currentDistance = 1;
+		currentDistanceExp = 1;
+		currentDistanceAc = amplitudeStartValue;
 	}
 
 	return currentDistance;
@@ -74,6 +88,8 @@ float TimeModulation::CalculateModulation(float currentDistanceToGetToInRange, i
 
 void TimeModulation::CalculateStepSize(float stepSec)
 {
-	// TODO: reverse the curve. 
-	downStep = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * stepSec));
+	// TODO: create value in between
+	downStepExp = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * stepSec));
+
+	downStepAc = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * stepSec));
 }
