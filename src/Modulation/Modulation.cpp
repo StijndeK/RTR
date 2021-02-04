@@ -61,26 +61,21 @@ float TimeModulation::CalculateModulation(int trigger)
 {
 	if (trigger == 1) {
 		if (currentDistance > 0.01) {
-			//expDistance *= downStep;
-			//currentDistance = 1 - expDistance;
-
 			// calculate exp curve
 			currentDistanceExp *= downStepExp;
 
 			// calculate AC curve
 			currentDistanceAc *= downStepAc;
 
-			// set ratio between the two curves
-			// for now just use the AC curve
-			currentDistance = currentDistance * (1 - currentDistanceAc);
-			cout << currentDistance << endl;
+			// set curve based on ratio between Ac and Exp
+			currentDistance = ((1 - currentDistanceAc) * curveRatio) + (currentDistanceExp * (1 - curveRatio));
 		}
 	}
 
 	else {
 		currentDistance = 1;
 		currentDistanceExp = 1;
-		currentDistanceAc = amplitudeStartValue;
+		currentDistanceAc = amplitudeStartValue; 
 	}
 
 	return currentDistance;

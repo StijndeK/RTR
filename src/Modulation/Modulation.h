@@ -35,7 +35,7 @@ public:
 private:
 	float currentDistanceExp = 0;
 	float currentDistanceAc = 1;
-	float curveRatio;
+	float curveRatio = 0.5;
 	float downStepExp;
 	float downStepAc;
 };

@@ -21,7 +21,7 @@ private:
 	double output;
 	double amplitude = 0.001;
 	double amplitudeExp, amplitudeLin;
-	double amplitudeStartValue = 0.001;
+	double amplitudeStartValue = 0.01;
 
 	double updateRate = 60.0; // oF update() rate
 
