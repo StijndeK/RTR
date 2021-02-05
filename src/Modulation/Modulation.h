@@ -10,19 +10,25 @@ public:
 	float currentDistance = 0;
 };
 
-class PositionModulation : public ModulationBase, public ModulationTypes
+class UpDownModulationBase : public ModulationBase, public ModulationTypes
 {
 public:
-	float CalculateModulation(float currentDistanceToGetToInRange, int trigger);
 	void CalculateAttackStepSize(float attackUpSec);
 	void CalculateAttackDecreaseStepSize(float attackDownSec);
-	void CalculateReleaseStepSize(float releaseSec);
 
 	modulationType modType = exponential;
 
-private:
 	float upStep;
 	float downStep;
+};
+
+class PositionModulation : public UpDownModulationBase, public ModulationTypes
+{
+public:
+	float CalculateModulation(float currentDistanceToGetToInRange, int trigger);
+	void CalculateReleaseStepSize(float releaseSec);
+
+private:
 	float release;
 };
 
@@ -31,6 +37,20 @@ class TimeModulation : public ModulationBase
 public:
 	float CalculateModulation(int trigger);
 	void CalculateStepSize(float stepSec);
+
+private:
+	float currentDistanceExp = 0;
+	float currentDistanceAc = 1;
+	float curveRatio = 0.5;
+	float downStepExp;
+	float downStepAc;
+};
+
+class ActionModulation : public UpDownModulationBase, public ModulationTypes
+{
+public:
+	float CalculateModulation(int trigger);
+	float CalculateModulation(float currentDistanceToGetToInRange, int trigger);
 
 private:
 	float currentDistanceExp = 0;

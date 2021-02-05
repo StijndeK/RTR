@@ -6,6 +6,7 @@
 #include "Modulation/Envelopes.h"
 #include "Modulation/Modulation.h"
 #include "Modulation/Timer.h"
+#include "Modulation/ActionCalculator.h"
 
 class AudioSystem : public AudioBase, public ModulationTypes {
 
@@ -27,20 +28,20 @@ public:
 
 	// setters
 	static void setGain(float gain);
-	static void setPositionGainModulation(float attack);
-	static void setPositionPitchModulation(float attack);
-	static void setPositionGainModulationDecreaseModifier(float modifier, float attack);
+	static void setPositionGainModulation(float attack, float modifier);
+	static void setPositionPitchModulation(float attack, float modifier);
 	static void setAttack(float attack);
 	static void setRelease(float release); // move to layer
 	static void setModulationCurve(float startValue);
 	static void setPosition(float position);
 	static void setTimeModulationThreshold(float modulation);
 	static void setTimeModulationLength(float lengthInMs);
+	static void setActionModulationThreshold(float modulation);
+	static void setActionModulationLength(float lengthInMs);
 
-	// TODO: less modifiers
-	static void timeModulation();
+	static void triggerTimeModulation();
+	static void triggerActionModulation();
 
-	static void setTimer(float slowdownTimeMs, float slowDownAmount = 1);
 	static void checkLessModifier(float value);
 	static void setOffset(float offset);
 
@@ -55,6 +56,7 @@ public:
 
 	static bool modulationTrigger;		// true on attack when playing
 	static bool timeModulationTrigger;
+	static bool actionModulationTrigger;
 	static bool envelopeTrigger;		// true on start, then immediatly false
 	static bool playing;				// true while audio is playing
 	static bool releasePhase;			// true while release is playing, to get notified when to stop audio
@@ -94,6 +96,7 @@ private:
 
 	static Timer releaseTimer;			// Timer on when to stop all audio after impact
 	static Timer timeModulationTimer;	// Timer to start decreasing intensity if the riser is taking long
+	static ActionCalculator positionActionCalculator;
 
 	static float frequencyStandard;
 };

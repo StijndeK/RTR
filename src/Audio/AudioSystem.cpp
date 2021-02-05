@@ -27,6 +27,7 @@ float AudioSystem::gainSnapshot = 1;
 
 bool AudioSystem::modulationTrigger = 0;			// true on attack when playing
 bool AudioSystem::timeModulationTrigger = 0;		// true after timeModulation threshold is passed
+bool AudioSystem::actionModulationTrigger = 0;		// true after actionModulation threshold is passed
 bool AudioSystem::envelopeTrigger = 0;				// true on start, then immediatly false
 bool AudioSystem::playing = false;					// true while audio is playing
 vector<ImpactLayer*> AudioSystem::layerImpacts;
@@ -37,6 +38,7 @@ float AudioSystem::frequencyStandard = 44100;
 Envelopes AudioSystem::attackEnv;
 Timer AudioSystem::releaseTimer;
 Timer AudioSystem::timeModulationTimer;
+ActionCalculator AudioSystem::positionActionCalculator;
 ModulationData AudioSystem::modData;
 
 //--------------------------------------------------------------
@@ -44,9 +46,10 @@ AudioSystem::AudioSystem()
 {
 	modData.MockData();
 
-	// initialise timers
+	// initialise threshold modulators
 	releaseTimer.setFunctionToCall(stopRiser);
-	timeModulationTimer.setFunctionToCall(timeModulation);
+	timeModulationTimer.setFunctionToCall(triggerTimeModulation);
+	positionActionCalculator.setFunctionToCall(triggerActionModulation);
 
 	/* modulation improvements
 	* curve per modulator
@@ -362,27 +365,23 @@ void AudioSystem::setGain(float gain) {
 	_gain = pow(10, gain / 20);
 }
 
-void AudioSystem::setPositionGainModulation(float attack)
+void AudioSystem::setPositionGainModulation(float attack, float modifier)
 {
 	debugMessage("setPositionModulation: Amp. " + to_string(attack));
 	for (auto layer : layerLoops) {
 		layer->positionGainMod.CalculateAttackStepSize(attack);
+		layer->positionGainMod.CalculateAttackDecreaseStepSize(modifier * attack);
 	}
 }
 
-void AudioSystem::setPositionPitchModulation(float attack)
+void AudioSystem::setPositionPitchModulation(float attack, float modifier)
 {
 	debugMessage("setPositionModulation: Pitch. " + to_string(attack));
 	for (auto layer : layerLoops) {
-		if (layer->mainPitchModToggle) { layer->positionPitchMod.CalculateAttackStepSize(attack); }
-	}
-}
-
-void AudioSystem::setPositionGainModulationDecreaseModifier(float modifier, float attack)
-{
-	debugMessage("setPositionModulation decrease modifier: Amp + Pitch " + to_string(modifier));
-	for (auto layer : layerLoops) {
-		layer->positionGainMod.CalculateAttackDecreaseStepSize(modifier * attack);
+		if (layer->mainPitchModToggle) { 
+			layer->positionPitchMod.CalculateAttackStepSize(attack); 
+			layer->positionPitchMod.CalculateAttackDecreaseStepSize(modifier * attack);
+		}
 	}
 }
 
@@ -434,6 +433,24 @@ void AudioSystem::setTimeModulationLength(float lengthInMs)
 	}
 }
 
+void AudioSystem::setActionModulationThreshold(float modulation)
+{
+	debugMessage("setActionModulationThreshold: " + to_string(modulation));
+	positionActionCalculator.setTreshold(0.5);
+}
+
+void AudioSystem::setActionModulationLength(float lengthInMs)
+{
+	float modifier = 1.5;
+
+	debugMessage("setActionModulation: Amp. " + to_string(lengthInMs));
+	for (auto layer : layerLoops) {
+		layer->actionGainMod.CalculateAttackStepSize(modifier * lengthInMs);
+		layer->actionGainMod.CalculateAttackDecreaseStepSize(lengthInMs);
+	}
+
+}
+
 //--------------------------------------------------------------
 // getters
 //--------------------------------------------------------------
@@ -455,19 +472,19 @@ LoopLayer* AudioSystem::getLayerByName(string name) {
 }
 
 //--------------------------------------------------------------
-// time modulation
+// modulation triggers
 //--------------------------------------------------------------
 
-// after how long should the riser slowdown when goal hasnt been reached yet
-// generally this point should not be reached as action over time is checked by the action timer, but due to players maybe going afk etc, you might want the timer to slow down after a long amount of time
-void AudioSystem::setTimer(float slowdownTimeMs, float slowDownAmount) 
-{
-}
-
-void AudioSystem::timeModulation() 
+void AudioSystem::triggerTimeModulation() 
 {
 	debugMessage("start time modulation");
 	timeModulationTrigger = 1;
+}
+
+void AudioSystem::triggerActionModulation()
+{
+	debugMessage("start action modulation");
+	actionModulationTrigger = !actionModulationTrigger;
 }
 
 //--------------------------------------------------------------

@@ -1,6 +1,32 @@
 #include "Modulation.h"
 
 //--------------------------------------------------------------
+// updown Modulation Base
+//--------------------------------------------------------------
+
+void UpDownModulationBase::CalculateAttackStepSize(float attackUpSec) {
+	if (modType == linear) {
+		upStep = (1.0 / updateRate) * (1.0 / attackUpSec);
+		cout << "upstep linear" << downStep << endl;
+	}
+	else {
+		upStep = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * attackUpSec));
+		cout << "upstep: " << downStep << endl;
+	}
+}
+
+void UpDownModulationBase::CalculateAttackDecreaseStepSize(float attackDownSec) {
+	if (modType == linear) {
+		downStep = 0 - ((1.0 / updateRate) * (1.0 / attackDownSec));
+		cout << "downstep linear" << downStep << endl;
+	}
+	else {
+		downStep = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * attackDownSec));
+		cout << "downstep: " << downStep << endl;
+	}
+}
+
+//--------------------------------------------------------------
 // Position Modulation
 //--------------------------------------------------------------
 
@@ -13,7 +39,7 @@ float PositionModulation::CalculateModulation(float currentDistanceToGetToInRang
 				currentDistance += (currentDistance < currentDistanceToGetToInRange) ? upStep : downStep;
 			}
 			else {
-				if (currentDistance < amplitudeStartValue) { currentDistance = amplitudeStartValue; }; // make sure multiplyvalue != 0 TODO: do automatically
+				if (currentDistance < amplitudeStartValue) { currentDistance = amplitudeStartValue; }; 
 				currentDistance *= (currentDistance < currentDistanceToGetToInRange) ? upStep : downStep;
 			}
 		}
@@ -28,25 +54,6 @@ float PositionModulation::CalculateModulation(float currentDistanceToGetToInRang
 
 	return currentDistance;
 }
-
-void PositionModulation::CalculateAttackStepSize(float attackUpSec) {
-	if (modType == linear) {
-		upStep = (1.0 / updateRate) * (1.0 / attackUpSec);
-	}
-	else {
-		upStep = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * attackUpSec));
-	}
-}
-
-void PositionModulation::CalculateAttackDecreaseStepSize(float attackDownSec) {
-	if (modType == linear) {
-		downStep = 0 - ((1.0 / updateRate) * (1.0 / attackDownSec));
-	}
-	else {
-		downStep = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * attackDownSec));
-	}
-}
-
 
 void PositionModulation::CalculateReleaseStepSize(float releaseSec) {
 	release = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * releaseSec));
@@ -87,4 +94,31 @@ void TimeModulation::CalculateStepSize(float stepSec)
 	downStepExp = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * stepSec));
 
 	downStepAc = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * stepSec));
+}
+
+
+//--------------------------------------------------------------
+// Action Modulation
+//--------------------------------------------------------------
+
+float ActionModulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger) {
+	if (trigger == 1) {
+		float buffer = 0.01;
+		if (currentDistance < currentDistanceToGetToInRange - buffer || currentDistance > currentDistanceToGetToInRange + buffer) {
+			if (modType == linear) {
+				currentDistance += (currentDistance < currentDistanceToGetToInRange) ? upStep : downStep;
+			}
+			else {
+				if (currentDistance < amplitudeStartValue) { currentDistance = amplitudeStartValue; };
+				currentDistance *= (currentDistance < currentDistanceToGetToInRange) ? upStep : downStep;
+			}
+		}
+	}
+
+
+	else {
+		currentDistance = 1;
+	}
+
+	return currentDistance;
 }
