@@ -14,10 +14,6 @@ The user can design the riser and some options on how fast it should adapt in th
 ## Mapping riser audio parameters to game
 Audio parameters are mapped to game data in different ways. Aspects such as player position, player speed, and movement over time translate into audio parameters such as modulationspeed and gain modulation.
 
-## Layer & modulation system
-![RTR_Layersystem](https://user-images.githubusercontent.com/31696336/104494075-41c93600-55d6-11eb-9480-007c5f8846e3.png)
-
-The audio is divided into two types of layers. Evert layer has its own modulation, sounds and channels.
 
 ## Dataflow
 ![RTR_GeneralDataflow2](https://user-images.githubusercontent.com/31696336/104494070-41309f80-55d6-11eb-9640-c1777158fe26.png)
@@ -28,24 +24,32 @@ Both the engine and the tool use the same audio and json-to-audio-translation sy
 
 The AudioBase class contains the specific elements for the surrounding framework, so that the rest of the AudioSystem is exactly the same for every framework or engine. For example, the AudioBase handles debugmessages as every engine has its own debugging system build in. 
 
-## Improvements
-![RTR_MVPRoadmap](https://user-images.githubusercontent.com/31696336/105043909-66a22b00-5a66-11eb-8fc1-6c9146cb2036.png)
+## Modulation types
+*dataflows*
 
-### GUI
-- *ranges and curves for modulation*
-- modulation direction
-- visualisation (drawing)
-### features to add
-- panning & panning modulation
-- *controll over parameter linking and grouping*
-- get minimum attack time from engine
-- *predict player time to goal and improve / lessen attack up speed*
-- some wait or slow down time before turning 
-- *curve per layer*
-- *ask for plugin location and save it*
-- *visualise envelopes while making them*
-- *convert curve value to 0 1 value*
-### cleanup
-- only stop sounds that are playing
-### UE4 integration
-- plotting in seperate place
+*functionality description 3 types*
+
+*functionality description*
+
+*codex*
+
+### treshold checkers
+*functionality description*
+
+*codex*
+
+### curves
+*functionality description*
+
+*codex*
+
+
+## Layering
+![RTR_Layersystem](https://user-images.githubusercontent.com/31696336/104494075-41c93600-55d6-11eb-9480-007c5f8846e3.png)
+
+The audio is divided into two types of layers. Evert layer has its own modulation, sounds and channels. Currently most of the settings for these layer's sound design and their modulation are done in the back-end. In future releases, the tool could start providing controll to the user on the sound design how to modulate the layers. 
+
+## Code examples
+
+## Future developments
+The current tool has been made to be as quick and easy to use as possible. Herefore a lot of features do not have user controll and are done in the back-end. However, there are a lot of interesting possibilities when moving them to the front-end and providing complete controll over how to adapt the riser and to what. 

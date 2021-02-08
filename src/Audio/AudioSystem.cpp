@@ -28,6 +28,7 @@ float AudioSystem::gainSnapshot = 1;
 bool AudioSystem::modulationTrigger = 0;			// true on attack when playing
 bool AudioSystem::timeModulationTrigger = 0;		// true after timeModulation threshold is passed
 bool AudioSystem::actionModulationTrigger = 0;		// true after actionModulation threshold is passed
+float AudioSystem::actionInput = 0;
 bool AudioSystem::envelopeTrigger = 0;				// true on start, then immediatly false
 bool AudioSystem::playing = false;					// true while audio is playing
 vector<ImpactLayer*> AudioSystem::layerImpacts;
@@ -244,7 +245,7 @@ void AudioSystem::update() {
 			if (layer->_onOff) {
 
 				// gain modulation
-				float outputGain = attackedGain * layer->gainModulation(decimalValue, modulationTrigger, timeModulationTrigger);
+				float outputGain = attackedGain * layer->gainModulation(decimalValue, modulationTrigger, timeModulationTrigger, actionModulationTrigger, actionInput);
 				layer->setVolume(outputGain);
 
 				// pitch modulation
@@ -264,9 +265,10 @@ void AudioSystem::update() {
 		mainOutputGainAllLayers /= onLayers;
 		mainFrequencyAllLayers /= onLayers;
 
-		// update timers
+		// update treshold checkers
 		releaseTimer.update();
 		timeModulationTimer.update();
+		positionActionCalculator.update((float)rand() / RAND_MAX);
 
 		// reset trigger for envelopes
 		if (envelopeTrigger == 1) envelopeTrigger = 0;
@@ -292,6 +294,7 @@ void AudioSystem::startRiser()
 	playing = true;
 
 	timeModulationTimer.startTimer();
+	positionActionCalculator.startActionCalculator();
 
 	FMOD_ChannelGroup_SetVolume(channelgroup, 1);
 	startAudioLayers(layerLoops);
@@ -322,6 +325,7 @@ void AudioSystem::stopRiser()
 	// reset timers in case they are currently running
 	releaseTimer.stopTimer();
 	timeModulationTimer.stopTimer();
+	positionActionCalculator.stopActionCalculator();
 
 	playing = false;
 }

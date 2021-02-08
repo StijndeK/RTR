@@ -5,8 +5,7 @@
 #include "AudioBase.h"
 #include "Modulation/Envelopes.h"
 #include "Modulation/Modulation.h"
-#include "Modulation/Timer.h"
-#include "Modulation/ActionCalculator.h"
+#include "Modulation/ThresholdChecker.h"
 
 class AudioSystem : public AudioBase, public ModulationTypes {
 
@@ -57,6 +56,7 @@ public:
 	static bool modulationTrigger;		// true on attack when playing
 	static bool timeModulationTrigger;
 	static bool actionModulationTrigger;
+	static float actionInput;
 	static bool envelopeTrigger;		// true on start, then immediatly false
 	static bool playing;				// true while audio is playing
 	static bool releasePhase;			// true while release is playing, to get notified when to stop audio

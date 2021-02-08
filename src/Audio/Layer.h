@@ -48,9 +48,7 @@ public:
 	~LoopLayer();
 
 	void startSounds();
-
-	float gainModulation(float inputValue, float positionTrigger, float timeTrigger);
-
+	float gainModulation(float inputValue, float positionTrigger, float timeTrigger, float actionTrigger, float actionInputValue);
 	float pitchModulation(float inputValue, float positionTrigger, float timeTrigger);
 
 	PositionModulation positionGainMod;
