@@ -8,7 +8,7 @@ public:
 	void (*_functionToCall)();
 };
 
-class ActionCalculator : public ThresholdChecker
+class ActionCalculator
 {
 public:
 	// base treshold checker functions
@@ -20,6 +20,8 @@ public:
 	void stopActionCalculator();
 	bool calculateAction = false;
 
+	void setFunctionsToCall(void(&triggerFunctionToCall)(), void (&setFunctionToCall)(float pos));
+
 private:
 	std::vector<float> values;
 	std::vector<float> values2;
@@ -27,6 +29,11 @@ private:
 	float threshold = 0;
 	int sampleSize = 200;
 	int updateRate = 50;
+	bool active;
+	bool currentActive;
+
+	void (*_triggerFunctionToCall)();
+	void (*_setFunctionToCall)(float pos);
 };
 
 class Timer : public ThresholdChecker

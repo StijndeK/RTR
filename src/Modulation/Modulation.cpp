@@ -99,6 +99,11 @@ void TimeModulation::CalculateStepSize(float stepSec)
 // Action Modulation
 //--------------------------------------------------------------
 
+ActionModulation::ActionModulation()
+{
+	currentDistance = 1;
+}
+
 float ActionModulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger) {
 	if (trigger == 1) {
 		float buffer = 0.01;

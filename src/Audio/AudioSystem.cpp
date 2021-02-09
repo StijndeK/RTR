@@ -27,8 +27,8 @@ float AudioSystem::gainSnapshot = 1;
 
 bool AudioSystem::modulationTrigger = 0;			// true on attack when playing
 bool AudioSystem::timeModulationTrigger = 0;		// true after timeModulation threshold is passed
-bool AudioSystem::actionModulationTrigger = 0;		// true after actionModulation threshold is passed
-float AudioSystem::actionInput = 0;
+bool AudioSystem::actionModulationTrigger = 1;		// true after actionModulation threshold is passed
+float AudioSystem::actionInput = 1;
 bool AudioSystem::envelopeTrigger = 0;				// true on start, then immediatly false
 bool AudioSystem::playing = false;					// true while audio is playing
 vector<ImpactLayer*> AudioSystem::layerImpacts;
@@ -50,7 +50,7 @@ AudioSystem::AudioSystem()
 	// initialise threshold modulators
 	releaseTimer.setFunctionToCall(stopRiser);
 	timeModulationTimer.setFunctionToCall(triggerTimeModulation);
-	positionActionCalculator.setFunctionToCall(triggerActionModulation);
+	positionActionCalculator.setFunctionsToCall(triggerActionModulation, setActionModulationPosition);
 
 	/* modulation improvements
 	* curve per modulator
@@ -245,7 +245,7 @@ void AudioSystem::update() {
 			if (layer->_onOff) {
 
 				// gain modulation
-				float outputGain = attackedGain * layer->gainModulation(decimalValue, modulationTrigger, timeModulationTrigger, actionModulationTrigger, 1 - actionModulationTrigger);
+				float outputGain = attackedGain * layer->gainModulation(decimalValue, modulationTrigger, timeModulationTrigger, actionModulationTrigger, actionInput);
 				layer->setVolume(outputGain);
 
 				// pitch modulation
@@ -489,6 +489,11 @@ void AudioSystem::triggerActionModulation()
 {
 	debugMessage("start action modulation");
 	actionModulationTrigger = !actionModulationTrigger;
+}
+
+void AudioSystem::setActionModulationPosition(float position)
+{
+	actionInput = position;
 }
 
 //--------------------------------------------------------------

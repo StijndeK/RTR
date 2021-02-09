@@ -33,6 +33,7 @@ public:
 	static void setRelease(float release); // move to layer
 	static void setModulationCurve(float startValue);
 	static void setPosition(float position);
+
 	static void setTimeModulationThreshold(float modulation);
 	static void setTimeModulationLength(float lengthInMs);
 	static void setActionModulationThreshold(float modulation);
@@ -40,6 +41,7 @@ public:
 
 	static void triggerTimeModulation();
 	static void triggerActionModulation();
+	static void setActionModulationPosition(float position);
 
 	static void checkLessModifier(float value);
 	static void setOffset(float offset);

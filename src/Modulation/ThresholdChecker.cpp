@@ -35,9 +35,20 @@ void ActionCalculator::update(float currentValue)
 
 			// check deviation with current average
 			if (average2 >= average - threshold && average2 <= average + threshold && average + average2 != 0) {
-				cout << "trigger action modulation" << endl;
+				active = true;
+			}
+			else {
+				active = false;
+			}
+
+			// trigger function
+			if (currentActive != active) {
+				cout << "trigger action modulation: " << active << endl;
+
 				// call the function
-				(*_functionToCall)();
+				(*_setFunctionToCall)(1 - active);
+
+				currentActive = active;
 			}
 
 			// clear vectors to restart count 
@@ -59,6 +70,12 @@ void ActionCalculator::startActionCalculator()
 void ActionCalculator::stopActionCalculator()
 {
 	calculateAction = false;
+}
+
+void ActionCalculator::setFunctionsToCall(void(&triggerFunctionToCall)(), void(&setFunctionToCall)(float pos))
+{
+	_triggerFunctionToCall = triggerFunctionToCall;
+	_setFunctionToCall = setFunctionToCall;
 }
 
 //--------------------------------------------------------------
