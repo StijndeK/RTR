@@ -12,7 +12,7 @@ class ActionCalculator : public ThresholdChecker
 {
 public:
 	// base treshold checker functions
-	void setTreshold(float timeInMs);
+	void setThreshold(float timeInMs);
 
 	// own functions
 	void update(float currentValue);
@@ -26,8 +26,8 @@ private:
 	int currentVecIt = 0;
 	float threshold = 0;
 	int sampleSize = 200;
+	int updateRate = 50;
 };
-
 
 class Timer : public ThresholdChecker
 {

@@ -245,7 +245,7 @@ void AudioSystem::update() {
 			if (layer->_onOff) {
 
 				// gain modulation
-				float outputGain = attackedGain * layer->gainModulation(decimalValue, modulationTrigger, timeModulationTrigger, actionModulationTrigger, actionInput);
+				float outputGain = attackedGain * layer->gainModulation(decimalValue, modulationTrigger, timeModulationTrigger, actionModulationTrigger, 1 - actionModulationTrigger);
 				layer->setVolume(outputGain);
 
 				// pitch modulation
@@ -268,7 +268,7 @@ void AudioSystem::update() {
 		// update treshold checkers
 		releaseTimer.update();
 		timeModulationTimer.update();
-		positionActionCalculator.update((float)rand() / RAND_MAX);
+		positionActionCalculator.update(decimalValue);
 
 		// reset trigger for envelopes
 		if (envelopeTrigger == 1) envelopeTrigger = 0;
@@ -440,7 +440,7 @@ void AudioSystem::setTimeModulationLength(float lengthInMs)
 void AudioSystem::setActionModulationThreshold(float modulation)
 {
 	debugMessage("setActionModulationThreshold: " + to_string(modulation));
-	positionActionCalculator.setTreshold(0.5);
+	positionActionCalculator.setThreshold(modulation);
 }
 
 void AudioSystem::setActionModulationLength(float lengthInMs)

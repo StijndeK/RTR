@@ -90,9 +90,7 @@ float TimeModulation::CalculateModulation(int trigger)
 
 void TimeModulation::CalculateStepSize(float stepSec)
 {
-	// TODO: create value in between
 	downStepExp = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * stepSec));
-
 	downStepAc = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * stepSec));
 }
 

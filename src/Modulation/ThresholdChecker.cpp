@@ -10,7 +10,7 @@ void ThresholdChecker::setFunctionToCall(void(&functionToCall)())
 // Action Threshold
 //--------------------------------------------------------------
 
-void ActionCalculator::setTreshold(float timeInMs)
+void ActionCalculator::setThreshold(float timeInMs)
 {
 	threshold = timeInMs;
 }
@@ -18,8 +18,8 @@ void ActionCalculator::setTreshold(float timeInMs)
 void ActionCalculator::update(float currentValue)
 {
 	if (calculateAction) {
-		if (values.size() < 100 || values2.size() < 100) {
-			if (values.size() < 100) {
+		if (values.size() < updateRate || values2.size() < updateRate) {
+			if (values.size() < updateRate) {
 				values.push_back(currentValue);
 			}
 			else {
@@ -27,28 +27,22 @@ void ActionCalculator::update(float currentValue)
 			}
 		}
 		else {
-			cout << "trigger action modulation" << endl;
+			cout << "check action modulation" << endl;
 
 			// calculate average
-			float average = accumulate(values.begin(), values.end(), 0.0) / 100;
-			float average2 = accumulate(values2.begin(), values2.end(), 0.0) / 100;
-
-			cout << "average 1: " << average << endl;
-			cout << "average 2: " << average2 << endl;
+			float average = accumulate(values.begin(), values.end(), 0.0) / updateRate;
+			float average2 = accumulate(values2.begin(), values2.end(), 0.0) / updateRate;
 
 			// check deviation with current average
-			if (average2 >= average - threshold || average2 <= average + threshold) {
+			if (average2 >= average - threshold && average2 <= average + threshold && average + average2 != 0) {
+				cout << "trigger action modulation" << endl;
 				// call the function
-				//(*_functionToCall)();
+				(*_functionToCall)();
 			}
 
 			// clear vectors to restart count 
-			// TODO: start replacing values and have a constant check
 			values.clear();
 			values2.clear();
-
-			//values[currentVecIt] = currentValue;
-			//currentVecIt = (currentVecIt + 1) % 100;
 		}
 	}
 
