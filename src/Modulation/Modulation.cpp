@@ -67,7 +67,7 @@ void PositionModulation::CalculateReleaseStepSize(float releaseSec) {
 float TimeModulation::CalculateModulation(int trigger)
 {
 	if (trigger == 1) {
-		if (currentDistance > 0.01) {
+		if (currentDistance > range) {
 			// calculate exp curve
 			currentDistanceExp *= downStepExp;
 

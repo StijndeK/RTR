@@ -44,18 +44,11 @@ private:
 	float curveRatio = 0.5;
 	float downStepExp;
 	float downStepAc;
+	float range = 0.3;
 };
 
 class ActionModulation : public UpDownModulationBase, public ModulationTypes
 {
 public:
-	float CalculateModulation(int trigger);
 	float CalculateModulation(float currentDistanceToGetToInRange, int trigger);
-
-private:
-	float currentDistanceExp = 0;
-	float currentDistanceAc = 1;
-	float curveRatio = 0.5;
-	float downStepExp;
-	float downStepAc;
 };
