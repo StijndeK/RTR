@@ -13,7 +13,7 @@ public:
     void draw();
     void update();
 
-    void initGui(ofxDatGui* gui);
+    void initGui(ofxDatGui* gui, string headerName, int theme = 0);
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void onButtonEvent(ofxDatGuiButtonEvent e);
     void onToggleEvent(ofxDatGuiToggleEvent e);

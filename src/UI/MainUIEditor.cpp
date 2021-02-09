@@ -42,12 +42,13 @@ void MainUIEditor::setup() {
     waveMonitor = guiVis2->addWaveMonitor("Waveform", 0, 0);
     waveMonitor->setDrawMode(ofxDatGuiGraph::LINES);
 
+    // ROW 1
+    float firstRowHeight = 80 + offset;
+
     // sound gui
-    ofxDatGui* guiSound = new ofxDatGui(0 + offset, 80 + offset);
-    initGui(guiSound);
+    ofxDatGui* guiSound = new ofxDatGui(0 + offset, firstRowHeight);
+    initGui(guiSound, ":: Sound ::");
     guiSound->onToggleEvent(this, &MainUIEditor::onToggleEvent);
-    guiSound->addHeader(":: Sound ::", false);
-    // set the defaults from json
     padStartToggle = guiSound->addToggle("Pad: Start", _ofApp->jsonSys.getValue("Pad: Start"));
     padEndToggle = guiSound->addToggle("Pad: End", _ofApp->jsonSys.getValue("Pad: End"));
     fxToggle = guiSound->addToggle("Fx", _ofApp->jsonSys.getValue("Fx"));
@@ -55,31 +56,41 @@ void MainUIEditor::setup() {
     shepardsToggle = guiSound->addToggle("Shepards", _ofApp->jsonSys.getValue("Shepards"));
 
     // general gui
-    ofxDatGui* guiGeneral = new ofxDatGui(255 + offset, 80 + offset);
-    initGui(guiGeneral);
-    guiGeneral->addHeader(":: Adaption ::", false);
-
+    ofxDatGui* guiGeneral = new ofxDatGui(255 + offset, firstRowHeight);
+    initGui(guiGeneral, ":: Adaption ::");
     ofxDatGuiSlider* gainSlider = guiGeneral->addSlider("gain", -90, 0, _ofApp->jsonSys.getValue("gain")); 
     ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 2, _ofApp->jsonSys.getValue("offset")); 
-    ofxDatGuiSlider* attackDecreaseModifierSlider = guiGeneral->addSlider("attack decrease modifier", 0.5, 2, _ofApp->jsonSys.getValue("attack decrease modifier"));         attackDecreaseModifierSlider->setPrecision(2);
     ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 0.5, 5, _ofApp->jsonSys.getValue("attack"));         
     ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 2, 5, _ofApp->jsonSys.getValue("release"));     
-    ofxDatGuiSlider* curveSlider = guiGeneral->addSlider("curve", 0, 1, _ofApp->jsonSys.getValue("curve"));
-    ofxDatGuiSlider* timeModulationThresholdSlider = guiGeneral->addSlider("timemod threshold", 5, 20, _ofApp->jsonSys.getValue("timemod threshold"));      
-    ofxDatGuiSlider* timeModulationLengthSlider = guiGeneral->addSlider("timemod length", 20, 60, _ofApp->jsonSys.getValue("timemod length"));
-    ofxDatGuiSlider* actionModulationThresholdSlider = guiGeneral->addSlider("actionmod threshold", 0.01, 0.1, _ofApp->jsonSys.getValue("actionmod threshold"));
-    ofxDatGuiSlider* actionModulationLengthSlider = guiGeneral->addSlider("actionmod length", 20, 60, _ofApp->jsonSys.getValue("actionmod length"));
 
     // mock gui
-    ofxDatGui* guiMock = new ofxDatGui(510 + offset, 80 + offset);
-    initGui(guiMock);
-    guiMock->addHeader(":: Mock ::", false);
-
+    ofxDatGui* guiMock = new ofxDatGui(510 + offset, firstRowHeight);
+    initGui(guiMock, ":: Mock ::");
     guiMock->addButton("Start");
     guiMock->addButton("Impact");
     ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in ms", 5, 20, _ofApp->jsonSys.getValue("range in ms"));
     ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("Position", 0, 1, 0); 
-    //currentPositionSlider->bind(_ofApp->audio.modData.currentDistanceToGetTo);
+
+    // ROW 2
+    float secondRowHeight = guiSound->getHeight() + 84 + offset;
+
+    // position modulation gui
+    ofxDatGui* guiPositionModulation = new ofxDatGui(0 + offset, secondRowHeight);
+    initGui(guiPositionModulation, ":: Position Modulation ::", 1);
+    ofxDatGuiSlider* attackDecreaseModifierSlider = guiPositionModulation->addSlider("attack decrease modifier", 0.5, 2, _ofApp->jsonSys.getValue("attack decrease modifier"));         attackDecreaseModifierSlider->setPrecision(2);
+    ofxDatGuiSlider* curveSlider = guiPositionModulation->addSlider("curve", 0, 1, _ofApp->jsonSys.getValue("curve"));
+
+    // action modulation gui
+    ofxDatGui* guiActionModulation = new ofxDatGui(255 + offset, secondRowHeight);
+    initGui(guiActionModulation, ":: Action Modulation ::", 1);
+    ofxDatGuiSlider* actionModulationThresholdSlider = guiActionModulation->addSlider("am threshold", 0.01, 0.1, _ofApp->jsonSys.getValue("am threshold"));
+    ofxDatGuiSlider* actionModulationLengthSlider = guiActionModulation->addSlider("am length", 20, 60, _ofApp->jsonSys.getValue("am length"));
+
+    // time modulation gui
+    ofxDatGui* guiTimeModulation = new ofxDatGui(510 + offset, secondRowHeight);
+    initGui(guiTimeModulation, ":: Time Modulation ::", 1);
+    ofxDatGuiSlider* timeModulationThresholdSlider = guiTimeModulation->addSlider("tm threshold", 5, 20, _ofApp->jsonSys.getValue("tm threshold"));
+    ofxDatGuiSlider* timeModulationLengthSlider = guiTimeModulation->addSlider("tm length", 20, 60, _ofApp->jsonSys.getValue("tm length"));
 
     // initialise audio values
     initialiseAllValues();
@@ -102,11 +113,12 @@ void MainUIEditor::update() {
     waveMonitor->setFrequency(_ofApp->audio.mainFrequencyAllLayers);
 }
 
-void MainUIEditor::initGui(ofxDatGui* gui) {
+void MainUIEditor::initGui(ofxDatGui* gui, string headerName, int theme) {
     gui->setTheme(new ofxDatGuiThemeSmoke());
     gui->setWidth(250);
     gui->onSliderEvent(this, &MainUIEditor::onSliderEvent);
     gui->onButtonEvent(this, &MainUIEditor::onButtonEvent);
+    gui->addHeader(headerName, false);
 }
 
 void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
@@ -141,16 +153,16 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
     else if (label == "Position") {
         _ofApp->audio.setPosition(e.target->getValue());
     }
-    else if (label == "timemod threshold") {
+    else if (label == "tm threshold") {
         _ofApp->audio.setTimeModulationThreshold(e.target->getValue());
     }
-    else if (label == "timemod length") {
+    else if (label == "tm length") {
         _ofApp->audio.setTimeModulationLength(e.target->getValue());
     }
-    else if (label == "actionmod threshold") {
+    else if (label == "am threshold") {
         _ofApp->audio.setActionModulationThreshold(e.target->getValue());
     }
-    else if (label == "actionmod length") {
+    else if (label == "am length") {
         _ofApp->audio.setActionModulationLength(e.target->getValue());
     }
     else {
@@ -202,10 +214,10 @@ void MainUIEditor::initialiseAllValues() // TODO: do this automatically
     _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue("range in ms"), _ofApp->jsonSys.getValue("attack decrease modifier"));
     _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
     _ofApp->audio.setRelease(_ofApp->jsonSys.getValue("release"));
-    _ofApp->audio.setTimeModulationThreshold(_ofApp->jsonSys.getValue("timemod threshold"));
-    _ofApp->audio.setTimeModulationLength(_ofApp->jsonSys.getValue("timemod length"));
-    _ofApp->audio.setActionModulationThreshold(_ofApp->jsonSys.getValue("actionmod threshold"));
-    _ofApp->audio.setActionModulationLength(_ofApp->jsonSys.getValue("actionmod length"));
+    _ofApp->audio.setTimeModulationThreshold(_ofApp->jsonSys.getValue("tm threshold"));
+    _ofApp->audio.setTimeModulationLength(_ofApp->jsonSys.getValue("tm length"));
+    _ofApp->audio.setActionModulationThreshold(_ofApp->jsonSys.getValue("am threshold"));
+    _ofApp->audio.setActionModulationLength(_ofApp->jsonSys.getValue("am length"));
 
     onToggleEvent(padStartToggle); 
     onToggleEvent(padEndToggle);
