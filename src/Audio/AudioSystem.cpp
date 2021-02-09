@@ -433,7 +433,7 @@ void AudioSystem::setTimeModulationLength(float lengthInMs)
 {
 	debugMessage("setTimeModulationLength " + to_string(lengthInMs));
 	for (auto layer : layerLoops) {
-		layer->timeGainMod.CalculateStepSize(lengthInMs);
+		layer->timeGainMod.CalculateAttackDecreaseStepSize(lengthInMs);
 	}
 }
 

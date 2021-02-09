@@ -66,9 +66,9 @@ void MainUIEditor::setup() {
     ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 2, 5, _ofApp->jsonSys.getValue("release"));     
     ofxDatGuiSlider* curveSlider = guiGeneral->addSlider("curve", 0.001, 0.1, _ofApp->jsonSys.getValue("curve"));           curveSlider->setPrecision(3);
     ofxDatGuiSlider* timeModulationThresholdSlider = guiGeneral->addSlider("timemod threshold", 5, 20, _ofApp->jsonSys.getValue("timemod threshold"));      
-    ofxDatGuiSlider* timeModulationLengthSlider = guiGeneral->addSlider("timemod length", 5, 60, _ofApp->jsonSys.getValue("timemod length"));
-    ofxDatGuiSlider* actionModulationThresholdSlider = guiGeneral->addSlider("actionmod threshold", 0, 1, _ofApp->jsonSys.getValue("actionmod threshold"));
-    ofxDatGuiSlider* actionModulationLengthSlider = guiGeneral->addSlider("actionmod length", 5, 60, _ofApp->jsonSys.getValue("actionmod length"));
+    ofxDatGuiSlider* timeModulationLengthSlider = guiGeneral->addSlider("timemod length", 20, 60, _ofApp->jsonSys.getValue("timemod length"));
+    ofxDatGuiSlider* actionModulationThresholdSlider = guiGeneral->addSlider("actionmod threshold", 0.01, 0.1, _ofApp->jsonSys.getValue("actionmod threshold"));
+    ofxDatGuiSlider* actionModulationLengthSlider = guiGeneral->addSlider("actionmod length", 20, 60, _ofApp->jsonSys.getValue("actionmod length"));
 
     // mock gui
     ofxDatGui* guiMock = new ofxDatGui(510 + offset, 80 + offset);

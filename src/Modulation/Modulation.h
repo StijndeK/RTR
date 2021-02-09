@@ -2,29 +2,39 @@
 #include "ofMain.h"
 #include "ModulationTypes.h"
 
-class ModulationBase
+class ModulationBase : public ModulationTypes
 {
 public:
 	float updateRate = 60.f;
 	double amplitudeStartValue = 0.001;
 	float currentDistance = 0;
-};
 
-class UpDownModulationBase : public ModulationBase, public ModulationTypes
-{
-public:
-	void CalculateAttackStepSize(float attackUpSec);
-	void CalculateAttackDecreaseStepSize(float attackDownSec);
+	float currentDistanceExp = 0;
+	float currentDistanceAc = 1;
+	float curveRatio = 0.5;
+	float downStepExp, downStepAc;
+	float downStep;
+	float range = 0.1;
 
 	modulationType modType = exponential;
 
+	void CalculateAttackDecreaseStepSize(float attackDownSec);
+
+};
+
+class UpDownModulationBase : public ModulationBase
+{
+public:
+	void CalculateAttackStepSize(float attackUpSec);
+
+	float upStepAc, upStepExp;
 	float upStep;
-	float downStep;
 };
 
 class PositionModulation : public UpDownModulationBase, public ModulationTypes
 {
 public:
+	PositionModulation();
 	float CalculateModulation(float currentDistanceToGetToInRange, int trigger);
 	void CalculateReleaseStepSize(float releaseSec);
 
@@ -35,16 +45,8 @@ private:
 class TimeModulation : public ModulationBase
 {
 public:
+	TimeModulation();
 	float CalculateModulation(int trigger);
-	void CalculateStepSize(float stepSec);
-
-private:
-	float currentDistanceExp = 0;
-	float currentDistanceAc = 1;
-	float curveRatio = 0.5;
-	float downStepExp;
-	float downStepAc;
-	float range = 0.1;
 };
 
 class ActionModulation : public UpDownModulationBase, public ModulationTypes

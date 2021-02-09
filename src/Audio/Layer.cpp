@@ -89,8 +89,6 @@ float LoopLayer::gainModulation(float inputValue, float positionTrigger, float t
 {
 	float actOuput = actionGainMod.CalculateModulation(actionInputValue, actionTrigger);
 	float output = positionGainMod.CalculateModulation(inputValue, positionTrigger) * timeGainMod.CalculateModulation(timeTrigger) ;
-	cout << "actoutput: " << actOuput << endl;
-	cout << "actionInputValue: " << actionInputValue << endl;
 
 	return output;
 }
