@@ -423,34 +423,34 @@ void AudioSystem::setPosition(float position)
 	modData.currentDistanceToGetTo = position;
 }
 
-void AudioSystem::setTimeModulationThreshold(float modulation)
+void AudioSystem::setTimeModulationThreshold(float threshold, float minimumLength)
 {
-	debugMessage("setTimeModulationThreshold: " + to_string(modulation));
-	timeModulationTimer.setLength(modulation);
+	debugMessage("setTimeModulationThreshold: " + to_string(threshold * minimumLength));
+	timeModulationTimer.setLength(threshold * minimumLength);
 }
 
-void AudioSystem::setTimeModulationLength(float lengthInMs)
+void AudioSystem::setTimeModulationLength(float lengthInMs, float minimumLength)
 {
-	debugMessage("setTimeModulationLength " + to_string(lengthInMs));
+	debugMessage("setTimeModulationLength " + to_string(lengthInMs * minimumLength));
 	for (auto layer : layerLoops) {
-		layer->timeGainMod.CalculateAttackDecreaseStepSize(lengthInMs);
+		layer->timeGainMod.CalculateAttackDecreaseStepSize(lengthInMs * minimumLength);
 	}
 }
 
-void AudioSystem::setActionModulationThreshold(float modulation)
+void AudioSystem::setActionModulationThreshold(float threshold)
 {
-	debugMessage("setActionModulationThreshold: " + to_string(modulation));
-	positionActionCalculator.setThreshold(modulation);
+	debugMessage("setActionModulationThreshold: " + to_string(threshold));
+	positionActionCalculator.setThreshold(threshold);
 }
 
-void AudioSystem::setActionModulationLength(float lengthInMs)
+void AudioSystem::setActionModulationLength(float lengthInMs, float minimumLength)
 {
 	float modifier = 1.5;
 
-	debugMessage("setActionModulation: Amp. " + to_string(lengthInMs));
+	debugMessage("setActionModulation: Amp. " + to_string(lengthInMs * minimumLength));
 	for (auto layer : layerLoops) {
-		layer->actionGainMod.CalculateAttackStepSize(modifier * lengthInMs);
-		layer->actionGainMod.CalculateAttackDecreaseStepSize(lengthInMs);
+		layer->actionGainMod.CalculateAttackStepSize(modifier * lengthInMs * minimumLength);
+		layer->actionGainMod.CalculateAttackDecreaseStepSize(lengthInMs * minimumLength);
 	}
 
 }

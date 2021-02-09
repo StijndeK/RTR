@@ -34,10 +34,10 @@ public:
 	static void setModulationCurve(float startValue);
 	static void setPosition(float position);
 
-	static void setTimeModulationThreshold(float modulation);
-	static void setTimeModulationLength(float lengthInMs);
-	static void setActionModulationThreshold(float modulation);
-	static void setActionModulationLength(float lengthInMs);
+	static void setTimeModulationThreshold(float threshold, float minimumLength);
+	static void setTimeModulationLength(float lengthInMs, float minimumLength);
+	static void setActionModulationThreshold(float threshold);
+	static void setActionModulationLength(float lengthInMs, float minimumLength);
 
 	static void triggerTimeModulation();
 	static void triggerActionModulation();
