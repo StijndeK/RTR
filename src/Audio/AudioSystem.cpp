@@ -414,7 +414,7 @@ void AudioSystem::setModulationCurve(float startValue)
 {
 	debugMessage("setcurve: " + to_string(startValue));
 	for (auto layer : layerLoops) {
-		layer->positionGainMod.amplitudeStartValue = startValue;
+		layer->positionGainMod.curveRatio = startValue;
 	}
 }
 

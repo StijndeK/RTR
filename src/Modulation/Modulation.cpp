@@ -77,6 +77,10 @@ float PositionModulation::CalculateModulation(float currentDistanceToGetToInRang
 	else {
 		if (currentDistance > 0.01) {
 			currentDistance *= release;
+
+			// reset attack values
+			if (currentDistanceExp != amplitudeStartValue) currentDistanceExp = amplitudeStartValue;
+			if (currentDistanceAc != 1) currentDistanceAc = 1;
 		}
 	}
 
@@ -165,6 +169,8 @@ float ActionModulation::CalculateModulation(float currentDistanceToGetToInRange,
 
 	else {
 		currentDistance = 1;
+		currentDistanceExp = 1;
+		currentDistanceAc = amplitudeStartValue;
 	}
 
 	return currentDistance;

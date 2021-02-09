@@ -19,7 +19,6 @@ public:
 	modulationType modType = exponential;
 
 	void CalculateAttackDecreaseStepSize(float attackDownSec);
-
 };
 
 class UpDownModulationBase : public ModulationBase
