@@ -47,6 +47,8 @@ public:
 	static void checkLessModifier(float value);
 	static void setOffset(float offset);
 
+	static void soundDesign();
+
 	static PositionModulation timeMod;
 
 	// getters
