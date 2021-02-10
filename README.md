@@ -20,7 +20,7 @@ Audio parameters are mapped to game data in different ways. Aspects such as play
 
 Both the engine and the tool use the same audio and json-to-audio-translation systems. The tool has a user interface to edit settings and design the riser, and the engine plugin has a blueprint to get the game data to adapt to.
 
-![RTR_DataflowSplit](https://user-images.githubusercontent.com/31696336/104633126-fb8bd980-569e-11eb-92f6-6616ba3970e0.png)
+![RTR_DataflowSplit](https://user-images.githubusercontent.com/31696 336/104633126-fb8bd980-569e-11eb-92f6-6616ba3970e0.png)
 
 The AudioBase class contains the specific elements for the surrounding framework, so that the rest of the AudioSystem is exactly the same for every framework or engine. For example, the AudioBase handles debugmessages as every engine has its own debugging system build in. 
 

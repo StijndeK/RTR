@@ -1,6 +1,5 @@
 #include "ThresholdChecker.h"
 
-
 void ThresholdChecker::setFunctionToCall(void(&functionToCall)())
 {
 	_functionToCall = functionToCall;

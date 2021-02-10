@@ -42,6 +42,8 @@ Timer AudioSystem::timeModulationTimer;
 ActionCalculator AudioSystem::positionActionCalculator;
 ModulationData AudioSystem::modData;
 
+float AudioSystem::positionModifier = 1;
+
 //--------------------------------------------------------------
 AudioSystem::AudioSystem()
 {
@@ -52,33 +54,6 @@ AudioSystem::AudioSystem()
 	timeModulationTimer.setFunctionToCall(triggerTimeModulation);
 	positionActionCalculator.setFunctionsToCall(triggerActionModulation, setActionModulationPosition);
 
-	/* modulation improvements
-	* curve per modulator
-	* seek speed per modulator
-	* range setting
-	* range per modulator
-	*/
-
-	// timer with threshold of start to decrease intensity
-	// after this timer goes of, a new timer should start decreasing the intensity
-	/* required features: (seperate class)
-	* init function that starts the timer based on the length
-	* only start after this timer went off
-	* input for after how long this hould happen
-	* curve by which this should happen
-	* seek speed how fast this should happen
-	* optional: how much this should happen
-	*/
-
-	// intialise vector to check if movement is less
-	/* required features: (seperate class)
-	* init function that fills an empty vector
-	* check function to check if should be decreasing
-	* input for after how long this should happen
-	* curve
-	* seek speed
-	* optional: how much
-	*/
 	vector<float> vect(40, 0.f);
 	lastValues = vect;
 }
@@ -369,24 +344,30 @@ void AudioSystem::setGain(float gain) {
 	_gain = pow(10, gain / 20);
 }
 
-void AudioSystem::setPositionGainModulation(float attack, float modifier)
+void AudioSystem::setPositionGainModulation(float attack)
 {
 	debugMessage("setPositionModulation: Amp. " + to_string(attack));
 	for (auto layer : layerLoops) {
 		layer->positionGainMod.CalculateAttackStepSize(attack);
-		layer->positionGainMod.CalculateAttackDecreaseStepSize(modifier * attack);
+		layer->positionGainMod.CalculateAttackDecreaseStepSize(positionModifier * attack);
 	}
 }
 
-void AudioSystem::setPositionPitchModulation(float attack, float modifier)
+void AudioSystem::setPositionPitchModulation(float attack)
 {
 	debugMessage("setPositionModulation: Pitch. " + to_string(attack));
 	for (auto layer : layerLoops) {
 		if (layer->mainPitchModToggle) { 
 			layer->positionPitchMod.CalculateAttackStepSize(attack); 
-			layer->positionPitchMod.CalculateAttackDecreaseStepSize(modifier * attack);
+			layer->positionPitchMod.CalculateAttackDecreaseStepSize(positionModifier * attack);
 		}
 	}
+}
+
+void AudioSystem::setPositionModifier(float modifier)
+{
+	debugMessage("setPositionModifier: " + to_string(modifier));
+	positionModifier = modifier;
 }
 
 void AudioSystem::setAttack(float attack) {
@@ -452,7 +433,6 @@ void AudioSystem::setActionModulationLength(float lengthInMs, float minimumLengt
 		layer->actionGainMod.CalculateAttackStepSize(modifier * lengthInMs * minimumLength);
 		layer->actionGainMod.CalculateAttackDecreaseStepSize(lengthInMs * minimumLength);
 	}
-
 }
 
 //--------------------------------------------------------------

@@ -139,12 +139,13 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
         _ofApp->audio.setAttack(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "attack decrease modifier") {
-        _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue(label), _ofApp->jsonSys.getValue("attack decrease modifier"));
-        _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue(label), _ofApp->jsonSys.getValue("attack decrease modifier"));
+        _ofApp->audio.setPositionModifier(_ofApp->jsonSys.getValue(label));
+        _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue("range in s"));
+        _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue("range in s"));
     }
     else if (label == "range in s") {
-        _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue(label), _ofApp->jsonSys.getValue("attack decrease modifier"));
-        _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue(label), _ofApp->jsonSys.getValue("attack decrease modifier"));
+        _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue(label));
+        _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "offset") {
         _ofApp->audio.setOffset(_ofApp->jsonSys.getValue(label));
@@ -212,8 +213,9 @@ void MainUIEditor::initialiseAllValues() // TODO: do this automatically
     _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
     _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
     _ofApp->audio.setModulationCurve(_ofApp->jsonSys.getValue("curve"));
-    _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue("range in s"), _ofApp->jsonSys.getValue("attack decrease modifier"));
-    _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue("range in s"), _ofApp->jsonSys.getValue("attack decrease modifier"));
+    _ofApp->audio.setPositionModifier(_ofApp->jsonSys.getValue("attack decrease modifier"));
+    _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue("range in s"));
+    _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue("range in s"));
     _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
     _ofApp->audio.setRelease(_ofApp->jsonSys.getValue("release"));
     _ofApp->audio.setTimeModulationThreshold(_ofApp->jsonSys.getValue("tm threshold"), _ofApp->jsonSys.getValue("range in s"));

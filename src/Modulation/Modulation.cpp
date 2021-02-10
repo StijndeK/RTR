@@ -158,8 +158,6 @@ float ActionModulation::CalculateModulation(float currentDistanceToGetToInRange,
 					currentDistanceAc *= downStepAc;
 				}
 				
-				//currentDistance *= (currentDistance < currentDistanceToGetToInRange) ? upStep : downStep;
-
 				// set curve based on ratio between Ac and Exp
 				currentDistance = ((1 - currentDistanceAc) * curveRatio) + (currentDistanceExp * (1 - curveRatio));
 			}

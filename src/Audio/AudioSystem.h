@@ -27,8 +27,9 @@ public:
 
 	// setters
 	static void setGain(float gain);
-	static void setPositionGainModulation(float attack, float modifier);
-	static void setPositionPitchModulation(float attack, float modifier);
+	static void setPositionGainModulation(float attack);
+	static void setPositionPitchModulation(float attack);
+	static void setPositionModifier(float modifier);
 	static void setAttack(float attack);
 	static void setRelease(float release); // move to layer
 	static void setModulationCurve(float startValue);
@@ -101,4 +102,6 @@ private:
 	static ActionCalculator positionActionCalculator;
 
 	static float frequencyStandard;
+
+	static float positionModifier;
 };
