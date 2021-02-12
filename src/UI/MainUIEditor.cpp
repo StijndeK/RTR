@@ -59,6 +59,7 @@ void MainUIEditor::setup() {
     ofxDatGui* guiGeneral = new ofxDatGui(255 + offset, firstRowHeight);
     initGui(guiGeneral, ":: Adaption ::");
     ofxDatGuiSlider* gainSlider = guiGeneral->addSlider("gain", -90, 0, _ofApp->jsonSys.getValue("gain")); 
+    ofxDatGuiSlider* rangeSlider = guiGeneral->addSlider("range in s", 5, 60, _ofApp->jsonSys.getValue("range in s"));
     //ofxDatGuiSlider* offsetSlider = guiGeneral->addSlider("offset", 0, 2, _ofApp->jsonSys.getValue("offset")); 
     ofxDatGuiSlider* attackSlider = guiGeneral->addSlider("attack", 0.5, 5, _ofApp->jsonSys.getValue("attack"));         
     ofxDatGuiSlider* releaseSlider = guiGeneral->addSlider("release", 2, 5, _ofApp->jsonSys.getValue("release"));     
@@ -68,7 +69,6 @@ void MainUIEditor::setup() {
     initGui(guiMock, ":: Mock ::");
     guiMock->addButton("Start");
     guiMock->addButton("Impact");
-    ofxDatGuiSlider* rangeSlider = guiMock->addSlider("range in s", 5, 20, _ofApp->jsonSys.getValue("range in s"));
     ofxDatGuiSlider* currentPositionSlider = guiMock->addSlider("Position", 0, 1, 0); 
 
     // ROW 2

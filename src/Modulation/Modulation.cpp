@@ -6,8 +6,6 @@ void ModulationBase::CalculateAttackDecreaseStepSize(float attackDownSec) {
 		downStep = 0 - ((1.0 / updateRate) * (1.0 / attackDownSec));
 	}
 	else {
-		downStep = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * attackDownSec));
-
 		downStepExp = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * attackDownSec));
 		downStepAc = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * attackDownSec));
 	}
@@ -22,8 +20,6 @@ void UpDownModulationBase::CalculateAttackStepSize(float attackUpSec) {
 		upStep = (1.0 / updateRate) * (1.0 / attackUpSec);
 	}
 	else {
-		upStep = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * attackUpSec));
-
 		upStepExp = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * attackUpSec));
 		upStepAc = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * attackUpSec));
 	}
@@ -61,8 +57,6 @@ float PositionModulation::CalculateModulation(float currentDistanceToGetToInRang
 					currentDistanceExp *= downStepExp;
 					currentDistanceAc *= downStepAc;
 				}
-
-				//currentDistance *= (currentDistance < currentDistanceToGetToInRange) ? upStep : downStep;
 
 				// set curve based on ratio between Ac and Exp
 				currentDistance = ((1 - currentDistanceAc) * curveRatio) + (currentDistanceExp * (1 - curveRatio));
