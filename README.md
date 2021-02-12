@@ -59,10 +59,7 @@ void ActionCalculator::update(float currentValue)
 			}
 
 			if (currentActive != active) {
-				cout << "trigger action modulation: " << active << endl;
-
 				(*_setFunctionToCall)(1 - active);
-
 				currentActive = active;
 			}
 
