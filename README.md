@@ -26,7 +26,7 @@ There are two types of layers. Evert layer has its own modulation, sounds and ch
 ## Modulation
 To allow a riser to go on for a longer or shorter amount of time, while still sounding naturally within its context, 3 modulation types have been defined. The first is *Position Modulation* which modulates up or down in intensity based on game progression. The second is *Action Modulation* which modulates up or down in intensity based on amount of game action over time. The third is *Time Modulation*, which slowly modulates down in intensity after a certain amount of time is spent without reaching the impact of the riser. 
 
-### treshold checkers
+### Threshold Checkers
 The ThresholdChecker class is used to for example check if the threshold to start the *Time Modulation* has been reached or to check the *Action Modulation* threshold. A function is passed to the TresholdChecker and called by Threshold checker once its threshold has been reached.
 
 ```C++
