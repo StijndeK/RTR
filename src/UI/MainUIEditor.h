@@ -17,6 +17,7 @@ public:
     void onSliderEvent(ofxDatGuiSliderEvent e);
     void onButtonEvent(ofxDatGuiButtonEvent e);
     void onToggleEvent(ofxDatGuiToggleEvent e);
+    void getProjectLocation();
     void initialiseAllValues();
     
 private:

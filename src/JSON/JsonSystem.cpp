@@ -20,6 +20,17 @@ void JsonSystem::draw()
 
 void JsonSystem::parseJson()
 {
+    // load project location
+    bool parsingSuccessful1 = resultLocation.open(locationFile);
+
+    if (!parsingSuccessful1)
+    {
+        ofLogError("ofApp::setup") << "Failed to parse JSON" << endl;
+    }
+
+    // set the new location
+    file = resultLocation["Project location"].asString();
+
     // check if file is available and open
     bool parsingSuccessful = result.open(file);
 
@@ -29,16 +40,6 @@ void JsonSystem::parseJson()
     }
 }
 
-void JsonSystem::getPath()
-{
-    ofFileDialogResult result = ofSystemLoadDialog("Load file");
-    if (result.bSuccess) {
-        file = result.getPath();;
-    }
-
-    parseJson();
-}
-
 void JsonSystem::setValue(std::string type, float value)
 {
     ofLogNotice("set value: " + type + to_string(value));
@@ -46,7 +47,21 @@ void JsonSystem::setValue(std::string type, float value)
     result.save(file, true);
 }
 
+void JsonSystem::setProjectLocation(std::string type, std::string value)
+{
+    ofLogNotice("set value: " + type + value);
+    resultLocation[type] = value;
+    resultLocation.save(locationFile, true);
+
+    parseJson();
+}
+
 float JsonSystem::getValue(std::string type)
 {
     return result[type].asFloat();
+}
+
+std::string JsonSystem::getProjectLocation(std::string type)
+{
+    return resultLocation[type].asString();
 }

@@ -26,6 +26,7 @@ void MainUIEditor::setup() {
     guiTitle2->setTheme(new ofxDatGuiThemeSmoke());
     guiTitle2->setWidth(110);
     guiTitle2->addButton("Project location");
+    guiTitle2->onButtonEvent(this, &MainUIEditor::onButtonEvent);
 
     // Visualisation gui 1
     ofxDatGui* guiVis1 = new ofxDatGui(255 + offset, 5 + offset);
@@ -79,7 +80,7 @@ void MainUIEditor::setup() {
     initGui(guiPositionModulation, ":: Position Modulation ::", 1);
     ofxDatGuiSlider* attackDecreaseModifierSlider = guiPositionModulation->addSlider("attack decrease modifier", 0.5, 2, _ofApp->jsonSys.getValue("attack decrease modifier"));         
     attackDecreaseModifierSlider->setPrecision(2);
-    ofxDatGuiSlider* curveSlider = guiPositionModulation->addSlider("curve", 0, 1, _ofApp->jsonSys.getValue("curve"));
+    ofxDatGuiSlider* curveSlider = guiPositionModulation->addSlider("curve shape", 0, 1, _ofApp->jsonSys.getValue("curve shape"));
 
     // action modulation gui
     ofxDatGui* guiActionModulation = new ofxDatGui(255 + offset, secondRowHeight);
@@ -150,7 +151,7 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
     else if (label == "offset") {
         _ofApp->audio.setOffset(_ofApp->jsonSys.getValue(label));
     }
-    else if (label == "curve") {
+    else if (label == "curve shape") {
         _ofApp->audio.setModulationCurve(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "Position") {
@@ -187,8 +188,8 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
     else if (label == "Fullscreen") {
         ofToggleFullscreen();
     }
-    else if (label == "Select destination") {
-        _ofApp->jsonSys.getPath();
+    else if (label == "Project location") {
+        getProjectLocation();
     }
     else { 
         cout << "Error: button label not found: " << label << endl;
@@ -208,11 +209,26 @@ void MainUIEditor::onToggleEvent(ofxDatGuiToggleEvent e)
     // NOTE: only toggles for layers exist, so no need to check which is pressed
 }
 
+void MainUIEditor::getProjectLocation()
+{
+    // get the file path
+    string file;
+    ofFileDialogResult result = ofSystemLoadDialog("Load file");
+    if (result.bSuccess) {
+        file = result.getPath();;
+    }
+    cout << file << endl;
+
+    // initialise
+    _ofApp->jsonSys.setProjectLocation("Project location", file);
+    initialiseAllValues();
+}
+
 void MainUIEditor::initialiseAllValues() // TODO: do this automatically
 {
     _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
     _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
-    _ofApp->audio.setModulationCurve(_ofApp->jsonSys.getValue("curve"));
+    _ofApp->audio.setModulationCurve(_ofApp->jsonSys.getValue("curve shape"));
     _ofApp->audio.setPositionModifier(_ofApp->jsonSys.getValue("attack decrease modifier"));
     _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue("range in s"));
     _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue("range in s"));
