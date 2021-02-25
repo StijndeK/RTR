@@ -7,7 +7,7 @@ The tool can be implemented in UE4 using the [UE4 integration plugin](https://gi
 
 ![Screenshot (25)](https://user-images.githubusercontent.com/31696336/107762003-9a523700-6d2c-11eb-8367-d1198573482b.png)
 
-The user can design the riser and its modulation in the Editor Tool. This tool exports the users settings to a .Json datafile, that is imported by an Unreal engine 4 (or any other engine) plugin. In the engine game data is passed to the plugin, using actors (game objects) and blueprints. The standalone tool and its UE4 plugin use the same audio playing and layering system, so that the audio can be tested instantaniously within the tool as well as the engine.
+The user can design the riser and its modulation in the Editor Tool. This tool exports the users settings to a .Json datafile, that is imported by an Unreal engine 4 (or any other engine) plugin. In the engine game data is passed to the plugin, using actors (game objects) and/or blueprints. The standalone tool and its UE4 plugin use the same audio playing and layering system, so that the audio can be tested instantaniously within the tool as well as the engine.
 
 <img width="1235" alt="Screenshot 2021-01-28 at 16 03 13" src="https://user-images.githubusercontent.com/31696336/106205781-55bc8c80-61bf-11eb-9aab-bfdd4743eaab.png">
 
