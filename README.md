@@ -74,8 +74,8 @@ void ActionCalculator::update(float currentValue)
 Per modulated parameter for every modulation type the curve to modulate by can be set. Default is a simple exponential curve. By calculating both the positive exponential (Exp) and the negative exponential or anticlimactic (Ac) curve, and providing the user with a ratio to calculate a value somewhere in between these two curves, precise control is provided.
 ```C++
         // calculate values to multiply the value with every update tick
-		upStepExp = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * attackUpSec));
-		upStepAc = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * attackUpSec));
+	upStepExp = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * attackUpSec));
+	upStepAc = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * attackUpSec));
 
         // set the output based on the ratio between the exp and ac curve
         void updateTick() {
