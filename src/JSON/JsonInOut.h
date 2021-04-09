@@ -2,7 +2,7 @@
 #include "ofMain.h"
 #include "ofxJSON.h"
 
-class JsonSystem{
+class JsonInOut{
 public:
     void setup();
     void draw();
