@@ -6,10 +6,8 @@
 
 BaseLayer::BaseLayer(string label, FMOD_SYSTEM* system)
 {
-	_label = label;
-	FMOD_CHANNEL* arr[] = { _channel, channel2, channel3, channel4, channel5 };
-	_channels.insert(_channels.end(), arr, arr + 5);
-	_system = system;
+	this->label = label;
+	this->system = system;
 }
 
 BaseLayer::~BaseLayer()
@@ -18,30 +16,30 @@ BaseLayer::~BaseLayer()
 
 void BaseLayer::stopSounds()
 {
-	for (int i = 0; i < _sounds.size(); i++) {
-		FMOD_Channel_Stop(_channels[i]);
+	for (int i = 0; i < sounds.size(); i++) {
+		FMOD_Channel_Stop(channels[i]);
 	}
 }
 
 void BaseLayer::setVolume(float volume)
 {
-	for (int i = 0; i < _sounds.size(); i++) {
-		FMOD_Channel_SetVolume(_channels[i], volume);
+	for (int i = 0; i < sounds.size(); i++) {
+		FMOD_Channel_SetVolume(channels[i], volume);
 	}
 }
 
 void BaseLayer::setFrequency(float frequency)
 {
-	for (int i = 0; i < _sounds.size(); i++) {
-		FMOD_Channel_SetFrequency(_channels[i], frequency);
+	for (int i = 0; i < sounds.size(); i++) {
+		FMOD_Channel_SetFrequency(channels[i], frequency);
 	}
 }
 
 float BaseLayer::getFrequency()
 {
 	float out = 0;
-	for (int i = 0; i < _sounds.size(); i++) {
-		FMOD_Channel_GetFrequency(_channels[i], &out);
+	for (int i = 0; i < sounds.size(); i++) {
+		FMOD_Channel_GetFrequency(channels[i], &out);
 	}
 	return out;
 }
@@ -61,7 +59,7 @@ ImpactLayer::~ImpactLayer()
 void ImpactLayer::startSounds()
 {
 	int randValue = rand() % 3; 	// randomise sub and impact selection
-	FMOD_System_PlaySound(_system, FMOD_CHANNEL_FREE, _sounds[randValue], false, &_channels[randValue]);
+	FMOD_System_PlaySound(system, FMOD_CHANNEL_FREE, sounds[randValue], false, &channels[randValue]);
 }
 
 //--------------------------------------------------------------
@@ -70,7 +68,6 @@ void ImpactLayer::startSounds()
 
 LoopLayer::LoopLayer(string label, FMOD_SYSTEM* system) : BaseLayer(label, system)
 {
-	_label = label;
 	positionPitchMod.modType = linear;
 }
 
@@ -80,8 +77,8 @@ LoopLayer::~LoopLayer()
 
 void LoopLayer::startSounds()
 {
-	for (int i = 0; i < _sounds.size(); i++) {
-		FMOD_System_PlaySound(_system, FMOD_CHANNEL_FREE, _sounds[i], false, &_channels[i]);
+	for (int i = 0; i < sounds.size(); i++) {
+		FMOD_System_PlaySound(system, FMOD_CHANNEL_FREE, sounds[i], false, &channels[i]);
 	}
 }
 
@@ -97,4 +94,11 @@ float LoopLayer::pitchModulation(float inputValue, float positionTrigger, float 
 {
 	float output = positionPitchMod.CalculateModulation(inputValue, positionTrigger);
 	return output;
+
+
+	enum MyEnum
+	{
+		test,
+		twest
+	};
 }

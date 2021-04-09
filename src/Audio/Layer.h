@@ -12,24 +12,18 @@ public:
 	BaseLayer(string label, FMOD_SYSTEM* system);
 	~BaseLayer();
 
-	FMOD_SYSTEM* _system;
+	FMOD_SYSTEM* system;
 
 	void stopSounds();
 	void setVolume(float volume);
 	void setFrequency(float frequency);
 	float getFrequency();
 
-	vector<FMOD_SOUND*> _sounds;
-	vector<FMOD_CHANNEL*> _channels;
-	FMOD_CHANNEL* _channel;
-	FMOD_CHANNEL* channel2;
-	FMOD_CHANNEL* channel3;
-	FMOD_CHANNEL* channel4;
-	FMOD_CHANNEL* channel5;
+	vector<FMOD_SOUND*> sounds;
+	vector<FMOD_CHANNEL*> channels;
 
-	string _label;
-	int _currentSoundIdentifier = 0;
-	bool _onOff = 0;
+	string label;
+	bool onOff = 0;
 };
 
 class ImpactLayer : public BaseLayer

@@ -203,8 +203,8 @@ void MainUIEditor::onToggleEvent(ofxDatGuiToggleEvent e)
     // export to json
     _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getChecked());
 
-    _ofApp->audio.getLayerByName(label)->_onOff = e.target->getChecked();
-    _ofApp->audio.debugMessage("onoff for label: " + label + to_string(_ofApp->audio.getLayerByName(label)->_onOff));
+    _ofApp->audio.getLayerByName(label)->onOff = e.target->getChecked();
+    _ofApp->audio.debugMessage("onoff for label: " + label + to_string(_ofApp->audio.getLayerByName(label)->onOff));
 
     // NOTE: only toggles for layers exist, so no need to check which is pressed
 }
