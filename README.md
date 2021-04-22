@@ -12,9 +12,9 @@ The user can design the riser and its modulation in the Editor Tool. This tool e
 <img width="1235" alt="Screenshot 2021-01-28 at 16 03 13" src="https://user-images.githubusercontent.com/31696336/106205781-55bc8c80-61bf-11eb-9aab-bfdd4743eaab.png">
 
 ## Dataflow
-Both the game engine plugin and the Editor Tool use the same audio system and json-to-audio-translation system. The tool has a user interface to edit settings and design the riser while the engine plugin has blueprints and actors to integrate the riser in the game. The AudioBase class contains the specific elements for the surrounding framework, so that the rest of the AudioSystem is exactly the same for every framework or engine. For example, the AudioBase handles debugging.
+Both the game engine plugin and the standalone tool use the same audio system which is build on the FMOD core API. The tool has a user interface to edit settings and design the riser while the engine plugin has blueprints and actors to integrate the riser in the game. The tool writes the user data to a json file that includes the 'recipe' on how the riser should sound. In the standalone tool the riser also be played, because of which the tool also reads the json. The applications can be run seperatly, but also simultaniously. The game engine plugin reads the json data and links the riser to game data.
 
-![RTR_DataflowSplit](https://user-images.githubusercontent.com/31696336/104633126-fb8bd980-569e-11eb-92f6-6616ba3970e0.png)
+![RTR_Dataflow](https://user-images.githubusercontent.com/31696336/115718005-02e81080-a37b-11eb-8967-385d031cfd9d.png)
 
 ## Layering
 Preset sounds have been designed by deconstruction riser examples to static loop-able pads. These pads loop and parameters such as pitch and gain are modulated to create there rising effect. The audio has been divided up into different layers such as synths, noise and Shepard scales.
