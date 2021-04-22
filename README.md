@@ -84,4 +84,4 @@ Per modulated parameter for every modulation type the curve to modulate by can b
 ```
 
 ## Future developments
-The current tool has been made to be as quick and easy to use as possible. Herefore a lot is done in the background. However, there are a lot of interesting possibilities when moving them to the front-end and providing complete controll over how to adapt the riser and to what. 
+The current tool has been made to be as quick and easy to use as possible. Because of which a lot is done in the background. However, there are a lot of interesting possibilities when moving them to the front-end and providing complete controll over how to adapt the riser and to what. 
