@@ -31,16 +31,20 @@ The ThresholdChecker class is used to for example check if the threshold to star
 
 ```C++
 // set function to call
-void ThresholdChecker::setFunctionToCall(void(&functionToCall)()) {
+void ThresholdChecker::setFunctionToCall(void(&functionToCall)()) 
+{
 	_functionToCall = functionToCall;
 }
 
 // using the action threshold checker, fill and compare 2 vectors averages, and call function when threshold has been reached
 void ActionCalculator::update(float currentValue)
 {
-	if (calculateAction) {
-		if (values.size() < updateRate || values2.size() < updateRate) {
-			if (values.size() < updateRate) {
+	if (calculateAction) 
+	{
+		if (values.size() < updateRate || values2.size() < updateRate) 
+		{
+			if (values.size() < updateRate) 
+			{
 				values.push_back(currentValue);
 			}
 			else {
@@ -51,14 +55,17 @@ void ActionCalculator::update(float currentValue)
 			float average = accumulate(values.begin(), values.end(), 0.0) / updateRate;
 			float average2 = accumulate(values2.begin(), values2.end(), 0.0) / updateRate;
 
-			if (average2 >= average - threshold && average2 <= average + threshold && average + average2 != 0) {
+			if (average2 >= average - threshold && average2 <= average + threshold && average + average2 != 0) 
+			{
 				active = true;
 			}
-			else {
+			else 
+			{
 				active = false;
 			}
 
-			if (currentActive != active) {
+			if (currentActive != active) 
+			{
 				(*_setFunctionToCall)(1 - active);
 				currentActive = active;
 			}
@@ -78,7 +85,8 @@ Per modulated parameter for every modulation type the curve to modulate by can b
 	upStepAc = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * attackUpSec));
 
         // set the output based on the ratio between the exp and ac curve
-        void updateTick() {
+        void updateTick() 
+	{
             currentDistance = ((1 - currentDistanceAc) * curveRatio) + (currentDistanceExp * (1 - curveRatio));
         }
 ```
