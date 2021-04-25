@@ -10,7 +10,6 @@ class BaseLayer : public ModulationTypes
 {
 public:
 	BaseLayer(string label, FMOD_SYSTEM* system);
-	~BaseLayer();
 
 	FMOD_SYSTEM* system;
 
@@ -30,7 +29,6 @@ class ImpactLayer : public BaseLayer
 {
 public:
 	ImpactLayer(string label, FMOD_SYSTEM* system);
-	~ImpactLayer();
 
 	void startSounds();
 };
@@ -39,7 +37,6 @@ class LoopLayer : public BaseLayer
 {
 public:
 	LoopLayer(string label, FMOD_SYSTEM* system);
-	~LoopLayer();
 
 	void startSounds();
 	float gainModulation(float inputValue, float positionTrigger, float timeTrigger, float actionTrigger, float actionInputValue);
@@ -50,7 +47,7 @@ public:
 	TimeModulation timeGainMod;
 	ActionModulation actionGainMod;
 
-	// set if pitch mod should be on, main gain mod and less gain mod is always on
+	// Set if pitch mod should be on. Main gain mod and less gain mod are always on.
 	bool mainPitchModToggle = false;
 	float frequencyRange = 1.5;
 };

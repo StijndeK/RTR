@@ -131,28 +131,28 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
     _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
 
     if (label == "gain") {
-        _ofApp->audio.setGain(_ofApp->jsonSys.getValue(label));
+        _ofApp->audio.dbToFloat(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "release") {
-        _ofApp->audio.setRelease(_ofApp->jsonSys.getValue(label));
+        _ofApp->audio.setReleaseLayers(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "attack") {
         _ofApp->audio.setAttack(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "attack decrease modifier") {
         _ofApp->audio.setPositionModifier(_ofApp->jsonSys.getValue(label));
-        _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue("range in s"));
-        _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue("range in s"));
+        _ofApp->audio.calculatePositionGainModulation(_ofApp->jsonSys.getValue("range in s"));
+        _ofApp->audio.calculatePositionPitchModulation(_ofApp->jsonSys.getValue("range in s"));
     }
     else if (label == "range in s") {
-        _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue(label));
-        _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue(label));
+        _ofApp->audio.calculatePositionGainModulation(_ofApp->jsonSys.getValue(label));
+        _ofApp->audio.calculatePositionPitchModulation(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "offset") {
         _ofApp->audio.setOffset(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "curve shape") {
-        _ofApp->audio.setModulationCurve(_ofApp->jsonSys.getValue(label));
+        _ofApp->audio.setModulationCurveLayers(_ofApp->jsonSys.getValue(label));
     }
     else if (label == "Position") {
         _ofApp->audio.setPosition(e.target->getValue());
@@ -161,13 +161,13 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
         _ofApp->audio.setTimeModulationThreshold(e.target->getValue(), _ofApp->jsonSys.getValue("range in s"));
     }
     else if (label == "tm length") {
-        _ofApp->audio.setTimeModulationLength(e.target->getValue(), _ofApp->jsonSys.getValue("range in s"));
+        _ofApp->audio.setTimeModulationLengthLayers(e.target->getValue(), _ofApp->jsonSys.getValue("range in s"));
     }
     else if (label == "am threshold") {
         _ofApp->audio.setActionModulationThreshold(e.target->getValue());
     }
     else if (label == "am length") {
-        _ofApp->audio.setActionModulationLength(e.target->getValue(), _ofApp->jsonSys.getValue("range in s"));
+        _ofApp->audio.setActionModulationLengthLayers(e.target->getValue(), _ofApp->jsonSys.getValue("range in s"));
     }
     else {
         cout << "Error: slider label not found: " << label << endl;
@@ -226,18 +226,18 @@ void MainUIEditor::getProjectLocation()
 
 void MainUIEditor::initialiseAllValues() // TODO: do this automatically
 {
-    _ofApp->audio.setGain(_ofApp->jsonSys.getValue("gain"));
+    _ofApp->audio.dbToFloat(_ofApp->jsonSys.getValue("gain"));
     _ofApp->audio.setOffset(_ofApp->jsonSys.getValue("offset"));
-    _ofApp->audio.setModulationCurve(_ofApp->jsonSys.getValue("curve shape"));
+    _ofApp->audio.setModulationCurveLayers(_ofApp->jsonSys.getValue("curve shape"));
     _ofApp->audio.setPositionModifier(_ofApp->jsonSys.getValue("attack decrease modifier"));
-    _ofApp->audio.setPositionGainModulation(_ofApp->jsonSys.getValue("range in s"));
-    _ofApp->audio.setPositionPitchModulation(_ofApp->jsonSys.getValue("range in s"));
+    _ofApp->audio.calculatePositionGainModulation(_ofApp->jsonSys.getValue("range in s"));
+    _ofApp->audio.calculatePositionPitchModulation(_ofApp->jsonSys.getValue("range in s"));
     _ofApp->audio.setAttack(_ofApp->jsonSys.getValue("attack"));
-    _ofApp->audio.setRelease(_ofApp->jsonSys.getValue("release"));
+    _ofApp->audio.setReleaseLayers(_ofApp->jsonSys.getValue("release"));
     _ofApp->audio.setTimeModulationThreshold(_ofApp->jsonSys.getValue("tm threshold"), _ofApp->jsonSys.getValue("range in s"));
-    _ofApp->audio.setTimeModulationLength(_ofApp->jsonSys.getValue("tm length"), _ofApp->jsonSys.getValue("range in s"));
+    _ofApp->audio.setTimeModulationLengthLayers(_ofApp->jsonSys.getValue("tm length"), _ofApp->jsonSys.getValue("range in s"));
     _ofApp->audio.setActionModulationThreshold(_ofApp->jsonSys.getValue("am threshold"));
-    _ofApp->audio.setActionModulationLength(_ofApp->jsonSys.getValue("am length"), _ofApp->jsonSys.getValue("range in s"));
+    _ofApp->audio.setActionModulationLengthLayers(_ofApp->jsonSys.getValue("am length"), _ofApp->jsonSys.getValue("range in s"));
 
     onToggleEvent(padStartToggle); 
     onToggleEvent(padEndToggle);

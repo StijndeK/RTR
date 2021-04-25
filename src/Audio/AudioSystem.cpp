@@ -1,6 +1,6 @@
 #include "AudioSystem.h"
 
-// initialise static FMOD variables
+// Initialise static FMOD variables.
 FMOD_CHANNELGROUP* AudioSystem::channelgroup;
 FMOD_SYSTEM* AudioSystem::sys;
 
@@ -11,13 +11,13 @@ unsigned int AudioSystem::buffersize = 1024;
 
 std::vector<std::string> AudioSystem::ofxFmodDeviceNames;
 
-// Initialise other static members
+// Initialise other static members.
 bool AudioSystem::audioLoaded = false;
 bool AudioSystem::systemInitialised = false;
 
 int AudioSystem::currentValue = 0;
 int AudioSystem::currentTick = 0;
-vector<float> AudioSystem::lastValues;
+vector<float> AudioSystem::lastValues(40, 0.f);
 
 float AudioSystem::mainOutputGainAllLayers;
 float AudioSystem::mainFrequencyAllLayers;
@@ -47,41 +47,38 @@ float AudioSystem::positionModifier = 1;
 //--------------------------------------------------------------
 AudioSystem::AudioSystem()
 {
+	// Use the mockdata class for the mock functionality.
 	modData.MockData();
 
-	// initialise threshold modulators
+	// Initialise threshold modulators.
 	releaseTimer.setFunctionToCall(stopRiser);
 	timeModulationTimer.setFunctionToCall(triggerTimeModulation);
 	positionActionCalculator.setFunctionsToCall(triggerActionModulation, setActionModulationPosition);
-
-	vector<float> vect(40, 0.f);
-	lastValues = vect;
 }
 
 AudioSystem::~AudioSystem()
 {
-	for (auto layer : layerLoops) {
-		delete layer;
-	}
+	for (auto layer : layerLoops) delete layer;
 	layerLoops.clear();
-	for (auto layer : layerImpacts) {
-		delete layer;
-	}
+	for (auto layer : layerImpacts) delete layer;
 	layerImpacts.clear();
 }
 
 //--------------------------------------------------------------
 // audio loading and initialising
 //--------------------------------------------------------------
-void AudioSystem::initFMODSystem() {
-	if (systemInitialised == false) {
+void AudioSystem::initFMODSystem() 
+{
+	if (systemInitialised == false) 
+	{
 		// init
 		FMOD_System_Create(&sys);
 
 		// select device
 		static bool listCreated = false;
 
-		if (listCreated == false) {
+		if (listCreated == false) 
+		{
 			FMOD_System_GetNumDrivers(sys, &ofxFmodNumDevices);
 
 			getDriverInfo(ofxFmodNumDevices, sys, ofxFmodDeviceNames);
@@ -89,10 +86,12 @@ void AudioSystem::initFMODSystem() {
 			listCreated = true;
 		}
 
-		if (ofxFmodPreferedDevice < ofxFmodNumDevices) {
+		if (ofxFmodPreferedDevice < ofxFmodNumDevices) 
+		{
 			ofxFmodDevice = ofxFmodPreferedDevice;
 		}
-		else {
+		else 
+		{
 			ofxFmodDevice = 0;
 		}
 
@@ -117,85 +116,90 @@ void AudioSystem::initFMODSystem() {
 }
 
 void AudioSystem::loadAudio() {
-	if (audioLoaded == false) {
-		// initialise layers
-		int amountofLoopLayers = 5;
-		string loopLayerNames[] = { "Pad: Start", "Pad: End", "Fx", "Noise", "Shepards" }; // TODO: use this voor UI as well
-		for (int i = 0; i < amountofLoopLayers; i++) {
-			layerLoops.push_back(new LoopLayer(loopLayerNames[i], sys));
-		}
+	if (audioLoaded == false) 
+	{
+		// Initialise layers.
+		string loopLayerNames[] = { "Pad: Start", "Pad: End", "Fx", "Noise", "Shepards" };
+		for (int i = 0; i < sizeof(loopLayerNames) / sizeof(loopLayerNames[0]); i++) layerLoops.push_back(new LoopLayer(loopLayerNames[i], sys));
 
-		int amountOfImpactLayers = 2;
-		string impactLayerNames[] = { "Hit", "Sub" }; // TODO: use this voor UI as well
-		for (int i = 0; i < amountOfImpactLayers; i++) {
-			layerImpacts.push_back(new ImpactLayer(impactLayerNames[i], sys));
-		}
+		string impactLayerNames[] = { "Hit", "Sub" };
+		for (int i = 0; i < sizeof(impactLayerNames) / sizeof(impactLayerNames[0]); i++) layerImpacts.push_back(new ImpactLayer(impactLayerNames[i], sys));
 
-		// get directory
+		// Get directory.
 		ofDirectory dir("");
 		dir.allowExt("wav");
-		dir.listDir(); 	//populate the directory object
+		dir.listDir(); 
 
-		// load sounds into layers
-		for (int i = 0; i < dir.size(); i++) {
-
-			// get path and name
+		// Load sounds into layers.
+		for (int i = 0; i < dir.size(); i++) 
+		{
+			// Get path and name.
 			string tempName = dir.getName(i);
 
-			// create sound and channel to add to layer
+			// Create sound and channel to add to layer.
 			FMOD_SOUND* tempSound;
 
 			FMOD_System_CreateSound(sys, ofToDataPath(dir.getPath(i)).c_str(), FMOD_DEFAULT, 0, &tempSound);
 
-			// initialise layers with their names and FMOD_SOUNDS
-			if (tempName[0] == 'I') {			// Impact
+			// Initialise layers with their names and FMOD_SOUNDS.
+			if (tempName[0] == 'I')				// Impact
+			{			
 				layerImpacts[0]->channels.push_back(nullptr);
 				layerImpacts[0]->sounds.push_back(tempSound);
 				debugMessage("layerImpacts[0]: " + tempName);
 			}
-			else if (tempName[0] == 'S') {		// Sub
+			else if (tempName[0] == 'S')		// Sub
+			{		
 				layerImpacts[1]->channels.push_back(nullptr);
 				layerImpacts[1]->sounds.push_back(tempSound);
 				debugMessage("layerImpacts[1]: " + tempName);
 			}
-			else if (tempName[0] == 'L') {		// Loop
+			else if (tempName[0] == 'L')		// Loop
+			{		
 				FMOD_Sound_SetMode(tempSound, FMOD_LOOP_NORMAL);
 
-				if (tempName[2] == 'P') {		// Loop: Start Pad
+				if (tempName[2] == 'P')			// Loop: Start Pad
+				{		
 					layerLoops[0]->channels.push_back(nullptr);
 					layerLoops[0]->sounds.push_back(tempSound);
 					debugMessage("layerLoops[0]: " + tempName);
 				}
-				else if (tempName[2] == 'E') {	// Loop: End Pad
+				else if (tempName[2] == 'E')	// Loop: End Pad
+				{	
 					layerLoops[1]->channels.push_back(nullptr);
 					layerLoops[1]->sounds.push_back(tempSound);
 					debugMessage("layerLoops[1]: " + tempName);
 				}
-				else if (tempName[2] == 'F') {	// Loop: Fx
+				else if (tempName[2] == 'F')	// Loop: Fx
+				{	
 					layerLoops[2]->channels.push_back(nullptr);
 					layerLoops[2]->sounds.push_back(tempSound);
 					debugMessage("layerLoops[2]: " + tempName);
 				}
-				else if (tempName[2] == 'N') {	// Loop: Noise
+				else if (tempName[2] == 'N')	// Loop: Noise
+				{	
 					layerLoops[3]->channels.push_back(nullptr);
 					layerLoops[3]->sounds.push_back(tempSound);
 					debugMessage("layerLoops[3]: " + tempName);
 				}
-				else if (tempName[2] == 'S') {	// Loop: Shepard
+				else if (tempName[2] == 'S')	// Loop: Shepard
+				{	
 					layerLoops[4]->channels.push_back(nullptr);
 					layerLoops[4]->sounds.push_back(tempSound);
 					debugMessage("layerLoops[4]: " + tempName);
 				}
-				else {
+				else 
+				{
 					debugMessage("Error: Loopname not found: " + tempName);
 				}
 			}
-			else {
+			else 
+			{
 				debugMessage("Error: Name not found: " + tempName);
 			}
 		}
 
-		// set on for frequency
+		// Set on for frequency.
 		getLayerByName("Pad: Start")->mainPitchModToggle = true;
 		getLayerByName("Pad: End")->mainPitchModToggle = true;
 
@@ -210,17 +214,19 @@ void AudioSystem::loadAudio() {
 // update
 //--------------------------------------------------------------
 
-void AudioSystem::update() {
+void AudioSystem::update() 
+{
 	FMOD_System_Update(sys);
 
-	if (playing) {
-		// get the players position in float
+	if (playing) 
+	{
+		// Get the player's position in float.
 		float decimalValue = setDecimalValue(modData);
 
-		// attack envelope
+		// Attack envelope
 		float attackedGain = attackEnv.arAttackExp(_gain, envelopeTrigger);
 
-		// plotting
+		// Plotting
 		int onLayers = 0;
 		mainOutputGainAllLayers = 0;
 		mainFrequencyAllLayers = 0;
@@ -228,39 +234,39 @@ void AudioSystem::update() {
 		for (auto layer : layerLoops) {
 			if (layer->onOff) {
 
-				// gain modulation
+				// Gain modulation
 				float outputGain = attackedGain * layer->gainModulation(decimalValue, modulationTrigger, timeModulationTrigger, actionModulationTrigger, actionInput);
 				layer->setVolume(outputGain);
 
-				// pitch modulation
+				// Pitch modulation
 				if (layer->mainPitchModToggle) {
 					float outputPitch = (layer->frequencyRange * frequencyStandard) * layer->pitchModulation(decimalValue, modulationTrigger, timeModulationTrigger); 
 					layer->setFrequency(outputPitch);
 				}
 
-				// get main amplitude and pitch (used for plotting)
+				// Get main amplitude and pitch (used for plotting)
 				onLayers++;
 				mainOutputGainAllLayers += attackedGain * outputGain;
 				mainFrequencyAllLayers += layer->getFrequency();
 			}
 		}
 
-		// set main amplitude and pitch (used for plotting)
+		// Set main amplitude and pitch (used for plotting).
 		mainOutputGainAllLayers /= onLayers;
 		mainFrequencyAllLayers /= onLayers;
 
-		// update treshold checkers
+		// Update treshold checkers.
 		releaseTimer.update();
 		timeModulationTimer.update();
 		positionActionCalculator.update(decimalValue);
 
-		// reset trigger for envelopes
+		// Reset trigger for envelopes.
 		if (envelopeTrigger == 1) envelopeTrigger = 0;
 	}
 }
 
 //--------------------------------------------------------------
-// playback
+// Riser macro flow
 //--------------------------------------------------------------
 
 void AudioSystem::startRiser()
@@ -269,10 +275,10 @@ void AudioSystem::startRiser()
 
 	debugMessage("start riser");
 
-	// create snapshot of gain for envelopes
+	// Create snapshot of gain for envelopes.
 	gainSnapshot = _gain;
 
-	// set trigger bools
+	// Set trigger bools.
 	modulationTrigger = 1;
 	envelopeTrigger = 1;
 	playing = true;
@@ -284,7 +290,7 @@ void AudioSystem::startRiser()
 	startAudioLayers(layerLoops);
 }
 
-// begin release phase of riser, with timer that checks when to completely stop the riser
+// Begin release fase of riser, using a timer that checks when to stop the riser.
 void AudioSystem::startRelease() {
 	debugMessage("start stopping audio");
 
@@ -306,7 +312,7 @@ void AudioSystem::stopRiser()
 	stopAudioLayers(layerImpacts);
 	FMOD_ChannelGroup_SetVolume(channelgroup, 0);
 
-	// reset timers in case they are currently running
+	// Reset timers in case they are currently running.
 	releaseTimer.stopTimer();
 	timeModulationTimer.stopTimer();
 	positionActionCalculator.stopActionCalculator();
@@ -314,65 +320,76 @@ void AudioSystem::stopRiser()
 	playing = false;
 }
 
-void AudioSystem::startAudioLayers(vector<LoopLayer*> layersToStart) {
+//--------------------------------------------------------------
+// Riser start and stops
+//--------------------------------------------------------------
+
+void AudioSystem::startAudioLayers(vector<LoopLayer*> layersToStart) 
+{
 	debugMessage("start Audio loops");
-	for (auto layer : layersToStart) {
-		if (layer->onOff) {
+	for (auto layer : layersToStart) 
+	{
+		if (layer->onOff) 
+		{
 			layer->setVolume(0);
 			layer->startSounds();
 		}
 	}
 }
 
-void AudioSystem::startAudioLayers(vector<ImpactLayer*> layersToStart) {
+void AudioSystem::startAudioLayers(vector<ImpactLayer*> layersToStart) 
+{
 	debugMessage("start Audio impacts");
-	for (auto layer : layersToStart) {
-		layer->startSounds();
-	}
+	for (auto layer : layersToStart) layer->startSounds();
 }
 
-void AudioSystem::stopAudioLayers(vector<LoopLayer*> layersToStop) {
+void AudioSystem::stopAudioLayers(vector<LoopLayer*> layersToStop) 
+{
 	debugMessage("stop Audio loops");
-	for (auto layer : layersToStop) {
-		layer->stopSounds();
-	}
+	for (auto layer : layersToStop) layer->stopSounds();
 }
 
 void AudioSystem::stopAudioLayers(vector<ImpactLayer*> layersToStop) {
 	debugMessage("stop Audio impacts");
-	for (auto layer : layersToStop) {
-		layer->stopSounds();
-	}
+	for (auto layer : layersToStop) layer->stopSounds();
 }
 
 //--------------------------------------------------------------
-// setters
+// Calculate (and set) values
 //--------------------------------------------------------------
 
-void AudioSystem::setGain(float gain) {
+void AudioSystem::dbToFloat(float gain) 
+{
 	debugMessage("setGain: " + to_string(gain));
 	_gain = pow(10, gain / 20);
 }
 
-void AudioSystem::setPositionGainModulation(float attack)
+void AudioSystem::calculatePositionGainModulation(float attack)
 {
 	debugMessage("setPositionModulation: Amp. " + to_string(attack));
-	for (auto layer : layerLoops) {
+	for (auto layer : layerLoops) 
+	{
 		layer->positionGainMod.CalculateAttackStepSize(attack);
 		layer->positionGainMod.CalculateAttackDecreaseStepSize(positionModifier * attack);
 	}
 }
 
-void AudioSystem::setPositionPitchModulation(float attack)
+void AudioSystem::calculatePositionPitchModulation(float attack)
 {
 	debugMessage("setPositionModulation: Pitch. " + to_string(attack));
-	for (auto layer : layerLoops) {
-		if (layer->mainPitchModToggle) { 
+	for (auto layer : layerLoops) 
+	{
+		if (layer->mainPitchModToggle) 
+		{ 
 			layer->positionPitchMod.CalculateAttackStepSize(attack); 
 			layer->positionPitchMod.CalculateAttackDecreaseStepSize(positionModifier * attack);
 		}
 	}
 }
+
+//--------------------------------------------------------------
+// Set values
+//--------------------------------------------------------------
 
 void AudioSystem::setPositionModifier(float modifier)
 {
@@ -385,28 +402,22 @@ void AudioSystem::setAttack(float attack) {
 	attackEnv.setARExp(attack, 0);
 }
 
-void AudioSystem::setRelease(float release)
+// TODO: create funct in layer that calls CalculateReleaseStepSize(release), and call that one
+void AudioSystem::setReleaseLayers(float release)
 {
 	debugMessage("setRelease: " + to_string(release));
 
-	for (auto layer : layerLoops) {
-		layer->positionGainMod.CalculateReleaseStepSize(release);
-	}
-
-	for (auto layer : layerLoops) {
-		if (layer->mainPitchModToggle) { layer->positionPitchMod.CalculateReleaseStepSize(release); }
-	}
+	for (auto layer : layerLoops) layer->positionGainMod.CalculateReleaseStepSize(release);
+	for (auto layer : layerLoops) if (layer->mainPitchModToggle) { layer->positionPitchMod.CalculateReleaseStepSize(release); }
 
 	// set timer length
 	releaseTimer.setLength(release + 50);
 }
 
-void AudioSystem::setModulationCurve(float startValue)
+void AudioSystem::setModulationCurveLayers(float startValue)
 {
 	debugMessage("setcurve: " + to_string(startValue));
-	for (auto layer : layerLoops) {
-		layer->positionGainMod.curveRatio = startValue;
-	}
+	for (auto layer : layerLoops) layer->positionGainMod.curveRatio = startValue;
 }
 
 void AudioSystem::setPosition(float position)
@@ -420,12 +431,10 @@ void AudioSystem::setTimeModulationThreshold(float threshold, float minimumLengt
 	timeModulationTimer.setLength(threshold * minimumLength);
 }
 
-void AudioSystem::setTimeModulationLength(float lengthInMs, float minimumLength)
+void AudioSystem::setTimeModulationLengthLayers(float lengthInMs, float minimumLength)
 {
 	debugMessage("setTimeModulationLength " + to_string(lengthInMs * minimumLength));
-	for (auto layer : layerLoops) {
-		layer->timeGainMod.CalculateAttackDecreaseStepSize(lengthInMs * minimumLength);
-	}
+	for (auto layer : layerLoops) layer->timeGainMod.CalculateAttackDecreaseStepSize(lengthInMs * minimumLength);
 }
 
 void AudioSystem::setActionModulationThreshold(float threshold)
@@ -434,12 +443,14 @@ void AudioSystem::setActionModulationThreshold(float threshold)
 	positionActionCalculator.setThreshold(threshold);
 }
 
-void AudioSystem::setActionModulationLength(float lengthInMs, float minimumLength)
+// TODO: get the modifier from user
+void AudioSystem::setActionModulationLengthLayers(float lengthInMs, float minimumLength)
 {
 	float modifier = 1.5;
 
 	debugMessage("setActionModulation: Amp. " + to_string(lengthInMs * minimumLength));
-	for (auto layer : layerLoops) {
+	for (auto layer : layerLoops) 
+	{
 		layer->actionGainMod.CalculateAttackStepSize(modifier * lengthInMs * minimumLength);
 		layer->actionGainMod.CalculateAttackDecreaseStepSize(lengthInMs * minimumLength);
 	}
@@ -449,20 +460,29 @@ void AudioSystem::setActionModulationLength(float lengthInMs, float minimumLengt
 // getters
 //--------------------------------------------------------------
 
-string AudioSystem::getAudioName(FMOD_SOUND* sound) {
+string AudioSystem::getAudioName(FMOD_SOUND* sound) 
+{
 	char name[256];
 	FMOD_Sound_GetName(sound, name, 256);
 	string outName = name;
 	return name;
 }
 
-LoopLayer* AudioSystem::getLayerByName(string name) {
-	for (auto l : layerLoops) {
-		if (l->label == name) {
+LoopLayer* AudioSystem::getLayerByName(string name) 
+{
+	for (auto l : layerLoops) 
+	{
+		if (l->label == name) 
+		{
 			debugMessage("getLayerByName: " + l->label);
 			return l;
 		}
 	}
+}
+
+void AudioSystem::setActionModulationPosition(float position)
+{
+	actionInput = position;
 }
 
 //--------------------------------------------------------------
@@ -479,11 +499,6 @@ void AudioSystem::triggerActionModulation()
 {
 	debugMessage("start action modulation");
 	actionModulationTrigger = !actionModulationTrigger;
-}
-
-void AudioSystem::setActionModulationPosition(float position)
-{
-	actionInput = position;
 }
 
 //--------------------------------------------------------------

@@ -1,11 +1,16 @@
 #include "Modulation.h"
 
+// TODO: calculate should not be capitalised
+// TODO: comments
 
-void ModulationBase::CalculateAttackDecreaseStepSize(float attackDownSec) {
-	if (modType == linear) {
+void ModulationBase::CalculateAttackDecreaseStepSize(float attackDownSec) 
+{
+	if (modType == linear) 
+	{
 		downStep = 0 - ((1.0 / updateRate) * (1.0 / attackDownSec));
 	}
-	else {
+	else 
+	{
 		downStepExp = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * attackDownSec));
 		downStepAc = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * attackDownSec));
 	}
@@ -15,11 +20,14 @@ void ModulationBase::CalculateAttackDecreaseStepSize(float attackDownSec) {
 // updown Modulation Base
 //--------------------------------------------------------------
 
-void UpDownModulationBase::CalculateAttackStepSize(float attackUpSec) {
-	if (modType == linear) {
+void UpDownModulationBase::CalculateAttackStepSize(float attackUpSec) 
+{
+	if (modType == linear) 
+	{
 		upStep = (1.0 / updateRate) * (1.0 / attackUpSec);
 	}
-	else {
+	else 
+	{
 		upStepExp = pow((1.0 / amplitudeStartValue), 1.0 / (updateRate * attackUpSec));
 		upStepAc = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * attackUpSec));
 	}
@@ -36,24 +44,31 @@ PositionModulation::PositionModulation()
 	currentDistanceAc = 1;
 }
 
-float PositionModulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger) {
+float PositionModulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger) 
+{
 	// attack stage
-	if (trigger == 1) {
+	if (trigger == 1) 
+	{
 		float buffer = 0.01; // buffer because value might not get to exact goal because of step sizes
-		if (currentDistance < currentDistanceToGetToInRange - buffer || currentDistance > currentDistanceToGetToInRange + buffer) {
-			if (modType == linear) {
+		if (currentDistance < currentDistanceToGetToInRange - buffer || currentDistance > currentDistanceToGetToInRange + buffer) 
+		{
+			if (modType == linear) 
+			{
 				currentDistance += (currentDistance < currentDistanceToGetToInRange) ? upStep : downStep;
 			}
-			else {
+			else 
+			{
 				if (currentDistance < amplitudeStartValue) currentDistance = amplitudeStartValue;
 				if (currentDistanceExp < amplitudeStartValue) currentDistanceExp = amplitudeStartValue;
 				if (currentDistanceAc < amplitudeStartValue) currentDistanceAc = amplitudeStartValue;
 
-				if (currentDistance < currentDistanceToGetToInRange) {
+				if (currentDistance < currentDistanceToGetToInRange) 
+				{
 					currentDistanceExp *= upStepExp;
 					currentDistanceAc *= upStepAc;
 				}
-				else {
+				else 
+				{
 					currentDistanceExp *= downStepExp;
 					currentDistanceAc *= downStepAc;
 				}
@@ -66,7 +81,8 @@ float PositionModulation::CalculateModulation(float currentDistanceToGetToInRang
 
 	// release value is fixed, exponential, and not influenced by game data
 	else {
-		if (currentDistance > 0.01) {
+		if (currentDistance > 0.01) 
+		{
 			currentDistance *= release;
 
 			// reset attack values
@@ -78,7 +94,8 @@ float PositionModulation::CalculateModulation(float currentDistanceToGetToInRang
 	return currentDistance;
 }
 
-void PositionModulation::CalculateReleaseStepSize(float releaseSec) {
+void PositionModulation::CalculateReleaseStepSize(float releaseSec) 
+{
 	release = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * releaseSec));
 }
 
@@ -97,8 +114,10 @@ TimeModulation::TimeModulation()
 // reduce intensity when trigger = 1
 float TimeModulation::CalculateModulation(int trigger)
 {
-	if (trigger == 1) {
-		if (currentDistance > range) {
+	if (trigger == 1) 
+	{
+		if (currentDistance > range) 
+		{
 			// calculate exp curve
 			currentDistanceExp *= downStepExp;
 
@@ -110,7 +129,8 @@ float TimeModulation::CalculateModulation(int trigger)
 		}
 	}
 
-	else {
+	else 
+	{
 		currentDistance = 1;
 		currentDistanceExp = 1;
 		currentDistanceAc = amplitudeStartValue; 
@@ -130,21 +150,28 @@ ActionModulation::ActionModulation()
 	currentDistanceAc = amplitudeStartValue;
 }
 
-float ActionModulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger) {
-	if (trigger == 1) {
+float ActionModulation::CalculateModulation(float currentDistanceToGetToInRange, int trigger) 
+{
+	if (trigger == 1) 
+	{
 		float buffer = 0.01; 
-		if (currentDistance < currentDistanceToGetToInRange - buffer || currentDistance > currentDistanceToGetToInRange + buffer && currentDistance >= range) {
-			if (modType == linear) {
+		if (currentDistance < currentDistanceToGetToInRange - buffer || currentDistance > currentDistanceToGetToInRange + buffer && currentDistance >= range) 
+		{
+			if (modType == linear) 
+			{
 				currentDistance += (currentDistance < currentDistanceToGetToInRange) ? upStep : downStep;
 			}
-			else {
+			else 
+			{
 				if (currentDistance < amplitudeStartValue) currentDistance = amplitudeStartValue;
 				
-				if (currentDistance < currentDistanceToGetToInRange) {
+				if (currentDistance < currentDistanceToGetToInRange) 
+				{
 					currentDistanceExp *= upStepExp;
 					currentDistanceAc *= upStepAc;
 				}
-				else {
+				else 
+				{
 					currentDistanceExp *= downStepExp;
 					currentDistanceAc *= downStepAc;
 				}
@@ -156,7 +183,8 @@ float ActionModulation::CalculateModulation(float currentDistanceToGetToInRange,
 	}
 
 
-	else {
+	else 
+	{
 		currentDistance = 1;
 		currentDistanceExp = 1;
 		currentDistanceAc = amplitudeStartValue;

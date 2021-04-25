@@ -11,10 +11,8 @@ public:
 	void setARExp(double attackMs, double releaseMs);
 	void setAExp(double attackMs);
 
-	// arlin envelope states
+	// AR envelope states and initial state.
 	enum ArLinState { ATTACK, HOLD, RELEASE, STOP };
-
-	// initial state
 	ArLinState currentEnvState = STOP;
 
 private:

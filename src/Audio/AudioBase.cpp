@@ -8,7 +8,7 @@ void AudioBase::debugMessage(string message)
 
 const char* AudioBase::getAudioPath(string filename)
 {
-	return ofToDataPath(filename).c_str();;
+	return ofToDataPath(filename).c_str();
 }
 
 void AudioBase::getDriverInfo(int& ofxFmodNumDevices, FMOD_SYSTEM* system, std::vector<std::string>& deviceNames)
@@ -21,17 +21,16 @@ void AudioBase::getDriverInfo(int& ofxFmodNumDevices, FMOD_SYSTEM* system, std::
 	}
 }
 
-// this value to get to in the audio == the player position scaled to a value between 0 and 1
-// in mock no need to convert, use the currentPositionSlider value (which is already between 0 and 1)
-// in engine you would set the value like this: data.ConvertToDecimalData();
+// This sets the value to get to in the audio (the player position scaled to a value between 0 and 1).
+// In the mock, there is no need to convert to a value between 0 and 1, so the currentPositionSlider value is used.
 float AudioBase::setDecimalValue(ModulationData& data)
 {
 	float decimalValue = data.currentDistanceToGetTo;
 	return decimalValue;
 }
 
-// map value to a value between 0 and 1 in UE4
-// if in tool, use gain (and decimalValue in engine), because slider can be moved instantly opposite to the player that has to take time to move
+// Map value to a value between 0 and 1 in UE4.
+// In the tool, use gain (and decimalValue in engine), because slider can be moved instantly opposite to the player that has to take time to move.
 float AudioBase::setCurrentDistanceValue(float decimValue, float gainValue)
 {
 	return gainValue;

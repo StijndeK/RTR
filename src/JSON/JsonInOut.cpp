@@ -9,7 +9,6 @@ void JsonInOut::setup()
 
 void JsonInOut::draw()
 {
-    // draw output
     std::stringstream ss;
     ss << "gain = " << result["gain"].asDouble() << endl;
     ofDrawBitmapString(ss.str(), 10, 14);
@@ -17,24 +16,14 @@ void JsonInOut::draw()
 
 void JsonInOut::parseJson()
 {
-    // load project location
-    bool parsingSuccessful1 = resultLocation.open(locationFile);
+    // Load project location.
+    if (!resultLocation.open(locationFile)) ofLogError("ofApp::setup") << "Failed to parse JSON" << endl;
 
-    if (!parsingSuccessful1)
-    {
-        ofLogError("ofApp::setup") << "Failed to parse JSON" << endl;
-    }
-
-    // set the new location
+    // Save the location.
     file = resultLocation["Project location"].asString();
 
-    // check if file is available and open
-    bool parsingSuccessful = result.open(file);
-
-    if (!parsingSuccessful)
-    {
-        ofLogError("ofApp::setup") << "Failed to parse JSON" << endl;
-    }
+    // Check if file is available and open.
+    if (!result.open(file)) ofLogError("ofApp::setup") << "Failed to parse JSON" << endl;
 }
 
 void JsonInOut::setValue(std::string type, float value)

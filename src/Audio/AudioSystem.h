@@ -7,8 +7,8 @@
 #include "Modulation/Modulation.h"
 #include "Modulation/ThresholdChecker.h"
 
-class AudioSystem : public AudioBase, public ModulationTypes {
-
+class AudioSystem : public AudioBase, public ModulationTypes 
+{
 public:
 	AudioSystem();
 	~AudioSystem();
@@ -25,35 +25,40 @@ public:
 	static void stopAudioLayers(vector<LoopLayer*> layersToStop);
 	static void stopAudioLayers(vector<ImpactLayer*> layersToStop);
 
+	// calculators
+	static void dbToFloat(float gain);
+	static void calculatePositionGainModulation(float attack);
+	static void calculatePositionPitchModulation(float attack);
+
 	// setters
-	static void setGain(float gain);
-	static void setPositionGainModulation(float attack);
-	static void setPositionPitchModulation(float attack);
 	static void setPositionModifier(float modifier);
 	static void setAttack(float attack);
-	static void setRelease(float release); // move to layer
-	static void setModulationCurve(float startValue);
+	static void setReleaseLayers(float release); // move to layer
+	static void setModulationCurveLayers(float startValue);
 	static void setPosition(float position);
-
 	static void setTimeModulationThreshold(float threshold, float minimumLength);
-	static void setTimeModulationLength(float lengthInMs, float minimumLength);
+	static void setTimeModulationLengthLayers(float lengthInMs, float minimumLength);
 	static void setActionModulationThreshold(float threshold);
-	static void setActionModulationLength(float lengthInMs, float minimumLength);
-
-	static void triggerTimeModulation();
-	static void triggerActionModulation();
+	static void setActionModulationLengthLayers(float lengthInMs, float minimumLength);
 	static void setActionModulationPosition(float position);
 
+	// modulation triggers
+	static void triggerTimeModulation();
+	static void triggerActionModulation();
+
+	// action modulation
 	static void checkLessModifier(float value);
 	static void setOffset(float offset);
 
+	// sound design
 	static void soundDesign();
-
-	static PositionModulation timeMod;
 
 	// getters
 	static string getAudioName(FMOD_SOUND* sound);
 	static LoopLayer* getLayerByName(string name);
+
+	// variables
+	static PositionModulation timeMod;
 
 	static bool audioLoaded;
 	static bool systemInitialised;
@@ -70,7 +75,7 @@ public:
 	static float gainSnapshot;
 
 	// holds values to check deviation for lessGain
-	static vector<float> lastValues; // TODO: fill immediatly
+	static vector<float> lastValues;
 	static int currentValue;
 	static int currentTick;
 
@@ -95,8 +100,8 @@ public:
 
 	static FMOD_CHANNELGROUP* channelgroup;
 	static FMOD_SYSTEM* sys;
+
 private:
-	// attack only envelope for the start of the sound
 	static Envelopes attackEnv;
 
 	static Timer releaseTimer;			// Timer on when to stop all audio after impact
