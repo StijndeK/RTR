@@ -47,7 +47,8 @@ void ActionCalculator::update(float currentValue)
 			{
 				values.push_back(currentValue);
 			}
-			else {
+			else 
+			{
 				values2.push_back(currentValue);
 			}
 		}
