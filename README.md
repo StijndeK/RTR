@@ -12,9 +12,9 @@ The user can design the riser and its modulation in the Editor Tool. This tool e
 <img width="1235" alt="Screenshot 2021-01-28 at 16 03 13" src="https://user-images.githubusercontent.com/31696336/106205781-55bc8c80-61bf-11eb-9aab-bfdd4743eaab.png">
 
 ## Dataflow
-Both the game engine plugin and the Editor Tool use the same audio system and json-to-audio-translation system. The tool has a user interface to edit settings and design the riser while the engine plugin has blueprints and actors to integrate the riser in the game. The AudioBase class contains the specific elements for the surrounding framework, so that the rest of the AudioSystem is exactly the same for every framework or engine. For example, the AudioBase handles debugging.
+Both the game engine plugin and the standalone tool use the same audio system which is build on the FMOD core API. The tool has a user interface to edit settings and design the riser while the engine plugin has blueprints and actors to integrate the riser in the game. The tool writes the user data to a json file that includes the 'recipe' on how the riser should sound. In the standalone tool the riser also be played, because of which the tool also reads the json. The applications can be run seperatly, but also simultaniously. The game engine plugin reads the json data and links the riser to game data.
 
-![RTR_DataflowSplit](https://user-images.githubusercontent.com/31696336/104633126-fb8bd980-569e-11eb-92f6-6616ba3970e0.png)
+![RTR_Dataflow](https://user-images.githubusercontent.com/31696336/115718005-02e81080-a37b-11eb-8967-385d031cfd9d.png)
 
 ## Layering
 Preset sounds have been designed by deconstruction riser examples to static loop-able pads. These pads loop and parameters such as pitch and gain are modulated to create there rising effect. The audio has been divided up into different layers such as synths, noise and Shepard scales.
@@ -31,19 +31,24 @@ The ThresholdChecker class is used to for example check if the threshold to star
 
 ```C++
 // set function to call
-void ThresholdChecker::setFunctionToCall(void(&functionToCall)()) {
+void ThresholdChecker::setFunctionToCall(void(&functionToCall)()) 
+{
 	_functionToCall = functionToCall;
 }
 
 // using the action threshold checker, fill and compare 2 vectors averages, and call function when threshold has been reached
 void ActionCalculator::update(float currentValue)
 {
-	if (calculateAction) {
-		if (values.size() < updateRate || values2.size() < updateRate) {
-			if (values.size() < updateRate) {
+	if (calculateAction) 
+	{
+		if (values.size() < updateRate || values2.size() < updateRate) 
+		{
+			if (values.size() < updateRate) 
+			{
 				values.push_back(currentValue);
 			}
-			else {
+			else 
+			{
 				values2.push_back(currentValue);
 			}
 		}
@@ -51,14 +56,17 @@ void ActionCalculator::update(float currentValue)
 			float average = accumulate(values.begin(), values.end(), 0.0) / updateRate;
 			float average2 = accumulate(values2.begin(), values2.end(), 0.0) / updateRate;
 
-			if (average2 >= average - threshold && average2 <= average + threshold && average + average2 != 0) {
+			if (average2 >= average - threshold && average2 <= average + threshold && average + average2 != 0) 
+			{
 				active = true;
 			}
-			else {
+			else 
+			{
 				active = false;
 			}
 
-			if (currentActive != active) {
+			if (currentActive != active) 
+			{
 				(*_setFunctionToCall)(1 - active);
 				currentActive = active;
 			}
@@ -78,10 +86,11 @@ Per modulated parameter for every modulation type the curve to modulate by can b
 	upStepAc = pow((amplitudeStartValue / 1.0), 1.0 / (updateRate * attackUpSec));
 
         // set the output based on the ratio between the exp and ac curve
-        void updateTick() {
+        void updateTick() 
+	{
             currentDistance = ((1 - currentDistanceAc) * curveRatio) + (currentDistanceExp * (1 - curveRatio));
         }
 ```
 
 ## Future developments
-The current tool has been made to be as quick and easy to use as possible. Herefore a lot is done in the background. However, there are a lot of interesting possibilities when moving them to the front-end and providing complete controll over how to adapt the riser and to what. 
+The current tool has been made to be as quick and easy to use as possible. Because of which a lot is done in the background. However, there are a lot of interesting possibilities when moving them to the front-end and providing complete controll over how to adapt the riser and to what. 
