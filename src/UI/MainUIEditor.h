@@ -2,11 +2,11 @@
 #include "ofMain.h"
 #include "JSON/JsonInOut.h"
 #include "ofxDatGui.h"
-class ofApp;
+class RTRStudio;
 
 class MainUIEditor {
 public:
-    MainUIEditor(ofApp* appReference);
+    MainUIEditor(RTRStudio* appReference);
 
     // Of functions
     void setup();
@@ -21,7 +21,7 @@ public:
     void initialiseAllValues();
     
 private:
-    ofApp* _ofApp;
+    RTRStudio* _ofApp;
     ofxDatGuiValuePlotter* gainPlotter;
     ofxDatGuiWaveMonitor* waveMonitor;
     ofxDatGuiToggle* padStartToggle;

@@ -1,7 +1,7 @@
 #include "MainUIEditor.h"
 #include "ofApp.h"
 
-MainUIEditor::MainUIEditor(ofApp* appReference)
+MainUIEditor::MainUIEditor(RTRStudio* appReference)
 {
     _ofApp = appReference;
 }
