@@ -21,7 +21,7 @@ public:
     void initialiseAllValues();
     
 private:
-    RTRStudio* _ofApp;
+    RTRStudio* rtrStudio;
     ofxDatGuiValuePlotter* gainPlotter;
     ofxDatGuiWaveMonitor* waveMonitor;
     ofxDatGuiToggle* padStartToggle;
