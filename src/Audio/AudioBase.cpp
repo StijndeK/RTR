@@ -20,20 +20,3 @@ void AudioBase::getDriverInfo(int& ofxFmodNumDevices, FMOD_SYSTEM* system, std::
 		deviceNames.push_back(name);
 	}
 }
-
-// This sets the value to get to in the audio (the player position scaled to a value between 0 and 1).
-// In the mock, there is no need to convert to a value between 0 and 1, so the currentPositionSlider value is used.
-float AudioBase::setDecimalValue(ModulationData& data)
-{
-	float decimalValue = data.currentDistanceToGetTo;
-	return decimalValue;
-}
-
-// Map value to a value between 0 and 1 in UE4.
-// In the tool, use gain (and decimalValue in engine), because slider can be moved instantly opposite to the player that has to take time to move.
-float AudioBase::setCurrentDistanceValue(float decimValue, float gainValue)
-{
-	return gainValue;
-}
-
-

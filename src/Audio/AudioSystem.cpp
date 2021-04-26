@@ -95,7 +95,7 @@ void AudioSystem::initFMODSystem()
 			ofxFmodDevice = 0;
 		}
 
-		// set buffersize, keep number of buffers
+		// Set buffersize, keep number of buffers.
 		unsigned int bsTmp;
 		int nbTmp;
 		FMOD_System_GetDSPBufferSize(sys, &bsTmp, &nbTmp);
@@ -221,7 +221,7 @@ void AudioSystem::update()
 	if (playing) 
 	{
 		// Get the player's position in float.
-		float decimalValue = setDecimalValue(modData);
+		float decimalValue = modData.currentDistanceToGetTo;
 
 		// Attack envelope
 		float attackedGain = attackEnv.arAttackExp(_gain, envelopeTrigger);
@@ -244,7 +244,7 @@ void AudioSystem::update()
 					layer->setFrequency(outputPitch);
 				}
 
-				// Get main amplitude and pitch (used for plotting)
+				// Get main amplitude and pitch (used for plotting).
 				onLayers++;
 				mainOutputGainAllLayers += attackedGain * outputGain;
 				mainFrequencyAllLayers += layer->getFrequency();
@@ -408,7 +408,7 @@ void AudioSystem::setReleaseLayers(float release)
 	debugMessage("setRelease: " + to_string(release));
 
 	for (auto layer : layerLoops) layer->positionGainMod.calculateReleaseStepSize(release);
-	for (auto layer : layerLoops) if (layer->mainPitchModToggle) { layer->positionPitchMod.calculateReleaseStepSize(release); }
+	for (auto layer : layerLoops) if (layer->mainPitchModToggle) layer->positionPitchMod.calculateReleaseStepSize(release);
 
 	// set timer length
 	releaseTimer.setLength(release + 50);
@@ -506,7 +506,8 @@ void AudioSystem::triggerActionModulation()
 //--------------------------------------------------------------
 
 // after how long and how much defiation in player position should the riser slow down
-void AudioSystem::checkLessModifier(float value) {
+void AudioSystem::checkLessModifier(float value) 
+{
 	// check every 10 ticks to set lessGain
 	if (currentTick == 10) {
 		// use setcurrentdistance value to convert the value to a 0 1 value in the engine (if this is not done before)
@@ -547,7 +548,8 @@ void AudioSystem::checkLessModifier(float value) {
 // Offset
 //--------------------------------------------------------------
 
-void AudioSystem::setOffset(float offset) {
+void AudioSystem::setOffset(float offset) 
+{
 	// check if offset is necessary
 	// check if max offset is necessary (maybe only needs half of the time, as the sound does need to get more intense)
 	// set values for offset to happen and sound to modulate to its conclusion
