@@ -30,13 +30,13 @@ To allow a riser to go on for a longer or shorter amount of time, while still so
 The ThresholdChecker class is used to for example check if the threshold to start the *Time Modulation* has been reached or to check the *Action Modulation* threshold. A function is passed to the TresholdChecker and called by Threshold checker once its threshold has been reached.
 
 ```C++
-// set function to call
+// Set function to call.
 void ThresholdChecker::setFunctionToCall(void(&functionToCall)()) 
 {
 	_functionToCall = functionToCall;
 }
 
-// using the action threshold checker, fill and compare 2 vectors averages, and call function when threshold has been reached
+// Fill and compare 2 vectors averages and call function when threshold has been reached.
 void ActionCalculator::update(float currentValue)
 {
 	if (calculateAction) 
