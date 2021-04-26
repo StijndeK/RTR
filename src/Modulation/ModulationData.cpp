@@ -2,14 +2,16 @@
 
 //TODO: capitalisation
 
-// set values that in the engine version need to be set using BPs
-void ModulationData::MockData() {
+// Set values that would be received from the game manually.
+void ModulationData::mockData() 
+{
 	positionGoal = 10000;
 	positionStart = 2000;
 	totalDistance = positionGoal - positionStart;
 }
 
-// get the value to get to as a float between 0 and 1 (to feed into FMOD_setVolume)
-float ModulationData::ConvertToDecimalData(float position) {
+// Get the value to get to as a float between 0 and 1 (to feed into FMOD_setVolume).
+float ModulationData::convertToDecimalData(float position) 
+{
 	return 1 - ((currentDistanceToGetTo - positionStart) / totalDistance);
 }

@@ -7,7 +7,7 @@
 #include "Modulation/Modulation.h"
 #include "Modulation/ThresholdChecker.h"
 
-class AudioSystem : public AudioBase, public ModulationTypes 
+class AudioSystem : public AudioBase
 {
 public:
 	AudioSystem();
@@ -58,7 +58,7 @@ public:
 	static LoopLayer* getLayerByName(string name);
 
 	// variables
-	static PositionModulation timeMod;
+	static positionModulation timeMod;
 
 	static bool audioLoaded;
 	static bool systemInitialised;

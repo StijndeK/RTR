@@ -1,7 +1,5 @@
 #include "JsonInOut.h"
 
-// TODO: have a json file that checks if engine is connected, if true then go to engines json. if not then use local. when switching this bool copy the json over, set a check for if there is an engine connected or there needs to be a standalone
-
 void JsonInOut::setup()
 {
     parseJson();

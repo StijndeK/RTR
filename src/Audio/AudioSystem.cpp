@@ -48,7 +48,7 @@ float AudioSystem::positionModifier = 1;
 AudioSystem::AudioSystem()
 {
 	// Use the mockdata class for the mock functionality.
-	modData.MockData();
+	modData.mockData();
 
 	// Initialise threshold modulators.
 	releaseTimer.setFunctionToCall(stopRiser);
@@ -369,8 +369,8 @@ void AudioSystem::calculatePositionGainModulation(float attack)
 	debugMessage("setPositionModulation: Amp. " + to_string(attack));
 	for (auto layer : layerLoops) 
 	{
-		layer->positionGainMod.CalculateAttackStepSize(attack);
-		layer->positionGainMod.CalculateAttackDecreaseStepSize(positionModifier * attack);
+		layer->positionGainMod.calculateAttackStepSize(attack);
+		layer->positionGainMod.calculateAttackDecreaseStepSize(positionModifier * attack);
 	}
 }
 
@@ -381,8 +381,8 @@ void AudioSystem::calculatePositionPitchModulation(float attack)
 	{
 		if (layer->mainPitchModToggle) 
 		{ 
-			layer->positionPitchMod.CalculateAttackStepSize(attack); 
-			layer->positionPitchMod.CalculateAttackDecreaseStepSize(positionModifier * attack);
+			layer->positionPitchMod.calculateAttackStepSize(attack); 
+			layer->positionPitchMod.calculateAttackDecreaseStepSize(positionModifier * attack);
 		}
 	}
 }
@@ -407,8 +407,8 @@ void AudioSystem::setReleaseLayers(float release)
 {
 	debugMessage("setRelease: " + to_string(release));
 
-	for (auto layer : layerLoops) layer->positionGainMod.CalculateReleaseStepSize(release);
-	for (auto layer : layerLoops) if (layer->mainPitchModToggle) { layer->positionPitchMod.CalculateReleaseStepSize(release); }
+	for (auto layer : layerLoops) layer->positionGainMod.calculateReleaseStepSize(release);
+	for (auto layer : layerLoops) if (layer->mainPitchModToggle) { layer->positionPitchMod.calculateReleaseStepSize(release); }
 
 	// set timer length
 	releaseTimer.setLength(release + 50);
@@ -434,7 +434,7 @@ void AudioSystem::setTimeModulationThreshold(float threshold, float minimumLengt
 void AudioSystem::setTimeModulationLengthLayers(float lengthInMs, float minimumLength)
 {
 	debugMessage("setTimeModulationLength " + to_string(lengthInMs * minimumLength));
-	for (auto layer : layerLoops) layer->timeGainMod.CalculateAttackDecreaseStepSize(lengthInMs * minimumLength);
+	for (auto layer : layerLoops) layer->timeGainMod.calculateAttackDecreaseStepSize(lengthInMs * minimumLength);
 }
 
 void AudioSystem::setActionModulationThreshold(float threshold)
@@ -451,8 +451,8 @@ void AudioSystem::setActionModulationLengthLayers(float lengthInMs, float minimu
 	debugMessage("setActionModulation: Amp. " + to_string(lengthInMs * minimumLength));
 	for (auto layer : layerLoops) 
 	{
-		layer->actionGainMod.CalculateAttackStepSize(modifier * lengthInMs * minimumLength);
-		layer->actionGainMod.CalculateAttackDecreaseStepSize(lengthInMs * minimumLength);
+		layer->actionGainMod.calculateAttackStepSize(modifier * lengthInMs * minimumLength);
+		layer->actionGainMod.calculateAttackDecreaseStepSize(lengthInMs * minimumLength);
 	}
 }
 

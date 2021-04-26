@@ -3,11 +3,11 @@
 class ModulationData
 {
 public:
-	void MockData();
-	float ConvertToDecimalData(float position);
-
+	void mockData();
+	float convertToDecimalData(float position);
 	float currentDistanceToGetTo = 0;
-	float currentActionToGetTo = 1;
+
+private:
 	float positionGoal;
 	float positionStart;
 	float totalDistance;

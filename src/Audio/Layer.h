@@ -6,7 +6,7 @@
 #include "Modulation/Modulation.h"
 #include "Modulation/ModulationTypes.h"
 
-class BaseLayer : public ModulationTypes
+class BaseLayer
 {
 public:
 	BaseLayer(string label, FMOD_SYSTEM* system);
@@ -42,10 +42,10 @@ public:
 	float gainModulation(float inputValue, float positionTrigger, float timeTrigger, float actionTrigger, float actionInputValue);
 	float pitchModulation(float inputValue, float positionTrigger, float timeTrigger);
 
-	PositionModulation positionGainMod;
-	PositionModulation positionPitchMod;
-	TimeModulation timeGainMod;
-	ActionModulation actionGainMod;
+	positionModulation positionGainMod;
+	positionModulation positionPitchMod;
+	timeModulation timeGainMod;
+	actionModulation actionGainMod;
 
 	// Set if pitch mod should be on. Main gain mod and less gain mod are always on.
 	bool mainPitchModToggle = false;

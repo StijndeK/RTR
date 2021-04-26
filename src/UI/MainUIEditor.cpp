@@ -6,11 +6,8 @@ MainUIEditor::MainUIEditor(ofApp* appReference)
     _ofApp = appReference;
 }
 
-MainUIEditor::~MainUIEditor()
+void MainUIEditor::setup() 
 {
-}
-
-void MainUIEditor::setup() {
     _ofApp->audio.initFMODSystem();
 
     // GUI
@@ -101,7 +98,6 @@ void MainUIEditor::setup() {
 
 void MainUIEditor::draw() {
     ofBackground(ofColor(141, 158, 171));
-
     ofSetColor(0, 0, 0);
     
     std::stringstream ss;
@@ -110,7 +106,6 @@ void MainUIEditor::draw() {
 }
 
 void MainUIEditor::update() {
-    // plotters
     gainPlotter->setValue(_ofApp->audio.mainOutputGainAllLayers);
     waveMonitor->setAmplitude(_ofApp->audio.mainOutputGainAllLayers);
     waveMonitor->setFrequency(_ofApp->audio.mainFrequencyAllLayers);
@@ -130,43 +125,55 @@ void MainUIEditor::onSliderEvent(ofxDatGuiSliderEvent e)
 
     _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getValue());
 
-    if (label == "gain") {
+    if (label == "gain") 
+    {
         _ofApp->audio.dbToFloat(_ofApp->jsonSys.getValue(label));
     }
-    else if (label == "release") {
+    else if (label == "release") 
+    {
         _ofApp->audio.setReleaseLayers(_ofApp->jsonSys.getValue(label));
     }
-    else if (label == "attack") {
+    else if (label == "attack") 
+    {
         _ofApp->audio.setAttack(_ofApp->jsonSys.getValue(label));
     }
-    else if (label == "attack decrease modifier") {
+    else if (label == "attack decrease modifier") 
+    {
         _ofApp->audio.setPositionModifier(_ofApp->jsonSys.getValue(label));
         _ofApp->audio.calculatePositionGainModulation(_ofApp->jsonSys.getValue("range in s"));
         _ofApp->audio.calculatePositionPitchModulation(_ofApp->jsonSys.getValue("range in s"));
     }
-    else if (label == "range in s") {
+    else if (label == "range in s") 
+    {
         _ofApp->audio.calculatePositionGainModulation(_ofApp->jsonSys.getValue(label));
         _ofApp->audio.calculatePositionPitchModulation(_ofApp->jsonSys.getValue(label));
     }
-    else if (label == "offset") {
+    else if (label == "offset") 
+    {
         _ofApp->audio.setOffset(_ofApp->jsonSys.getValue(label));
     }
-    else if (label == "curve shape") {
+    else if (label == "curve shape") 
+    {
         _ofApp->audio.setModulationCurveLayers(_ofApp->jsonSys.getValue(label));
     }
-    else if (label == "Position") {
+    else if (label == "Position") 
+    {
         _ofApp->audio.setPosition(e.target->getValue());
     }
-    else if (label == "tm threshold") {
+    else if (label == "tm threshold") 
+    {
         _ofApp->audio.setTimeModulationThreshold(e.target->getValue(), _ofApp->jsonSys.getValue("range in s"));
     }
-    else if (label == "tm length") {
+    else if (label == "tm length") 
+    {
         _ofApp->audio.setTimeModulationLengthLayers(e.target->getValue(), _ofApp->jsonSys.getValue("range in s"));
     }
-    else if (label == "am threshold") {
+    else if (label == "am threshold") 
+    {
         _ofApp->audio.setActionModulationThreshold(e.target->getValue());
     }
-    else if (label == "am length") {
+    else if (label == "am length") 
+    {
         _ofApp->audio.setActionModulationLengthLayers(e.target->getValue(), _ofApp->jsonSys.getValue("range in s"));
     }
     else {
@@ -179,16 +186,20 @@ void MainUIEditor::onButtonEvent(ofxDatGuiButtonEvent e)
 {
     string label = e.target->getLabel();
 
-    if (label == "Start") {
+    if (label == "Start") 
+    {
         _ofApp->audio.startRiser();
     }
-    else if (label == "Impact") {
+    else if (label == "Impact") 
+    {
         _ofApp->audio.startRelease();
     }
-    else if (label == "Fullscreen") {
+    else if (label == "Fullscreen") 
+    {
         ofToggleFullscreen();
     }
-    else if (label == "Project location") {
+    else if (label == "Project location") 
+    {
         getProjectLocation();
     }
     else { 
@@ -200,26 +211,20 @@ void MainUIEditor::onToggleEvent(ofxDatGuiToggleEvent e)
 {
     string label = e.target->getLabel();
 
-    // export to json
+    // Export to json.
     _ofApp->jsonSys.setValue(e.target->getLabel(), e.target->getChecked());
 
     _ofApp->audio.getLayerByName(label)->onOff = e.target->getChecked();
     _ofApp->audio.debugMessage("onoff for label: " + label + to_string(_ofApp->audio.getLayerByName(label)->onOff));
-
-    // NOTE: only toggles for layers exist, so no need to check which is pressed
 }
 
 void MainUIEditor::getProjectLocation()
 {
-    // get the file path
     string file;
     ofFileDialogResult result = ofSystemLoadDialog("Load file");
-    if (result.bSuccess) {
-        file = result.getPath();;
-    }
+    if (result.bSuccess) file = result.getPath();
     cout << file << endl;
 
-    // initialise
     _ofApp->jsonSys.setProjectLocation("Project location", file);
     initialiseAllValues();
 }

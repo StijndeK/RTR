@@ -5,22 +5,19 @@ class ThresholdChecker
 {
 public:
 	void setFunctionToCall(void(&functionToCall)());
-	void (*_functionToCall)();
+	void (*functionToCall)();
 };
 
 class ActionCalculator
 {
 public:
-	// base treshold checker functions
 	void setThreshold(float timeInMs);
-
-	// own functions
 	void update(float currentValue);
 	void startActionCalculator();
 	void stopActionCalculator();
-	bool calculateAction = false;
-
 	void setFunctionsToCall(void(&triggerFunctionToCall)(), void (&setFunctionToCall)(float pos));
+
+	bool calculateAction = false;
 
 private:
 	std::vector<float> values;
@@ -32,8 +29,8 @@ private:
 	bool active;
 	bool currentActive;
 
-	void (*_triggerFunctionToCall)();
-	void (*_setFunctionToCall)(float pos);
+	void (*triggerFunctionToCall)();
+	void (*setFunctionToCall)(float pos);
 };
 
 class Timer : public ThresholdChecker
@@ -45,6 +42,7 @@ public:
 	void stopTimer();
 
 	bool looping = false;
+
 private:
 	float currentTick = 0;
 	float addValue;

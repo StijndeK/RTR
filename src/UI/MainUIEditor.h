@@ -7,8 +7,8 @@ class ofApp;
 class MainUIEditor {
 public:
     MainUIEditor(ofApp* appReference);
-    ~MainUIEditor();
 
+    // Of functions
     void setup();
     void draw();
     void update();
@@ -22,7 +22,6 @@ public:
     
 private:
     ofApp* _ofApp;
-
     ofxDatGuiValuePlotter* gainPlotter;
     ofxDatGuiWaveMonitor* waveMonitor;
     ofxDatGuiToggle* padStartToggle;

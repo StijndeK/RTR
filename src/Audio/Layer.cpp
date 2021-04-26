@@ -53,7 +53,7 @@ void ImpactLayer::startSounds()
 
 LoopLayer::LoopLayer(string label, FMOD_SYSTEM* system) : BaseLayer(label, system)
 {
-	positionPitchMod.modType = linear;
+	positionPitchMod.curveType = linear;
 }
 
 void LoopLayer::startSounds()
@@ -64,14 +64,14 @@ void LoopLayer::startSounds()
 
 float LoopLayer::gainModulation(float inputValue, float positionTrigger, float timeTrigger, float actionTrigger, float actionInputValue)
 {
-	float actOuput = actionGainMod.CalculateModulation(actionInputValue, actionTrigger);
-	float output = positionGainMod.CalculateModulation(inputValue, positionTrigger) * timeGainMod.CalculateModulation(timeTrigger) * actOuput;
+	float actOuput = actionGainMod.calculateModulation(actionInputValue, actionTrigger);
+	float output = positionGainMod.calculateModulation(inputValue, positionTrigger) * timeGainMod.calculateModulation(timeTrigger) * actOuput;
 
 	return output;
 }
 
 float LoopLayer::pitchModulation(float inputValue, float positionTrigger, float timeTrigger)
 {
-	float output = positionPitchMod.CalculateModulation(inputValue, positionTrigger);
+	float output = positionPitchMod.calculateModulation(inputValue, positionTrigger);
 	return output;
 }
