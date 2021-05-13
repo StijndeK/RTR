@@ -52,7 +52,8 @@ void ActionCalculator::update(float currentValue)
 				values2.push_back(currentValue);
 			}
 		}
-		else {
+		else 
+		{
 			float average = accumulate(values.begin(), values.end(), 0.0) / updateRate;
 			float average2 = accumulate(values2.begin(), values2.end(), 0.0) / updateRate;
 
