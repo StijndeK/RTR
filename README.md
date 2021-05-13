@@ -57,14 +57,7 @@ void ActionCalculator::update(float currentValue)
 			float average = accumulate(values.begin(), values.end(), 0.0) / updateRate;
 			float average2 = accumulate(values2.begin(), values2.end(), 0.0) / updateRate;
 
-			if (average2 >= average - threshold && average2 <= average + threshold && average + average2 != 0) 
-			{
-				active = true;
-			}
-			else 
-			{
-				active = false;
-			}
+			active = (average2 >= average - threshold && average2 <= average + threshold && average + average2 != 0) ? true : false;
 
 			if (currentActive != active) 
 			{
